@@ -1,0 +1,6 @@
+env/
+**.pyc
+**.sqlite3
+.idea/
+*.json
+media/
