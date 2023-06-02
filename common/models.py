@@ -44,6 +44,7 @@ class Course(models.Model):
         ("advisory", "Advisory"),
         ("CS1", "CS 1"),
         ("CS2", "CS 2"),
+        ("speech", "Speech"),
         ("team", "Robotics Team"),
         ("other", "Other")
     )
