@@ -5,36 +5,47 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <link rel="stylesheet" href="{% static 'common/bg/gradient.css' %}">
   <link rel="stylesheet" href="{% static 'common/bootstrap/bootstrap.css' %}">
   <script src="{% static 'common/bootstrap/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'common/jquery/jquery-3.7.0.min.js' %}"></script>
 
-  <title>{% block title %}Canora's Class{% endblock %}</title>
+  <title>{% block title %}Dominic's Class{% endblock %}</title>
 
   {% block script %}{% endblock %}
   {% block style %}{% endblock %}
 
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark px-3">
-  <a class="navbar-brand" href="#">Fixed navbar</a>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark px-3 animgrad">
+  <a class="navbar-brand" href="{% url 'index' %}">Dominic's Classes</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
           aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
-    <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav me-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="{% url 'index' %}">Home</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
-      </li>
+    </ul>
+    <ul class="navbar-nav ms-auto">
+      {% if request.user.is_authenticated %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'index' %}">Admin</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'admin:index' %}">DB</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'index' %}">Logout</a>
+        </li>
+      {% endif %}
     </ul>
   </div>
 </nav>
+<main class="container" style="margin-top: 68px;">
+  {% block content %}{% endblock %}
+</main>
 </body>
 </html>
