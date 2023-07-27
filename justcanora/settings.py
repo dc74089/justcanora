@@ -45,7 +45,7 @@ else:
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'just.canora.us'
+    'myfavoriteclass.us'
 ]
 
 if DEBUG:
