@@ -5,7 +5,7 @@ from app.models import Course
 
 
 def admin(request):
-    return render(request, 'app/admin.html')
+    return render(request, 'app/admin/admin.html')
 
 
 def rosters(request):
@@ -20,6 +20,6 @@ def rosters(request):
             s1.append(c)
             s2.append(c)
 
-    return render(request, "app/rosters.html", {
+    return render(request, "app/admin/rosters.html", {
         "semesters": (s1, s2)
     })
