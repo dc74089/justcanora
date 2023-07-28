@@ -1,0 +1,19 @@
+<div class="col-12 col-md-6">
+  <div class="card mb-2">
+    <div class="card-body">
+      <h2 class="card-title">Got Any News?</h2>
+      <form method="post" action="{% url 'misc_action' %}">
+        {% csrf_token %}
+        <input class="d-none" name="action" value="news">
+        <div>
+          <label for="news">Write anything you'd like to share with the class</label>
+          <textarea class="form-control" name="news" id="news"></textarea>
+        </div>
+        <div class="mt-3">
+          <button class="btn btn-grad">Submit</button>
+          <a class="btn btn-outline-danger" href="{% url 'misc_action' %}?action=dismissnews">No News; Hide Box</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

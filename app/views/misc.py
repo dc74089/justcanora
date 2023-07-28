@@ -1,7 +1,7 @@
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 
-from app.models import MusicSuggestion
+from app.models import MusicSuggestion, News
 
 
 def misc_action(request):
@@ -43,5 +43,12 @@ def misc_action(request):
             )
 
             ms.save()
+        elif data['action'] == 'dismissnews':
+            n = News(
+                student=request.user.student,
+                is_null=True
+            )
+
+            n.save()
 
         return redirect('index')

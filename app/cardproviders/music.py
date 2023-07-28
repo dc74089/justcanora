@@ -10,7 +10,6 @@ def allcards(request):
 
 def suggestion(request):
     enabled, _ = FeatureFlag.objects.get_or_create(id='card_music_suggestion')
-
     if not enabled: return None
 
     msq = MusicSuggestion.objects.filter(student=request.user.student).order_by('-added')

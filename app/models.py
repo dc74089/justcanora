@@ -108,3 +108,16 @@ class MusicSuggestion(models.Model):
             return f"{str(self.student)} suggested {self.song} by {self.artist}{'*' if not self.investigated else ''}"
         else:
             return f"{str(self.student)} suggested {self.song}{'*' if not self.investigated else ''}"
+
+
+class News(models.Model):
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    news = models.TextField()
+    added = models.DateTimeField(auto_now_add=True)
+    is_null = models.BooleanField(default=False, null=False, blank=False)
+
+    class Meta:
+        verbose_name_plural = "News"
+
+    def __str__(self):
+        return f"{self.student.name()}'s news from {str(self.added.date())}"

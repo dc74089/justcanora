@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 from django.core.management.utils import get_random_secret_key
+from django.utils import timezone
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,6 +23,7 @@ DEBUG = not os.getenv("PROD", False)
 DOCKER = os.getenv("DOCKER", False)
 
 CURRENT_ACADEMIC_YEAR = "23/24"
+NEWS_DAY = 4
 
 
 # Quick-start development settings - unsuitable for production
