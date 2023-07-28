@@ -99,6 +99,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'justcanora.wsgi.application'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
 
 # Database

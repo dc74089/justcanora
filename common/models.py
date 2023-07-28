@@ -15,7 +15,7 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     fname = models.TextField(null=False, blank=False)
     lname = models.TextField(null=False, blank=False)
-    grade = models.IntegerField(null=False, blank=False)
+    grade = models.IntegerField(null=True, blank=True)
     bday = models.DateField(null=True, blank=True)
     email = models.TextField(null=True, blank=True)
     canvas_id = models.IntegerField(null=True, blank=True)
