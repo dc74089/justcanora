@@ -7,7 +7,7 @@ from django.db import models
 
 class FeatureFlag(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
-    enabled = models.BooleanField(default=True, null=False, blank=False)
+    enabled = models.BooleanField(default=False, null=False, blank=False)
     config = models.TextField(default='{}')
 
     class Meta:
