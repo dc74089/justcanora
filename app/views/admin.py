@@ -1,13 +1,16 @@
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 
 from app.models import Course
 
 
+@staff_member_required
 def admin(request):
     return render(request, 'app/admin/admin.html')
 
 
+@staff_member_required
 def rosters(request):
     s1 = []
     s2 = []
