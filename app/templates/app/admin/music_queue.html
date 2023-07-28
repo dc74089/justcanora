@@ -1,0 +1,94 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <script>
+      let searchBar;
+      let allBtn;
+      let data;
+
+      function work(divID, data) {
+          var tr = $("body").find("#" + divID);
+          var btn = tr.find(".btn");
+
+          this.data = data;
+
+          allBtn.removeClass("btn-grad");
+          allBtn.addClass("btn-grad-positive");
+
+          btn.removeClass("btn-grad-positive");
+          btn.addClass("btn-grad");
+
+          searchBar.val(data.song + " " + data.artist);
+
+          search();
+      }
+
+      function search() {
+          var q = searchBar.val()
+          $.get("{% url 'spotify_search' %}?q=" + encodeURIComponent(q)).then(function (data) {
+              console.log(data)
+              // TODO: Build table
+          })
+      }
+
+      $(function () {
+          searchBar = $("#search")
+          allBtn = $(".tab-content").find(".btn")
+      })
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12 col-lg-6">
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          {% for course in courses %}
+            <button class="nav-link" id="nav-tab-{{ course.id }}" data-bs-toggle="tab"
+                    data-bs-target="#nav-{{ course.id }}" type="button" role="tab"
+                    aria-controls="nav-{{ course.id }}" aria-selected="true">
+              {{ course.short_name }}
+            </button>
+          {% endfor %}
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        {% for course in courses %}
+          <div class="tab-pane fade" id="nav-{{ course.id }}" role="tabpanel" aria-labelledby="nav-tab-{{ course.id }}">
+            <h4 class="mt-2">{{ course.get_type_display }} P{{ course.period }}</h4>
+            <table class="table table-striped table-hover">
+              <tr>
+                <th>Student</th>
+                <th>Song</th>
+                <th>Artist</th>
+                <th>Action</th>
+              </tr>
+
+              {% for sug in course.music_suggestions %}
+                <tr id="sug-{{ course.id }}-{{ sug.id }}">
+                  <td class="align-middle">{{ sug.student.name }}</td>
+                  <td class="align-middle">{{ sug.song }}</td>
+                  <td class="align-middle">{{ sug.artist }}</td>
+                  <td>
+                    <a class="btn btn-grad-positive" href="#"
+                       onclick="work('sug-{{ course.id }}-{{ sug.id }}', {
+                           'song': '{{ sug.song }}',
+                           'artist': '{{ sug.artist }}',
+                           'sugid': '{{ sug.id }}',
+                           })">Work</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-12 col-lg-6">
+      <div class="input-group">
+        <input class="form-control" id="search">
+        <button class="btn btn-outline-primary" type="button" onclick="search()">Search</button>
+      </div>
+    </div>
+  </div>
+{% endblock %}

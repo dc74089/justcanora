@@ -67,8 +67,8 @@ class PicRequest(models.Model):
 class Course(models.Model):
     course_types = (
         ("advisory", "Advisory"),
-        ("CS1", "CS 1"),
-        ("CS2", "CS 2"),
+        ("CS1", "App Design"),
+        ("CS2", "Python"),
         ("speech", "Public Speaking"),
         ("team", "Robotics Team"),
         ("other", "Other")
@@ -89,6 +89,12 @@ class Course(models.Model):
 
     def students_sorted(self):
         return self.students.all().order_by('fname')
+
+    def short_name(self):
+        return f"S{self.semester}P{self.period}"
+
+    def music_suggestions(self):
+        return MusicSuggestion.objects.filter(student__courses=self)
 
     def __str__(self):
         return self.name

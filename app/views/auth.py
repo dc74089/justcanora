@@ -9,6 +9,7 @@ from google.auth.transport import requests
 from google.oauth2 import id_token
 
 from app.models import Student
+from app.spotify import spotify
 
 
 def login(request):
@@ -35,6 +36,8 @@ def login(request):
 
 
 def logout(request):
+    request.session.clear()
+    request.session.save()
     do_logout(request)
     return redirect('index')
 
@@ -89,3 +92,9 @@ def google(request):
     except ValueError as e:
         # Invalid token
         print(e)
+
+
+def spotify_response(request):
+    spotify.get_auth_manager(request).get_access_token(request.GET.get('code'))
+
+    return redirect(request.session.pop('next', 'index'))

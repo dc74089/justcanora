@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 
 from app.cardproviders.allcards import allcards
+from app.spotify import spotify
 
 
 def index(request):
@@ -15,7 +16,10 @@ def index(request):
 
 
 def dev(request):
-    return render(request, 'app/error.html', {
-        "short": "I can't find that",
-        "message": "Here's some text"
-    })
+    if spotify.needs_login(request):
+        request.session['next'] = 'dev'
+        request.session.save()
+
+        return redirect(spotify.get_login_url(request))
+    else:
+        print(spotify.get_spotify(request).current_user_playlists())

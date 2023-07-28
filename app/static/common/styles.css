@@ -16,7 +16,7 @@
 }
 
 .btn-grad-positive {
-    background: linear-gradient(-45deg, #3172ff, #23d5ab, #23a6d5, #15cc39);
+    background: linear-gradient(-45deg, #15cc39, #23a6d5, #23d5ab, #3172ff);
     background-size: 400% 400%;
     animation: gradient 30s ease infinite;
     --bs-text-opacity: 1;
