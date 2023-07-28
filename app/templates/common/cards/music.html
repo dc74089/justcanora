@@ -1,0 +1,36 @@
+<div class="card mb-2">
+  <div class="card-body">
+    <h2 class="mb-0">Give me a Song</h2>
+    <h5>(if you want)</h5>
+    <hr/>
+    <form action="{% url 'misc_action' %}" method="post">
+      {% csrf_token %}
+      <input class="d-none" name="action" value="music">
+      <div class="form-group">
+        <label for="song_name">Song Name:</label>
+        <input type="text" class="form-control" name="song_name" id="song_name" required>
+      </div>
+      <div class="form-group">
+        <label for="song_artist">Artist (if you know it):</label>
+        <input type="text" class="form-control" name="song_artist" id="song_artist">
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="song_type" value="class" id="song_class" required>
+        <label class="form-check-label" for="song_class">
+          I want you to add this to the class playlist (it's <strong>clean</strong> and you won't hate it)
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="song_type" value="personal" id="song_personal"
+               required>
+        <label class="form-check-label" for="song_personal">
+          I just want you to check out this song
+        </label>
+      </div>
+      <div class="mt-3">
+        <button class="btn btn-grad">Submit</button>
+        <a class="btn btn-outline-danger" href="{% url 'misc_action' %}?action=dismissmusic">No Song; Hide Box</a>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="card mb-2">
+  <div class="card-body">
+    <h2 class="card-title">Info Needed</h2>
+    <form method="post" action="{% url 'misc_action' %}">
+      {% csrf_token %}
+      <input class="d-none" name="action" value="setbday">
+      <div>
+        <label for="bday">When is your birthday?</label>
+        <br>
+        <input type="date" id="bday" name="bday">
+      </div>
+      <button class="btn btn-grad mt-3">Submit</button>
+    </form>
+  </div>
+</div>

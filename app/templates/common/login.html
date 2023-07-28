@@ -1,0 +1,54 @@
+{% extends 'common/base.html' %}
+
+{% block script %}
+  <script src="https://accounts.google.com/gsi/client" async></script>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Students</h2>
+          <div class="text-center">
+            <div id="g_id_onload"
+                 data-client_id="966461905987-nsfekbdp870jo9sarfkn078hle1hbj0u.apps.googleusercontent.com"
+                 data-context="signin"
+                 data-ux_mode="popup"
+                 data-login_uri="{{ request.scheme }}://{{ request.get_host }}/auth/google"
+                 data-auto_prompt="false">
+            </div>
+
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-shape="rectangular"
+                 data-theme="outline"
+                 data-text="signin_with"
+                 data-size="large"
+                 data-logo_alignment="left">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Teachers</h2>
+          <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-2">
+              <label for="username">Username</label>
+              <input class="form-control" type="text" name="username" id="username">
+            </div>
+            <div class="mb-2">
+              <label for="password">Password</label>
+              <input class="form-control" type="password" name="password" id="password">
+            </div>
+            <button class="btn btn-grad">Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
