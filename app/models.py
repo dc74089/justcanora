@@ -1,7 +1,6 @@
 import re
 
 from django.contrib.auth.models import User
-
 from django.db import models
 
 
@@ -55,13 +54,21 @@ class Course(models.Model):
         ("other", "Other")
     )
 
+    academic_years = (
+        ("23/24", "2023-24"),
+    )
+
     course_id = models.IntegerField(null=False, blank=False)
     section_id = models.IntegerField(null=False, blank=False)
     period = models.IntegerField(null=True, blank=True)
     semester = models.IntegerField(null=True, blank=True)
+    year = models.CharField(max_length=100, choices=academic_years, default="23/24")
     name = models.TextField()
     students = models.ManyToManyField("Student", related_name="courses", null=True, blank=True)
     type = models.CharField(max_length=100, choices=course_types, default="other")
+
+    def students_sorted(self):
+        return self.students.all().order_by('fname')
 
     def __str__(self):
         return self.name
@@ -81,4 +88,3 @@ class MusicSuggestion(models.Model):
             return f"{str(self.student)} suggested {self.song} by {self.artist}{'*' if not self.investigated else ''}"
         else:
             return f"{str(self.student)} suggested {self.song}{'*' if not self.investigated else ''}"
-

@@ -7,7 +7,7 @@ def index(request):
     if request.user.is_authenticated:
         cards = allcards(request)
 
-        return render(request, "common/index.html", {
+        return render(request, "app/index.html", {
             'cards': cards
         })
 
@@ -15,7 +15,7 @@ def index(request):
 
 
 def dev(request):
-    return render(request, 'common/error.html', {
+    return render(request, 'app/error.html', {
         "short": "I can't find that",
         "message": "Here's some text"
     })

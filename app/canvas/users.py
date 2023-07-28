@@ -41,7 +41,7 @@ def get_all_sections_from_course(course_id):
     for sec in sections:
         c, created = Course.objects.get_or_create(
             course_id=course.id,
-            section_id=sec.id
+            section_id=sec.id,
         )
 
         c.name = sec.name

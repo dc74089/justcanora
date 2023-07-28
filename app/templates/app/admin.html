@@ -1,0 +1,28 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <div class="row">
+    {% comment %}  	Feature Flags   {% endcomment %}
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Feature Flags</h2>
+        </div>
+      </div>
+    </div>
+    {% comment %}   Admin Pages   {% endcomment %}
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Admin Pages</h2>
+          <table class="table table-bordered table-hover">
+            <tr>
+              <td class="align-middle text-center">View all rosters</td>
+              <td><a class="btn btn-grad  w-100" href="{% url 'rosters' %}">Rosters</a></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -13,7 +13,7 @@ from app.models import Student
 
 def login(request):
     if request.method == 'GET':
-        return render(request, 'common/login.html')
+        return render(request, 'app/login.html')
     else:
         data = request.POST
         if 'username' in data and 'password' in data:
@@ -26,7 +26,7 @@ def login(request):
 
                 return redirect('index')
             else:
-                return render(request, 'common/login.html', {
+                return render(request, 'app/login.html', {
                     'next': data['next'],
                     'error': "Incorrect username or password."
                 })
@@ -53,7 +53,7 @@ def google(request):
         email = idinfo['email']
 
         if 'hd' not in idinfo or idinfo['hd'] != 'lhprep.org':
-            return render(request, 'common/error.html', {
+            return render(request, 'app/error.html', {
                 "short": "This site is available for LHPS students only",
                 "message": f"Please make sure you select your @lhprep.org email when you log in.\n\nYou tried to sign in as {email}."
             })
@@ -81,7 +81,7 @@ def google(request):
                 do_login(request, u, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('index')
             else:
-                return render(request, 'common/error.html', {
+                return render(request, 'app/error.html', {
                     "short": "I don't know of a student with that email",
                     "message": f"We can't find a student with that email address. Please show this screen to Dominic and it'll be taken care of.\n\n{pprint.pformat(idinfo)}"
                 })

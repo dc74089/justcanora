@@ -1,0 +1,24 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  {% for courses in semesters %}
+    <h1 class="linearound">Semester {{ forloop.counter }}</h1>
+    <div class="row">
+      {% for course in courses %}
+        <div class="col-12 col-md-6 col-lg-4">
+          <table class="table table-striped table-hover">
+            <tr>
+              <th>{{ course.name }}</th>
+            </tr>
+
+            {% for student in course.students_sorted %}
+              <tr>
+                <td><a href="{% url 'admin:app_student_change' student.id %}">{{ student.full_name }}</a></td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% endblock %}

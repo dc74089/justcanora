@@ -12,4 +12,4 @@ def suggestion(request):
     msq = MusicSuggestion.objects.filter(student=request.user.student).order_by('-added')
 
     if not msq.exists() or timezone.now() - msq.first().added > timezone.timedelta(days=2, hours=12):
-        return render_to_string('common/cards/music.html', request=request)
+        return render_to_string('app/cards/music.html', request=request)
