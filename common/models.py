@@ -5,14 +5,9 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-class StudentUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    student = models.OneToOneField('Student', on_delete=models.CASCADE)
-
-
 class Student(models.Model):
     id = models.PositiveBigIntegerField(null=False, blank=False, primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='student')
     fname = models.TextField(null=False, blank=False)
     lname = models.TextField(null=False, blank=False)
     grade = models.IntegerField(null=True, blank=True)

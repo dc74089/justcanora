@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from google.auth.transport import requests
 from google.oauth2 import id_token
 
-from common.models import Student, StudentUser
+from common.models import Student
 
 
 def login(request):
@@ -75,8 +75,8 @@ def google(request):
                 u = User(username=email, email=email)
                 u.save()
 
-                su = StudentUser(student=stu, user=u)
-                su.save()
+                stu.user = u
+                stu.save()
 
                 do_login(request, u, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('index')
@@ -85,7 +85,6 @@ def google(request):
                     "short": "I don't know of a student with that email",
                     "message": f"We can't find a student with that email address. Please show this screen to Dominic and it'll be taken care of.\n\n{pprint.pformat(idinfo)}"
                 })
-
 
     except ValueError as e:
         # Invalid token

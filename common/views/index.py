@@ -1,8 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from common.cardproviders.allcards import allcards
 
 
 def index(request):
-    return render(request, "common/index.html")
+    if request.user.is_authenticated:
+        cards = allcards(request)
+
+        return render(request, "common/index.html", {
+            'cards': cards
+        })
+
+    return redirect('login')
 
 
 def dev(request):
