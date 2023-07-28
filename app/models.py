@@ -13,7 +13,6 @@ class Student(models.Model):
     grade = models.IntegerField(null=True, blank=True)
     bday = models.DateField(null=True, blank=True)
     email = models.TextField(null=True, blank=True)
-    canvas_id = models.IntegerField(null=True, blank=True)
     should_show_entire_last_name = models.BooleanField(default=False)
 
     def full_name(self):
@@ -49,8 +48,11 @@ class Course(models.Model):
         ("other", "Other")
     )
 
-    canvas_id = models.IntegerField(null=False, blank=False)
-    name = models.TextField(null=True, blank=True)
+    course_id = models.IntegerField(null=False, blank=False)
+    section_id = models.IntegerField(null=False, blank=False)
+    period = models.IntegerField(null=True, blank=True)
+    semester = models.IntegerField(null=True, blank=True)
+    name = models.TextField()
     students = models.ManyToManyField("Student", related_name="courses", null=True, blank=True)
     type = models.CharField(max_length=100, choices=course_types, default="other")
 
