@@ -2,6 +2,9 @@
 
 {% block content %}
   <div class="row">
+    <div class="col-12 mb-4 mt-3">
+      <h1 class="text-center linearound">Welcome, {{ request.user.student.fname }}</h1>
+    </div>
     {% for card in cards %}
       <div class="col-12 col-md-6">
         {{ card | safe }}

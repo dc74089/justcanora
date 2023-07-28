@@ -44,14 +44,14 @@ class Course(models.Model):
         ("advisory", "Advisory"),
         ("CS1", "CS 1"),
         ("CS2", "CS 2"),
-        ("speech", "Speech"),
+        ("speech", "Public Speaking"),
         ("team", "Robotics Team"),
         ("other", "Other")
     )
 
     canvas_id = models.IntegerField(null=False, blank=False)
     name = models.TextField(null=True, blank=True)
-    students = models.ManyToManyField("Student", related_name="courses")
+    students = models.ManyToManyField("Student", related_name="courses", null=True, blank=True)
     type = models.CharField(max_length=100, choices=course_types, default="other")
 
     def __str__(self):

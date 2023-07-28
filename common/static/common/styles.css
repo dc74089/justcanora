@@ -1,3 +1,4 @@
+/* Gradients */
 .animgrad {
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
     background-size: 400% 400%;
@@ -6,9 +7,12 @@
     color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
 }
 
-.gradtext {
+.bigtext {
     font-weight: bolder;
     font-size: 30vh;
+}
+
+.errorgradtext {
     background-image: linear-gradient(-45deg, #ff5c5c, #f86f24, #d92121, #ff8319);
     --bs-text-opacity: 1;
     -webkit-background-clip: text;
@@ -25,4 +29,26 @@
     100% {
         background-position: 0% 50%;
     }
+}
+
+/* Line Around */
+.linearound:after,
+.linearound:before {
+    content: "";
+    flex: 1 1;
+    border-bottom: 1px solid;
+    margin: auto;
+}
+
+.linearound {
+    display: flex;
+    flex-direction: row;
+}
+
+.linearound:before {
+    margin-right: 10px
+}
+
+.linearound:after {
+    margin-left: 10px
 }

@@ -1,36 +1,10 @@
 {% extends 'common/base.html' %}
 
-{% block style %}
-  <style>
-      .linearound:after,
-      .linearound:before {
-          content: "";
-          flex: 1 1;
-          border-bottom: 1px solid;
-          margin: auto;
-      }
-
-      .linearound {
-          display: flex;
-          flex-direction: row;
-      }
-
-      .linearound:before {
-          margin-right: 10px
-      }
-
-      .linearound:after {
-          margin-left: 10px
-      }
-  </style>
-  }
-{% endblock %}
-
 {% block content %}
   <div class="row">
     <div class="col-12">
       <div class="text-center">
-        <h1 class="gradtext">Yikes.</h1>
+        <h1 class="errorgradtext bigtext">Yikes.</h1>
         {% if short %}
           <h5 class="linearound">{{ short }}</h5>
         {% else %}
