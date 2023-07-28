@@ -10,6 +10,7 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='student')
     fname = models.TextField(null=False, blank=False)
     lname = models.TextField(null=False, blank=False)
+    picture = models.ImageField(null=True, blank=True, upload_to='propics')
     grade = models.IntegerField(null=True, blank=True)
     bday = models.DateField(null=True, blank=True)
     email = models.TextField(null=True, blank=True)
@@ -36,6 +37,12 @@ class Student(models.Model):
 
     def __bool__(self):
         return self.courses.exists()
+
+
+class PicRequest(models.Model):
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    picture = models.ImageField(upload_to='requested')
+    approved = models.BooleanField(null=True, blank=True)
 
 
 class Course(models.Model):
