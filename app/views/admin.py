@@ -1,13 +1,35 @@
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
-from app.models import Course
+from app.models import Course, FeatureFlag
 
 
 @staff_member_required
 def admin(request):
-    return render(request, 'app/admin/admin.html')
+    flags = FeatureFlag.objects.all()
+
+    return render(request, 'app/admin/admin.html', {
+        "flags": flags
+    })
+
+
+@csrf_exempt
+@staff_member_required
+def set_flag(request):
+    if request.method != 'POST': return HttpResponseBadRequest()
+
+    data = request.POST
+
+    if 'flag' not in data or 'status' not in data: return HttpResponseBadRequest()
+
+    flag = FeatureFlag.objects.get(id=data['flag'])
+    flag.enabled = data['status'] == "true"
+    flag.save()
+
+    return HttpResponse(status=200)
 
 
 @staff_member_required

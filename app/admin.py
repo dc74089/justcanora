@@ -6,3 +6,4 @@ from app.models import *
 admin.site.register(Student)
 admin.site.register(Course)
 admin.site.register(MusicSuggestion)
+admin.site.register(FeatureFlag)

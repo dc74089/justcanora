@@ -25,6 +25,7 @@ def import_course(dj_course: Course):
         s.save()
         dj_course.students.add(s)
 
+    dj_course.students.add(Student.objects.get(id=102798))
     dj_course.save()
 
 

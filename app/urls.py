@@ -10,6 +10,7 @@ urlpatterns = [
     path('auth/google', auth.google, name='google_callback'),
 
     path('admin', admin.admin, name='admin'),
+    path('admin/setflag', admin.set_flag, name='set_flag'),
     path('admin/rosters', admin.rosters, name='rosters'),
 
     path('do', misc.misc_action, name='misc_action'),

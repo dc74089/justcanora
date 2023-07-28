@@ -15,6 +15,22 @@
     color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
 }
 
+.btn-grad-positive {
+    background: linear-gradient(-45deg, #3172ff, #23d5ab, #23a6d5, #15cc39);
+    background-size: 400% 400%;
+    animation: gradient 30s ease infinite;
+    --bs-text-opacity: 1;
+    color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
+}
+
+.btn-grad-negative {
+    background: linear-gradient(-45deg, #ff5c5c, #f86f24, #d92121, #ff8319);
+    background-size: 400% 400%;
+    animation: gradient 30s ease infinite;
+    --bs-text-opacity: 1;
+    color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
+}
+
 .bigtext {
     font-weight: bolder;
     font-size: 30vh;

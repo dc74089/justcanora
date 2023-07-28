@@ -1,5 +1,22 @@
 {% extends 'app/base.html' %}
 
+{% block script %}
+  <script>
+      function flag(flagid, status) {
+          $.post(
+              "{% url 'set_flag' %}",
+              {
+                  "flag": flagid,
+                  "status": status
+              }
+          ).then(
+              function () {
+                  location.reload()
+              })
+      }
+  </script>
+{% endblock %}
+
 {% block content %}
   <div class="row">
     {% comment %}  	Feature Flags   {% endcomment %}
@@ -7,6 +24,26 @@
       <div class="card">
         <div class="card-body">
           <h2 class="card-title">Feature Flags</h2>
+          <table class="table table-hover">
+            <tr>
+              <th>Flag</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+            {% for flag in flags %}
+              <tr>
+                <td class="align-middle">{{ flag }}</td>
+                <td class="align-middle">{% if flag %}✔️{% else %}❌{% endif %}</td>
+                <td>
+                  {% if flag %}
+                    <a href="#" onclick="flag('{{ flag.id }}', 'false')" class="btn btn-grad-negative w-100">Disable</a>
+                  {% else %}
+                    <a href="#" onclick="flag('{{ flag.id }}', 'true')" class="btn btn-grad-positive w-100">Enable</a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
         </div>
       </div>
     </div>
