@@ -22,8 +22,6 @@ class Student(models.Model):
         return f"{self.fname} {self.last_initial()}"
 
     def last_initial(self):
-        if self.grade > 12: return self.lname
-
         if self.should_show_entire_last_name:
             return self.lname
 

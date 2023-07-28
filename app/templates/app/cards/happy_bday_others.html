@@ -1,0 +1,12 @@
+<div class="col-12 col-md-6">
+  <div class="card">
+    <div class="card-body">
+      <h2 class="card-title">Happy Birthday To:</h2>
+      <ul>
+        {% for student in students %}
+          <li>{{ student.name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
