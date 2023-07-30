@@ -4,6 +4,7 @@
   <script>
       let searchBar;
       let allBtn;
+      let resultsContainer;
       let data;
 
       function work(divID, data) {
@@ -26,14 +27,18 @@
       function search() {
           var q = searchBar.val()
           $.get("{% url 'spotify_search' %}?q=" + encodeURIComponent(q)).then(function (data) {
-              console.log(data)
-              // TODO: Build table
+              resultsContainer.html(data)
           })
+      }
+
+      function select(id) {
+
       }
 
       $(function () {
           searchBar = $("#search")
           allBtn = $(".tab-content").find(".btn")
+          resultsContainer = $("#results")
       })
   </script>
 {% endblock %}
@@ -88,6 +93,9 @@
       <div class="input-group">
         <input class="form-control" id="search">
         <button class="btn btn-outline-primary" type="button" onclick="search()">Search</button>
+      </div>
+      <div class="mt-2" id="results">
+
       </div>
     </div>
   </div>

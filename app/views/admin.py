@@ -51,16 +51,3 @@ def rosters(request):
     })
 
 
-def music_queue(request):
-    if spotify.needs_login(request):
-        request.session['next'] = 'music_queue'
-        request.session.save()
-
-        return redirect(spotify.get_login_url(request))
-
-    return render(request, 'app/admin/music_queue.html', {
-        "courses": Course.objects.all().order_by('semester', 'period'),
-        "suggestions": {
-            course.id: MusicSuggestion.objects.filter(student__courses=course) for course in Course.objects.all()
-        }
-    })

@@ -1,7 +1,6 @@
 from django.urls import path
 
-from .spotify import search as spotify_search
-from .views import index, auth, misc, admin
+from .views import index, auth, misc, admin, music
 
 urlpatterns = [
     path('', index.index, name='index'),
@@ -14,8 +13,8 @@ urlpatterns = [
     path('admin', admin.admin, name='admin'),
     path('admin/setflag', admin.set_flag, name='set_flag'),
     path('admin/rosters', admin.rosters, name='rosters'),
-    path('admin/music/queue', admin.music_queue, name='music_queue'),
-    path('admin/music/search', spotify_search.search, name='spotify_search'),
+    path('admin/music/queue', music.music_queue, name='music_queue'),
+    path('admin/music/search', music.search_table, name='spotify_search'),
 
     path('do', misc.misc_action, name='misc_action'),
     path('dev', index.dev, name='dev'),
