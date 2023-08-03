@@ -17,6 +17,8 @@ urlpatterns = [
     path('admin/music/search', music.search_table, name='spotify_search'),
     path('admin/music/add', music.add_song, name='spotify_add'),
 
+    path('music/nowplaying', music.get_now_playing, name='now_playing'),
+
     path('do', misc.misc_action, name='misc_action'),
     path('dev', index.dev, name='dev'),
 ]

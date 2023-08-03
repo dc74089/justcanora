@@ -17,11 +17,11 @@ def index(request):
 
 
 def dev(request):
-    if spotify.needs_login(request):
+    if spotify.session_needs_login(request):
         request.session['next'] = 'dev'
         request.session.save()
 
-        return redirect(spotify.get_login_url(request))
+        return redirect(spotify.get_session_login_url(request))
     else:
         playlists.create_playlist(request, "Test Playlist")
         return HttpResponse(status=200)

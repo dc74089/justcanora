@@ -4,17 +4,29 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
 from app.models import Course, MusicSuggestion
-from app.spotify import spotify, playlists
+from app.spotify import spotify, playlists, nowplaying
 from app.spotify.search import search
+
+
+def get_now_playing(request):
+    if not nowplaying.now_playing_available(request):
+        return HttpResponse("There was a problem")
+
+    now_playing = nowplaying.get_now_playing(request)
+
+    if not now_playing or not now_playing['item']:
+        return HttpResponse("Nothing is playing")
+
+    return HttpResponse(f"Now Playing: <b>{now_playing['item']['name']}</b> by <b>{now_playing['item']['artists'][0]['name']}</b>")
 
 
 @staff_member_required
 def music_queue(request):
-    if spotify.needs_login(request):
+    if spotify.session_needs_login(request):
         request.session['next'] = 'music_queue'
         request.session.save()
 
-        return redirect(spotify.get_login_url(request))
+        return redirect(spotify.get_session_login_url(request))
 
     return render(request, 'app/admin/music_queue.html', {
         "courses": Course.objects.all().order_by('semester', 'period'),

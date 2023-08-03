@@ -7,10 +7,20 @@
 
   <link rel="stylesheet" href="{% static 'common/styles.css' %}">
   <link rel="stylesheet" href="{% static 'common/bootstrap/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'common/bootstrap-icons/font/bootstrap-icons.min.css' %}">
   <script src="{% static 'common/bootstrap/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'common/jquery/jquery-3.7.0.min.js' %}"></script>
 
   <title>{% block title %}Dominic's Class{% endblock %}</title>
+
+  <script>
+      function refresh_nowplaying() {
+          $.get("{% url 'now_playing' %}").then(function (response) {
+              $("#nowplaying").html(response)
+          })
+
+      }
+  </script>
 
   {% block script %}{% endblock %}
   {% block style %}{% endblock %}
@@ -50,6 +60,20 @@
 <main class="container" style="margin-top: 68px;">
   {% block content %}{% endblock %}
   <div style="height: 10vh"></div>
+
+  {% if now_playing_available %}
+    <div class="position-fixed bottom-0 end-0 rounded-circle m-5">
+      <button type="button" class="btn btn-grad btn-lg btn-circle hide-toggle" data-bs-toggle="dropdown"
+              aria-expanded="false" aria-haspopup="true" onclick="refresh_nowplaying()">
+        <i class="bi bi-music-note-beamed"></i>
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="dropdown-item" id="nowplaying" href="#">Loading...</a>
+        </li>
+      </ul>
+    </div>
+  {% endif %}
 </main>
 </body>
 </html>
