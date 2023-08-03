@@ -33,7 +33,7 @@
 
 .bigtext {
     font-weight: bolder;
-    font-size: 30vh;
+    font-size: min(30vh, 30vw);
 }
 
 .errorgradtext {

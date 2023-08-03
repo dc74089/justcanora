@@ -86,6 +86,7 @@ class Course(models.Model):
     name = models.TextField()
     students = models.ManyToManyField("Student", related_name="courses", null=True, blank=True)
     type = models.CharField(max_length=100, choices=course_types, default="other")
+    playlist_id = models.CharField(max_length=100, null=True, blank=True)
 
     def students_sorted(self):
         return self.students.all().order_by('fname')
@@ -94,7 +95,12 @@ class Course(models.Model):
         return f"S{self.semester}P{self.period}"
 
     def music_suggestions(self):
-        return MusicSuggestion.objects.filter(student__courses=self)
+        return MusicSuggestion.objects.filter(
+            student__courses=self,
+            investigated=False,
+            for_playlist=True,
+            is_null=False
+        )
 
     def __str__(self):
         return self.name
@@ -106,6 +112,7 @@ class MusicSuggestion(models.Model):
     student = models.ForeignKey("Student", on_delete=models.CASCADE)
     for_playlist = models.BooleanField()
     investigated = models.BooleanField(default=False)
+    spotify_uri = models.CharField(max_length=100, null=True, blank=True)
     added = models.DateTimeField(auto_now_add=True)
     is_null = models.BooleanField(default=False, null=False, blank=False)
 

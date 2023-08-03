@@ -7,11 +7,11 @@
       let resultsContainer;
       let data;
 
-      function work(divID, data) {
+      function work(divID, data_in) {
           var tr = $("body").find("#" + divID);
           var btn = tr.find(".btn");
 
-          this.data = data;
+          data = data_in;
 
           allBtn.removeClass("btn-grad");
           allBtn.addClass("btn-grad-positive");
@@ -32,7 +32,18 @@
       }
 
       function select(id) {
+          console.log(data);
+          console.log(id)
 
+          $.post("{% url 'spotify_add' %}", {
+              "suggestion": data.sugid,
+              "song": id
+          }).then(function (response) {
+              $("body").find(".sug-" + data.sugid).remove();
+              $("#results").html("");
+              searchBar.val("");
+              data = {}
+          })
       }
 
       $(function () {
@@ -70,7 +81,7 @@
               </tr>
 
               {% for sug in course.music_suggestions %}
-                <tr id="sug-{{ course.id }}-{{ sug.id }}">
+                <tr id="sug-{{ course.id }}-{{ sug.id }}" class="sug-{{ sug.id }}">
                   <td class="align-middle">{{ sug.student.name }}</td>
                   <td class="align-middle">{{ sug.song }}</td>
                   <td class="align-middle">{{ sug.artist }}</td>

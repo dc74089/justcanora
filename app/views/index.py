@@ -1,7 +1,8 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from app.cardproviders.allcards import allcards
-from app.spotify import spotify
+from app.spotify import spotify, playlists
 
 
 def index(request):
@@ -22,4 +23,5 @@ def dev(request):
 
         return redirect(spotify.get_login_url(request))
     else:
-        print(spotify.get_spotify(request).current_user_playlists())
+        playlists.create_playlist(request, "Test Playlist")
+        return HttpResponse(status=200)
