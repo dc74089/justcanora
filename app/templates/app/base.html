@@ -22,6 +22,12 @@
           })
 
       }
+
+      $(function () {
+          $("#fab").on('show.bs.dropdown', function (evt) {
+              refresh_nowplaying()
+          })
+      })
   </script>
 
   {% block script %}{% endblock %}
@@ -64,9 +70,9 @@
   <div style="height: 10vh"></div>
 
   {% if now_playing_available %}
-    <div class="position-fixed bottom-0 end-0 m-2 m-md-4 m-lg-5">
+    <div class="position-fixed bottom-0 end-0 m-2 m-md-4 m-lg-5" id="fab">
       <button type="button" class="btn btn-grad btn-lg btn-circle hide-toggle text-center" data-bs-toggle="dropdown"
-              aria-expanded="false" aria-haspopup="true" onclick="refresh_nowplaying()">
+              aria-expanded="false" aria-haspopup="true">
         <i class="bi bi-music-note-beamed"></i>
       </button>
       <ul class="dropdown-menu">
