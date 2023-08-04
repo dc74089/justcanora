@@ -95,8 +95,8 @@
 
 /* Buttons */
 .btn-circle {
-    padding: 13px 18px !important;
+    padding: 18px 18px !important;
     border-radius: 60px !important;
-    font-size: 15px !important;
+    font-size: 1.5em !important;
     text-align: center !important;
 }
