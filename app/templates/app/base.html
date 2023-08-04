@@ -15,6 +15,8 @@
 
   <script>
       function refresh_nowplaying() {
+          $("#nowplaying").html("Loading...")
+
           $.get("{% url 'now_playing' %}").then(function (response) {
               $("#nowplaying").html(response)
           })
