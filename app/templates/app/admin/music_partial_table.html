@@ -8,10 +8,10 @@
 
   {% for song in songs %}
     <tr>
-      <td class="align-middle"><img style="height: 50px" src="{{ song.album.images.0.url }}"></td>
-      <td class="align-middle">{{ song.name }}</td>
-      <td class="align-middle">{{ song.artists.0.name }}</td>
-      <td class="align-middle"><a href="#" class="btn btn-grad" onclick="select('{{ song.uri }}')">Select</a></td>
+      <td><img style="height: 50px" src="{{ song.album.images.0.url }}"></td>
+      <td>{{ song.name }}</td>
+      <td>{{ song.artists.0.name }}</td>
+      <td><a href="#" class="btn btn-grad" onclick="select('{{ song.uri }}')">Select</a></td>
     </tr>
   {% endfor %}
 </table>

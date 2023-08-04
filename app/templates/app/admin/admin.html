@@ -19,7 +19,7 @@
 
 {% block content %}
   <div class="row">
-    {% comment %}  	Feature Flags   {% endcomment %}
+    {#  	Feature Flags   #}
     <div class="col-12 col-md-6">
       <div class="card">
         <div class="card-body">
@@ -32,8 +32,8 @@
             </tr>
             {% for flag in flags %}
               <tr>
-                <td class="align-middle">{{ flag }}</td>
-                <td class="align-middle">{% if flag %}✔️{% else %}❌{% endif %}</td>
+                <td>{{ flag }}</td>
+                <td>{% if flag %}✔️{% else %}❌{% endif %}</td>
                 <td>
                   {% if flag %}
                     <a href="#" onclick="flag('{{ flag.id }}', 'false')" class="btn btn-grad-negative w-100">Disable</a>
@@ -47,19 +47,23 @@
         </div>
       </div>
     </div>
-    {% comment %}   Admin Pages   {% endcomment %}
+    {#   Admin Pages   #}
     <div class="col-12 col-md-6">
       <div class="card">
         <div class="card-body">
           <h2 class="card-title">Admin Pages</h2>
           <table class="table table-bordered table-hover">
             <tr>
-              <td class="align-middle text-center">Who do I teach again?</td>
+              <td class="text-center">Who do I teach again?</td>
               <td><a class="btn btn-grad  w-100" href="{% url 'rosters' %}">Rosters</a></td>
             </tr>
             <tr>
-              <td class="align-middle text-center">Chew through the queue.</td>
+              <td class="text-center">Chew through the queue.</td>
               <td><a class="btn btn-grad  w-100" href="{% url 'music_queue' %}">Music Queue</a></td>
+            </tr>
+            <tr>
+              <td class="text-center">SICK of that song.</td>
+              <td><a class="btn btn-grad  w-100" href="{% url 'music_edit_playlist' %}">Remove Music</a></td>
             </tr>
           </table>
         </div>

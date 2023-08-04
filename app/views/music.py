@@ -40,6 +40,16 @@ def music_queue(request):
     })
 
 
+def edit_playlist(request):
+    if spotify.needs_login(request):
+        request.session['next'] = 'music_edit_playlist'
+        request.session.save()
+
+        return redirect(spotify.get_login_url(request))
+
+    return render(request, "app/admin/music_edit_playlist.html")
+
+
 @staff_member_required
 def search_table(request):
     q = request.GET.get('q')

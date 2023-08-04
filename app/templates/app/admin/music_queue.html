@@ -82,9 +82,9 @@
 
               {% for sug in course.music_suggestions %}
                 <tr id="sug-{{ course.id }}-{{ sug.id }}" class="sug-{{ sug.id }}">
-                  <td class="align-middle">{{ sug.student.name }}</td>
-                  <td class="align-middle">{{ sug.song }}</td>
-                  <td class="align-middle">{{ sug.artist }}</td>
+                  <td>{{ sug.student.name }}</td>
+                  <td>{{ sug.song }}</td>
+                  <td>{{ sug.artist }}</td>
                   <td>
                     <a class="btn btn-grad-positive" href="#"
                        onclick="work('sug-{{ course.id }}-{{ sug.id }}', {
