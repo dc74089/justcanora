@@ -28,7 +28,7 @@ def login(request):
                 return redirect('index')
             else:
                 return render(request, 'app/login.html', {
-                    'next': data['next'],
+                    'next': data.get('next', ''),
                     'error': "Incorrect username or password."
                 })
 
