@@ -84,7 +84,7 @@ class Course(models.Model):
     semester = models.IntegerField(null=True, blank=True)
     year = models.CharField(max_length=100, choices=academic_years, default="23/24")
     name = models.TextField()
-    students = models.ManyToManyField("Student", related_name="courses", null=True, blank=True)
+    students = models.ManyToManyField("Student", related_name="courses")
     type = models.CharField(max_length=100, choices=course_types, default="other")
     playlist_id = models.CharField(max_length=100, null=True, blank=True)
 
