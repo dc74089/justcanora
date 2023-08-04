@@ -25,8 +25,13 @@ def misc_action(request):
                 artist=data['song_artist'],
                 for_playlist=data['song_type'] == 'class'
             )
-
             ms.save()
+        elif data['action'] == 'news':
+            news = News(
+                student=request.user.student,
+                news=data['news'],
+            )
+            news.save()
 
         return redirect('index')
     elif request.method == 'GET':

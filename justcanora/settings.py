@@ -23,7 +23,7 @@ DEBUG = not os.getenv("PROD", False)
 DOCKER = os.getenv("DOCKER", False)
 
 CURRENT_ACADEMIC_YEAR = "23/24"
-NEWS_DAY = 4
+NEWS_DAYS = [2, 3]
 
 
 # Quick-start development settings - unsuitable for production
@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'app',
 ]
 
@@ -103,6 +104,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'justcanora.wsgi.application'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
+
+CRONJOBS = [
+    ('30 23 * * *', 'app.tasks.cleanup.cleanup_null')
+]
 
 
 # Database
