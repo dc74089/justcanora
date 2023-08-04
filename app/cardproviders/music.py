@@ -6,7 +6,7 @@ from app.spotify import spotify
 
 
 def allcards(request):
-    return [x for x in [suggestion(request), database_login(request)] if x is not None]
+    return [x for x in [suggestion(request), login(request)] if x is not None]
 
 
 def suggestion(request):
@@ -19,9 +19,9 @@ def suggestion(request):
         return render_to_string('app/cards/music.html', request=request)
 
 
-def database_login(request):
+def login(request):
     if request.user.is_authenticated and request.user.is_staff:
-        if spotify.database_needs_login(request):
+        if spotify.needs_login(request):
             return render_to_string('app/cards/music_spotify_db_login.html', request=request, context={
-                "url": spotify.get_database_login_url(request)
+                "url": spotify.get_login_url(request)
             })

@@ -8,7 +8,7 @@ def now_playing_available(request):
     logged_in = request.user.is_authenticated
     flag, _ = FeatureFlag.objects.get_or_create(id="fab_now_playing")
 
-    return logged_in and flag and not spotify.database_needs_login(request)
+    return logged_in and flag and not spotify.needs_login(request)
 
 
 def context_processor(request):

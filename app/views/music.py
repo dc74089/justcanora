@@ -22,11 +22,11 @@ def get_now_playing(request):
 
 @staff_member_required
 def music_queue(request):
-    if spotify.session_needs_login(request):
+    if spotify.needs_login(request):
         request.session['next'] = 'music_queue'
         request.session.save()
 
-        return redirect(spotify.get_session_login_url(request))
+        return redirect(spotify.get_login_url(request))
 
     return render(request, 'app/admin/music_queue.html', {
         "courses": Course.objects.all().order_by('semester', 'period'),

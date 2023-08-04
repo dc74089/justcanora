@@ -98,11 +98,7 @@ def spotify_response(request):
     if 'error' in request.GET:
         return render(request, 'app/error.html')
 
-    if request.session.get("spotify_auth") == "database":
-        print("Setting token for DB")
-        spotify.get_database_auth_manager(request).get_access_token(request.GET.get('code'))
-    else:
-        print("Setting token for Session")
-        spotify.get_session_auth_manager(request).get_access_token(request.GET.get('code'))
+    print("Setting token for DB")
+    spotify.get_auth_manager(request).get_access_token(request.GET.get('code'))
 
     return redirect(request.session.pop('next', 'index'))
