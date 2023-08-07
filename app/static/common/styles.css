@@ -4,6 +4,10 @@ td, th {
     vertical-align: middle !important;
 }
 
+.card {
+    margin-bottom: 12px;
+}
+
 /* Gradients */
 .animgrad {
     background: linear-gradient(-45deg, #3172ff, #23d5ab, #23a6d5, #15cc39);

@@ -1,7 +1,7 @@
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 
-from app.models import MusicSuggestion, News, DataCollectionAnswer
+from app.models import MusicSuggestion, News, DataCollectionAnswer, DataCollectionQuestion, Course
 
 
 def misc_action(request):
@@ -32,6 +32,13 @@ def misc_action(request):
                 news=data['news'],
             )
             news.save()
+        elif data['action'] == 'addquestion':
+            dcq = DataCollectionQuestion(
+                question=data['question']
+            )
+            dcq.save()
+            dcq.courses.set(Course.objects.all())
+            dcq.save()
         elif data['action'] == 'datacollection':
             dca = DataCollectionAnswer(
                 student=request.user.student,

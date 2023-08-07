@@ -1,6 +1,6 @@
 from django.template.loader import render_to_string
 
-from app.models import DataCollectionQuestion, Student
+from app.models import DataCollectionQuestion, Student, FeatureFlag
 
 
 def allcards(request):
@@ -8,8 +8,10 @@ def allcards(request):
 
 
 def dataquestions(request):
-    s: Student = request.user.student
+    flag, _ = FeatureFlag.objects.get_or_create(id="card_data_collection")
+    if not flag: return []
 
+    s: Student = request.user.student
     qq = DataCollectionQuestion.objects.filter(courses__in=s.courses.all(), is_open=True).exclude(answers__student=s)
 
     return [

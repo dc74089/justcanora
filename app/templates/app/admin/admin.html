@@ -69,5 +69,22 @@
         </div>
       </div>
     </div>
+    {#   Questions   #}
+    <div class="col-12 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Add a Question</h2>
+          <form action="{% url 'misc_action' %}" method="post">
+            {% csrf_token %}
+            <input class="d-none" name="action" value="addquestion">
+            <div class="mb-2">
+              <label for="question">Question</label>
+              <input class="form-control" name="question" id="question">
+            </div>
+            <button class="btn btn-grad">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 {% endblock %}
