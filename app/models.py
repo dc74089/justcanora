@@ -134,3 +134,21 @@ class News(models.Model):
 
     def __str__(self):
         return f"{self.student.name()}'s news from {str(self.added.date())}"
+
+
+class DataCollectionQuestion(models.Model):
+    question = models.TextField()
+    courses = models.ManyToManyField('Course')
+    is_open = models.BooleanField(default=True, null=False, blank=False)
+
+    def __str__(self):
+        return self.question
+
+
+class DataCollectionAnswer(models.Model):
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    question = models.ForeignKey('DataCollectionQuestion', on_delete=models.CASCADE, related_name='answers')
+    answer = models.TextField()
+
+    def __str__(self):
+        return f"{self.student} answered {self.question}"

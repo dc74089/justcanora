@@ -7,9 +7,9 @@ def allcards(request):
 
 def grade(request):
     if request.user.student.grade is None:
-        return render_to_string('app/cards/collect_grade.html', request=request)
+        return render_to_string('app/cards/account_set_grade.html', request=request)
 
 
 def bday(request):
     if request.user.student.bday is None:
-        return render_to_string('app/cards/collect_bday.html', request=request)
+        return render_to_string('app/cards/account_set_bday.html', request=request)
