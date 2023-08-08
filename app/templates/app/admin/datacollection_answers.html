@@ -1,0 +1,42 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h2>View Question Answers</h2>
+          <form action="{% url 'datacollection_answers' %}" method="get">
+            <select name="question" class="form-control">
+              {% for q in questions %}
+                <option value="{{ q.id }}">{{ q.question }}</option>
+              {% endfor %}
+            </select>
+            <button class="btn btn-grad mt-2">Go</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% for c, a in answers %}
+      <div class="col-12 col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <a class="small text-primary" data-bs-toggle="collapse" href="#ans-{{ c.id }}" aria-expanded="true">
+              <h3>{{ c }}</h3>
+            </a>
+            <div id="ans-{{ c.id }}" class="collapse show">
+              {% for ans in a %}
+                <div>
+                  <hr>
+                  <h4>{{ ans.student.name }}</h4>
+                  <p>{{ ans.answer }}</p>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

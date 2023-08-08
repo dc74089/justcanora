@@ -12,7 +12,7 @@ def dataquestions(request):
     if not flag: return []
 
     s: Student = request.user.student
-    qq = DataCollectionQuestion.objects.filter(courses__in=s.courses.all(), is_open=True).exclude(answers__student=s)
+    qq = DataCollectionQuestion.objects.filter(courses__in=s.courses.all(), is_open=True).exclude(answers__student=s).distinct()
 
     return [
         render_to_string(
