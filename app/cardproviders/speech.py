@@ -1,6 +1,6 @@
 from django.template.loader import render_to_string
 
-from app.models import Student, FeatureFlag, SpeechRubric
+from app.models import Student, FeatureFlag, SpeechRubric, SpeechRating
 
 
 def allcards(request):
@@ -18,11 +18,14 @@ def peer_eval(request):
         rubric_name = flag.get_config().get("rubric_name")
         rubric = SpeechRubric.objects.get(speech=rubric_name)
 
-    for c in s.courses.all():
-        if c.type == "speech":
-            students = c.students.all().order_by('fname')
+        for c in s.courses.all():
+            if c.type == "speech":
+                students = c.students.all().order_by('fname')
+                rq = list(SpeechRating.objects.filter(rubric=rubric, author=s))
+                exclude = [r.speaker for r in rq]
+                students = [s for s in students if s not in exclude]
 
-    if not students or not rubric: return
+    if not rubric or not students: return
 
     return render_to_string("app/cards/speech_eval.html", {
         "students": students,
