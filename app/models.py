@@ -123,6 +123,37 @@ class MusicSuggestion(models.Model):
             return f"{str(self.student)} suggested {self.song}{'*' if not self.investigated else ''}"
 
 
+class SpeechRubric(models.Model):
+    speech = models.TextField(null=False, blank=False)
+    rating_fields = models.TextField(default="[]")
+    comment_fields = models.TextField(default="[]")
+
+    def get_rating_fields(self):
+        return json.loads(self.rating_fields)
+
+    def get_comment_fields(self):
+        return json.loads(self.comment_fields)
+
+    def __str__(self):
+        return self.speech
+
+
+class SpeechRating(models.Model):
+    author = models.ForeignKey("Student", null=True, on_delete=models.SET_NULL, related_name="given_ratings")
+    speaker = models.ForeignKey("Student", on_delete=models.CASCADE, related_name="received_ratings")
+    rubric = models.ForeignKey("SpeechRubric", on_delete=models.CASCADE)
+    data = models.TextField()
+
+    def set_data(self, data: dict):
+        self.data = json.dumps(data)
+
+    def get_data(self):
+        return json.loads(self.data)
+
+    def __str__(self):
+        return f"{self.author.name()} evaluating {self.speaker.name()} on {self.rubric.speech}"
+
+
 class News(models.Model):
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
     news = models.TextField()

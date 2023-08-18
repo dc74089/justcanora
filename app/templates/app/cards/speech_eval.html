@@ -1,0 +1,38 @@
+<div class="col-12 col-md-6">
+  <div class="card mb-2">
+    <div class="card-body">
+      <h2 class="card-title">Speech Evals</h2>
+    <h4>{{ rubric.speech }}</h4>
+      <form method="post" action="{% url 'misc_action' %}">
+        {% csrf_token %}
+        <input class="d-none" name="action" value="speech_eval">
+        <input class="d-none" name="rubric" value="{{ rubric.id }}">
+
+        <label for="speaker">Speaker</label>
+        <select class="form-control" name="speaker" id="speaker">
+          {% for s in students %}
+            <option value="{{ s.id }}">{{ s.name }}</option>
+          {% endfor %}
+        </select>
+
+        {% for val in rubric.get_rating_fields %}
+          <div class="mt-2">
+            <label for="{{ val.0 }}">{{ val.1 }}</label>
+            <input class="form-control" type="number" min="1" max="5" step="0.5" name="{{ val.0 }}" id="{{ val.0 }}">
+          </div>
+        {% endfor %}
+
+        {% for val in rubric.get_comment_fields %}
+          <div class="mt-2">
+            <label for="{{ val.0 }}">{{ val.1 }}</label>
+            <textarea class="form-control" type="text" step="0.5" name="{{ val.0 }}" id="{{ val.0 }}"></textarea>
+          </div>
+        {% endfor %}
+
+        <div class="mt-3">
+          <button class="btn btn-grad">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

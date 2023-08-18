@@ -1,7 +1,8 @@
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 
-from app.models import MusicSuggestion, News, DataCollectionAnswer, DataCollectionQuestion, Course
+from app.models import MusicSuggestion, News, DataCollectionAnswer, DataCollectionQuestion, Course, Student, \
+    SpeechRating, SpeechRubric
 
 
 def misc_action(request):
@@ -46,6 +47,25 @@ def misc_action(request):
                 answer=data['answer']
             )
             dca.save()
+        elif data['action'] == 'speech_eval':
+            speaker = Student.objects.get(id=data['speaker'])
+            rubric = SpeechRubric.objects.get(id=data['rubric'])
+
+            sr = SpeechRating(
+                speaker=speaker,
+                author=request.user.student,
+                rubric=rubric
+            )
+
+            sr.save()
+
+            ratings = {
+                "rating": {rat[1]: data[rat[0]] for rat in rubric.get_rating_fields()},
+                "comment": {com[1]: data[com[0]] for com in rubric.get_comment_fields()}
+            }
+
+            sr.set_data(ratings)
+            sr.save()
 
         return redirect('index')
     elif request.method == 'GET':
