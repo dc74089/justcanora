@@ -1,7 +1,7 @@
 <div class="col-12 col-md-6">
   <div class="card mb-2">
     <div class="card-body">
-      <h2 class="card-title">Speech Evals</h2>
+      <h2 class="card-title">Speech Evaluation</h2>
     <h4>{{ rubric.speech }}</h4>
       <form method="post" action="{% url 'misc_action' %}">
         {% csrf_token %}
@@ -9,7 +9,8 @@
         <input class="d-none" name="rubric" value="{{ rubric.id }}">
 
         <label for="speaker">Speaker</label>
-        <select class="form-control" name="speaker" id="speaker">
+        <select class="form-select" name="speaker" id="speaker" required>
+          <option value="">** Choose a Speaker **</option>
           {% for s in students %}
             <option value="{{ s.id }}">{{ s.name }}</option>
           {% endfor %}
@@ -18,14 +19,16 @@
         {% for val in rubric.get_rating_fields %}
           <div class="mt-2">
             <label for="{{ val.0 }}">{{ val.1 }}</label>
-            <input class="form-control" type="number" min="1" max="5" step="0.5" name="{{ val.0 }}" id="{{ val.0 }}">
+            <input class="form-control" type="number" min="1" max="5" step="0.5" name="{{ val.0 }}" id="{{ val.0 }}"
+                   placeholder="A number between 1 and 5" required>
           </div>
         {% endfor %}
 
         {% for val in rubric.get_comment_fields %}
           <div class="mt-2">
             <label for="{{ val.0 }}">{{ val.1 }}</label>
-            <textarea class="form-control" type="text" step="0.5" name="{{ val.0 }}" id="{{ val.0 }}"></textarea>
+            <textarea class="form-control" type="text" step="0.5" name="{{ val.0 }}" id="{{ val.0 }}"
+                      required></textarea>
           </div>
         {% endfor %}
 
