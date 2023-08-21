@@ -25,7 +25,6 @@ DOCKER = os.getenv("DOCKER", False)
 CURRENT_ACADEMIC_YEAR = "23/24"
 NEWS_DAYS = [2, 3]
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -106,11 +105,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'justcanora.wsgi.application'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
-
 CRONJOBS = [
     ('30 23 * * *', 'app.tasks.cleanup.cleanup_null')
 ]
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -126,6 +123,9 @@ if DOCKER:
             'PORT': '3306',
             'charset': 'utf8mb4',
             'use_unicode': True,
+            'OPTIONS': {
+                'charset': 'utf8mb4'
+            }
         }
     }
 else:
@@ -135,7 +135,6 @@ else:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -154,7 +153,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 LOGGING = {
     'version': 1,
@@ -181,7 +179,6 @@ LOGGING = {
     },
 }
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -194,7 +191,6 @@ USE_I18N = True
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

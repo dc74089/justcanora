@@ -88,8 +88,8 @@
                   <td>
                     <a class="btn btn-grad-positive" href="#"
                        onclick="work('sug-{{ course.id }}-{{ sug.id }}', {
-                           'song': '{{ sug.song }}',
-                           'artist': '{{ sug.artist }}',
+                           'song': '{{ sug.song | escapejs }}',
+                           'artist': '{{ sug.artist | escapejs }}',
                            'sugid': '{{ sug.id }}',
                            })">Work</a>
                   </td>
