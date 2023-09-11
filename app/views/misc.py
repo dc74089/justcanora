@@ -89,5 +89,10 @@ def misc_action(request):
             )
 
             n.save()
+        elif data['action'] == 'approvespeechrating':
+            evl = SpeechRating.objects.get(id=data['id'])
+            evl.available_to_view = True
+
+            evl.save()
 
         return redirect('index')

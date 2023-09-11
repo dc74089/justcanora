@@ -127,6 +127,7 @@ class SpeechRubric(models.Model):
     speech = models.TextField(null=False, blank=False)
     rating_fields = models.TextField(default="[]")
     comment_fields = models.TextField(default="[]")
+    available_to_view = models.BooleanField(default=False)
 
     def get_rating_fields(self):
         return json.loads(self.rating_fields)
@@ -143,12 +144,19 @@ class SpeechRating(models.Model):
     speaker = models.ForeignKey("Student", on_delete=models.CASCADE, related_name="received_ratings")
     rubric = models.ForeignKey("SpeechRubric", on_delete=models.CASCADE)
     data = models.TextField()
+    available_to_view = models.BooleanField(default=False)
 
     def set_data(self, data: dict):
         self.data = json.dumps(data)
 
     def get_data(self):
         return json.loads(self.data)
+
+    def get_ratings(self):
+        return self.get_data().get("rating")
+
+    def get_comments(self):
+        return self.get_data().get("comment")
 
     def __str__(self):
         return f"{self.author.name()} evaluating {self.speaker.name()} on {self.rubric.speech}"

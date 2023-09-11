@@ -4,7 +4,14 @@ from app.models import Student, FeatureFlag, SpeechRubric, SpeechRating
 
 
 def allcards(request):
-    return [x for x in [peer_eval(request)] if x is not None]
+    return [x for x in [view_peer_evals(request), peer_eval(request)] if x is not None]
+
+
+def view_peer_evals(request):
+    s: Student = request.user.student
+
+    if SpeechRubric.objects.filter(available_to_view=True, speechrating__speaker=s):
+        return render_to_string("app/cards/speech_view_evals.html")
 
 
 def peer_eval(request):

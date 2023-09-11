@@ -1,0 +1,49 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+<script>
+function dismiss(id) {
+    $.get("{% url 'misc_action' %}", {
+        "action": "approvespeechrating",
+        "id": id
+    }).then(function () {
+        $("#eval-" + id).remove()
+    })
+}
+</script>
+{% endblock %}
+
+{% block content %}
+  {% for rub, evals in rubrics.items %}
+    <h1>{{ rub }}</h1>
+    {% for eval in evals %}
+      <div class="card" id="eval-{{ eval.id }}">
+        <div class="card-body">
+          <h4><a href="{% url 'admin:app_speechrating_change' eval.id %}">{{ eval.author }}
+            -> {{ eval.speaker }}</a>
+          </h4>
+
+          {% for field, val in eval.get_ratings.items %}
+            <h4>{{ field }}</h4>
+            <div class="progress">
+              <div class="progress-bar btn-grad" role="progressbar"
+                   style="width: {% widthratio val 1 20 %}%"
+                   aria-valuenow="{% widthratio val 1 20 %}"
+                   aria-valuemin="0"
+                   aria-valuemax="100"></div>
+            </div>
+          {% endfor %}
+
+          {% for field, val in eval.get_comments.items %}
+            <h4>{{ field }}</h4>
+            <p>{{ val }}</p>
+          {% endfor %}
+
+          <a class="btn btn-grad-positive" onclick="dismiss({{ eval.id }})">
+            Approve
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  {% endfor %}
+{% endblock %}

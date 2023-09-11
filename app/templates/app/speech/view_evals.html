@@ -1,0 +1,38 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+    {% for rub, data in evals.items %}
+        <h1>{{ rub }}</h1>
+        {% for stat, val in data.ratings.items %}
+            <h3>{{ stat }}</h3>
+            <div class="progress">
+                <div class="progress-bar btn-grad" role="progressbar"
+                     style="width: {{ val }}%"
+                     aria-valuenow="{{ val }}"
+                     aria-valuemin="0"
+                     aria-valuemax="100"></div>
+            </div>
+        {% endfor %}
+        <div class="mt-3"></div>
+        {% for stat, comments in data.comments.items %}
+            <h3>{{ stat }}</h3>
+            <ul>
+                {% for c in comments %}
+                    <li>{{ c }}</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endfor %}
+
+    {% if students and request.user.is_staff %}
+        <div class="card">
+            <div class="card-body">
+                <ul>
+                    {% for student in students %}
+                        <li><a href="{% url 'speech_view_evals' %}?stu={{ student.id }}">{{ student }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
