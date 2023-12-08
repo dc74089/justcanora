@@ -48,7 +48,7 @@ else:
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'dominicsclass.com',
+    'canorasclass.com',
     'mr.canora.us'
 ]
 
