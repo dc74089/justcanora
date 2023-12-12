@@ -17,21 +17,22 @@ def import_course(dj_course: Course):
     dj_course.students.clear()
     dj_course.save()
 
-    for student in sec.students:
-        s, created = Student.objects.get_or_create(
-            id=student['id']
-        )
+    if sec.students:
+        for student in sec.students:
+            s, created = Student.objects.get_or_create(
+                id=student['id']
+            )
 
-        if created or not (s.email and s.fname and s.lname):
-            s.lname = student['sortable_name'].split(',')[0].strip()
-            s.fname = student['sortable_name'].split(',')[-1].strip()
-            s.email = student['login_id']
+            if created or not (s.email and s.fname and s.lname):
+                s.lname = student['sortable_name'].split(',')[0].strip()
+                s.fname = student['sortable_name'].split(',')[-1].strip()
+                s.email = student['login_id']
 
-        s.save()
-        dj_course.students.add(s)
+            s.save()
+            dj_course.students.add(s)
 
-    dj_course.students.add(Student.objects.get(id=102798))
-    dj_course.save()
+        dj_course.students.add(Student.objects.get(id=102798))
+        dj_course.save()
 
 
 def re_import_all_courses():
