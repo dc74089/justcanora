@@ -28,15 +28,12 @@ def music_queue(request):
 
         return redirect(spotify.get_login_url(request))
 
-    return render(request, 'app/admin/music_queue.html', {
-        "courses": Course.objects.all().order_by('semester', 'period'),
-        "suggestions": {
-            course.id: MusicSuggestion.objects.filter(
-                student__courses=course,
-                investigated=False,
-                for_playlist=True
-            ) for course in Course.objects.all()
-        }
+    sugs = MusicSuggestion.objects.filter(investigated=False).exclude(spotify_uri__isnull=True).exclude(spotify_uri="")
+    for sug in sugs:
+        sug.data = sug.get_spotify_data(request)
+
+    return render(request, "app/admin/music_queue.html", {
+        "suggestions": sugs
     })
 
 
@@ -70,9 +67,9 @@ def add_song(request):
 
     data = request.POST
 
-    if 'suggestion' not in data or 'song' not in data: return HttpResponseBadRequest()
+    if 'id' not in data: return HttpResponseBadRequest()
 
-    sug = MusicSuggestion.objects.get(id=int(data['suggestion']))
+    sug = MusicSuggestion.objects.get(id=int(data['id']))
 
     courses = sug.student.courses.all()
 
@@ -82,9 +79,8 @@ def add_song(request):
             c.playlist_id = plid
             c.save()
 
-        playlists.add_song_to_playlist(request, c.playlist_id, data['song'])
+        playlists.add_song_to_playlist(request, c.playlist_id, sug.spotify_uri)
 
-    sug.spotify_uri = data['song']
     sug.investigated = True
     sug.save()
 

@@ -14,3 +14,11 @@ def search(request, q, filter_explicit=True):
         results['tracks']['items'] = [s for s in results['tracks']['items'] if not s['explicit']]
 
     return results
+
+
+def get_by_uri(request, uri):
+    sp = spotify.get_spotify(request)
+
+    print("Getting Track!")
+    
+    return sp.track(uri)

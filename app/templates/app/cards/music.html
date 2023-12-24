@@ -1,11 +1,47 @@
+<script>
+    var spot_uri;
+
+    function music_1() {
+        $.get("{% url 'misc_action' %}", {
+            "action": "music_search",
+            "song_name": $("#song_name").val(),
+            "song_artist": $("#song_artist").val()
+        }).then(function (data) {
+            $("#music-form").hide();
+            $("#music-confirm").show();
+
+            $("#music-song").html(data["name"])
+            $("#music-artist").html(data["artists"][0]["name"])
+            $("#music-art").attr("src", data["album"]["images"][0]["url"])
+
+            spot_uri = data['uri']
+        })
+    }
+
+    function music_2() {
+        let csrf = $("[name='csrfmiddlewaretoken']").val()
+        
+        $.post("{% url 'misc_action' %}", {
+            "action": "music",
+            "song_name": $("#song_name").val(),
+            "song_artist": $("#song_artist").val(),
+            "song_type": $("input[name='song_type']:checked").val(),
+            "uri": spot_uri,
+            "csrfmiddlewaretoken": csrf
+        }).then(function () {
+            location.reload()
+        })
+    }
+</script>
+
 <div class="col-12 col-md-6">
   <div class="card mb-2">
-    <div class="card-body">
+    <div class="card-body" id="music-form">
       <h2 class="mb-0">Give me a Song</h2>
       <h5>(if you want)</h5>
       <hr/>
-      <form action="{% url 'misc_action' %}" method="post">
-        {% csrf_token %}
+      {% csrf_token %}
+      <div>
         <input class="d-none" name="action" value="music">
         <div class="form-group">
           <label for="song_name">Song Name:</label>
@@ -30,11 +66,28 @@
             </label>
           </div>
         </div>
-        <div class="mt-3">
-          <button class="btn btn-grad">Submit</button>
+        <div class="mt-3" id="music-buttons">
+          <button class="btn btn-grad" onclick="music_1()">Submit</button>
           <a class="btn btn-outline-danger" href="{% url 'misc_action' %}?action=dismissmusic">No Song; Hide Box</a>
         </div>
-      </form>
+      </div>
+    </div>
+    <div class="card-body" style="display: none" id="music-confirm">
+      <h2>Does this look right?</h2>
+      <table>
+        <tr>
+          <td>
+            <img style="height: 50px" id="music-art" class="me-2">
+            <b><span id="music-song"></span></b>
+            by
+            <b><span id="music-artist"></span></b>
+          </td>
+        </tr>
+      </table>
+      <div class="mt-3">
+        <button class="btn btn-grad" onclick="music_2()">Yes</button>
+        <a class="btn btn-outline-danger" onclick="location.reload()">No</a>
+      </div>
     </div>
   </div>
 </div>

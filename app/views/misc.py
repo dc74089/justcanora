@@ -1,8 +1,9 @@
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect
 
 from app.models import MusicSuggestion, News, DataCollectionAnswer, DataCollectionQuestion, Course, Student, \
     SpeechRating, SpeechRubric
+from app.spotify.search import search
 
 
 def misc_action(request):
@@ -24,7 +25,8 @@ def misc_action(request):
                 student=request.user.student,
                 song=data['song_name'],
                 artist=data['song_artist'],
-                for_playlist=data['song_type'] == 'class'
+                for_playlist=data['song_type'] == 'class',
+                spotify_uri=data['uri']
             )
             ms.save()
         elif data['action'] == 'news':
@@ -94,5 +96,12 @@ def misc_action(request):
             evl.available_to_view = True
 
             evl.save()
+        elif data['action'] == 'music_search':
+            results = search(request, f"{data['song_name']} {data['song_artist']}")
+
+            print(results)
+
+            if results:
+                return JsonResponse(results["tracks"]["items"][0])
 
         return redirect('index')

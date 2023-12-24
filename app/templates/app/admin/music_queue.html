@@ -2,112 +2,26 @@
 
 {% block script %}
   <script>
-      let searchBar;
-      let allBtn;
-      let resultsContainer;
-      let data;
-
-      function work(divID, data_in) {
-          var tr = $("body").find("#" + divID);
-          var btn = tr.find(".btn");
-
-          data = data_in;
-
-          allBtn.removeClass("btn-grad");
-          allBtn.addClass("btn-grad-positive");
-
-          btn.removeClass("btn-grad-positive");
-          btn.addClass("btn-grad");
-
-          searchBar.val(data.song + " " + data.artist);
-
-          search();
+      function select(sug_id) {
+          $.post("{% url 'spotify_add' %}", {"id": sug_id})
+              .then(function () {
+                  $("#tr-" + sug_id).remove()
+              })
       }
-
-      function search() {
-          var q = searchBar.val()
-          $.get("{% url 'spotify_search' %}?q=" + encodeURIComponent(q)).then(function (data) {
-              resultsContainer.html(data)
-          })
-      }
-
-      function select(id) {
-          console.log(data);
-          console.log(id)
-
-          $.post("{% url 'spotify_add' %}", {
-              "suggestion": data.sugid,
-              "song": id
-          }).then(function (response) {
-              $("body").find(".sug-" + data.sugid).remove();
-              $("#results").html("");
-              searchBar.val("");
-              data = {}
-          })
-      }
-
-      $(function () {
-          searchBar = $("#search")
-          allBtn = $(".tab-content").find(".btn")
-          resultsContainer = $("#results")
-      })
   </script>
 {% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-12 col-lg-6">
-      <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          {% for course in courses %}
-            <button class="nav-link" id="nav-tab-{{ course.id }}" data-bs-toggle="tab"
-                    data-bs-target="#nav-{{ course.id }}" type="button" role="tab"
-                    aria-controls="nav-{{ course.id }}" aria-selected="true">
-              {{ course.short_name }}
-            </button>
-          {% endfor %}
-        </div>
-      </nav>
-      <div class="tab-content" id="nav-tabContent">
-        {% for course in courses %}
-          <div class="tab-pane fade" id="nav-{{ course.id }}" role="tabpanel" aria-labelledby="nav-tab-{{ course.id }}">
-            <h4 class="mt-2">{{ course.get_type_display }} P{{ course.period }}</h4>
-            <table class="table table-striped table-hover">
-              <tr>
-                <th>Student</th>
-                <th>Song</th>
-                <th>Artist</th>
-                <th>Action</th>
-              </tr>
-
-              {% for sug in course.music_suggestions %}
-                <tr id="sug-{{ course.id }}-{{ sug.id }}" class="sug-{{ sug.id }}">
-                  <td>{{ sug.student.name }}</td>
-                  <td>{{ sug.song }}</td>
-                  <td>{{ sug.artist }}</td>
-                  <td>
-                    <a class="btn btn-grad-positive" href="#"
-                       onclick="work('sug-{{ course.id }}-{{ sug.id }}', {
-                           'song': '{{ sug.song | escapejs }}',
-                           'artist': '{{ sug.artist | escapejs }}',
-                           'sugid': '{{ sug.id }}',
-                           })">Work</a>
-                  </td>
-                </tr>
-              {% endfor %}
-            </table>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-    <div class="col-12 col-lg-6">
-      <div class="input-group">
-        <input class="form-control" id="search">
-        <button class="btn btn-outline-primary" type="button" onclick="search()">Search</button>
-      </div>
-      <div class="mt-2" id="results">
-
-      </div>
-    </div>
-  </div>
+  <table class="table table-striped table-hover">
+    {% for sug in suggestions %}
+      <tr id="tr-{{ sug.id }}">
+        <td><img style="height: 100px" src="{{ sug.data.album.images.0.url }}"></td>
+        <td><b>{{ sug.data.name }}</b></td>
+        <td><b>{{ sug.data.artists.0.name }}</b></td>
+        <td>{{ sug.student.name }}</td>
+        <td>{{ sug.student.all_courses_str | linebreaksbr }}</td>
+        <td><a href="#" class="btn btn-grad" onclick="select('{{ sug.id }}')">Confirm</a></td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock %}

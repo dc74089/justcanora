@@ -51,6 +51,9 @@ class Student(models.Model):
         first_letters = [a[0] for a in names]
         return "".join(first_letters)
 
+    def all_courses_str(self):
+        return "\n".join([c.name for c in self.courses.all()])
+
     def __str__(self):
         return f"{self.fname} {self.lname} ({self.id})"
 
@@ -115,6 +118,11 @@ class MusicSuggestion(models.Model):
     spotify_uri = models.CharField(max_length=100, null=True, blank=True)
     added = models.DateTimeField(auto_now_add=True)
     is_null = models.BooleanField(default=False, null=False, blank=False)
+
+    def get_spotify_data(self, request):
+        from app.spotify import search
+
+        return search.get_by_uri(request, self.spotify_uri)
 
     def __str__(self):
         if self.artist:
