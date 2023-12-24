@@ -3,7 +3,7 @@ from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
-from app.models import Course, MusicSuggestion
+from app.models import MusicSuggestion
 from app.spotify import spotify, playlists, nowplaying
 from app.spotify.search import search
 
@@ -58,6 +58,16 @@ def search_table(request):
     return render(request, 'app/admin/music_partial_table.html', {
         'songs': results['tracks']['items']
     })
+
+
+@csrf_exempt
+@staff_member_required
+def queue_song(request):
+    if 'id' in request.POST:
+        sug = MusicSuggestion.objects.get(id=request.POST['id'])
+        nowplaying.queue_by_uri(request, sug.spotify_uri)
+
+    return HttpResponse(status=200)
 
 
 @csrf_exempt
