@@ -29,6 +29,18 @@ def misc_action(request):
                 spotify_uri=data['uri']
             )
             ms.save()
+        elif data['action'] == 'music_rescue':
+            old = MusicSuggestion.objects.get(id=data['req_id'])
+
+            ms = MusicSuggestion(
+                student=request.user.student,
+                song=old.song,
+                artist=old.artist,
+                for_playlist=True,
+                spotify_uri=old.spotify_uri,
+                investigated=True
+            )
+            ms.save()
         elif data['action'] == 'news':
             news = News(
                 student=request.user.student,

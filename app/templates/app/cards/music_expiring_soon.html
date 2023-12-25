@@ -1,0 +1,28 @@
+<div class="col-12 col-md-6">
+  <div class="card mb-2">
+    <div class="card-body" id="music-form">
+      <h2 class="mb-0">Songs Expiring Soon!</h2>
+      <table class="table table-hover">
+        {% for req in reqs %}
+          <tr>
+            <td>{{ req.data.name }}</td>
+            <td>{{ req.data.artists.0.name }}</td>
+            <td>
+              <form action="{% url 'misc_action' %}" method="post" style="margin-bottom: 0;">
+                {% csrf_token %}
+                <input name="req_id" value="{{ req.id }}" style="display:none;">
+                <input name="action" value="music_rescue" style="display:none;">
+                <button type="submit" class="btn btn-grad">Rescue</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+      <p class="text-center">
+        These songs are about to be removed from your class playlist.<br/>
+        Instead of suggesting a song, you can rescue one of the songs above, <br/>
+        which will prevent it from being deleted for another month (ish).
+      </p>
+    </div>
+  </div>
+</div>

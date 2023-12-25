@@ -12,6 +12,24 @@ def create_playlist(request, name):
     return pl['uri']
 
 
+def get_all_songs(request, uid):
+    sf = spotify.get_spotify(request)
+
+    items = []
+    offset = 0
+
+    while True:
+        pl = sf.playlist_items(uid, limit=25, offset=offset)
+        items.extend(pl['items'])
+
+        if pl['next']:
+            offset += pl['limit']
+        else:
+            break
+
+    return items
+
+
 def add_song_to_playlist(request, playlist, song_uri, allow_duplicates=False):
     sf = spotify.get_spotify(request)
 
@@ -28,3 +46,9 @@ def add_song_to_playlist(request, playlist, song_uri, allow_duplicates=False):
         if song_uri in uris: return
 
     sf.playlist_add_items(playlist, [song_uri])
+
+
+def remove_song_from_playlist(request, playlist_uri, song_uri):
+    sf = spotify.get_spotify(request)
+
+    sf.playlist_remove_all_occurrences_of_items(playlist_uri, [song_uri])

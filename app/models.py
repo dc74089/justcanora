@@ -3,6 +3,7 @@ import re
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 
 class FeatureFlag(models.Model):
@@ -118,11 +119,27 @@ class MusicSuggestion(models.Model):
     spotify_uri = models.CharField(max_length=100, null=True, blank=True)
     added = models.DateTimeField(auto_now_add=True)
     is_null = models.BooleanField(default=False, null=False, blank=False)
+    is_rejected = models.BooleanField(default=False, null=False, blank=False)
+    data = models.TextField(null=True, blank=True)
 
     def get_spotify_data(self, request):
-        from app.spotify import search
+        if self.data:
+            return json.loads(self.data)
+        else:
+            from app.spotify import search
 
-        return search.get_by_uri(request, self.spotify_uri)
+            data = search.get_by_uri(request, self.spotify_uri)
+
+            self.data = json.dumps(data)
+            self.save()
+
+            return data
+
+    def is_expired(self):
+        return timezone.now() > self.added + timezone.timedelta(days=30)
+
+    def is_expiring_soon(self):
+        return not self.is_expired() and timezone.now() > self.added + timezone.timedelta(days=23)
 
     def __str__(self):
         if self.artist:

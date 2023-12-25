@@ -30,7 +30,22 @@ def get_auth_manager(request):
     return auth_manager
 
 
+def get_default_auth_manager():
+    cache_handler = DatabaseCacheHandler()
+    auth_manager = SpotifyOAuth(client_id="d4bcb66ee64e488fb946e743a66efa1d",
+                                client_secret=os.getenv("SPOTIFY_SECRET"),
+                                redirect_uri=f"https://canorasclass.com/auth/spotify",
+                                scope="user-read-currently-playing,playlist-read-private,playlist-read-collaborative,playlist-modify-private,playlist-modify-public,streaming",
+                                cache_handler=cache_handler,
+                                show_dialog=True)
+
+    return auth_manager
+
+
 def get_spotify(request, use_session=True):
+    if request is None:
+        return spotipy.Spotify(auth_manager=get_default_auth_manager())
+
     return spotipy.Spotify(auth_manager=get_auth_manager(request))
 
 

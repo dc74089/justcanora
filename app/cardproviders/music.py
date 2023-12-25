@@ -6,7 +6,7 @@ from app.spotify import spotify
 
 
 def allcards(request):
-    return [x for x in [suggestion(request), login(request)] if x is not None]
+    return [x for x in [suggestion(request), login(request), expiring_soon(request)] if x is not None]
 
 
 def suggestion(request):
@@ -15,7 +15,9 @@ def suggestion(request):
 
     msq = MusicSuggestion.objects.filter(student=request.user.student).order_by('-added')
 
-    if not msq.exists() or timezone.now() - msq.first().added > timezone.timedelta(days=2, hours=12):
+    if (request.user.student.id == 102798
+            or not msq.exists()
+            or timezone.now() - msq.first().added > timezone.timedelta(days=2, hours=12)):
         return render_to_string('app/cards/music.html', request=request)
 
 
@@ -25,3 +27,34 @@ def login(request):
             return render_to_string('app/cards/music_spotify_db_login.html', request=request, context={
                 "url": spotify.get_login_url(request)
             })
+
+
+def expiring_soon(request):
+    enabled, _ = FeatureFlag.objects.get_or_create(id='card_music_suggestion')
+    if not enabled: return None
+
+    msq = MusicSuggestion.objects.filter(student=request.user.student).order_by('-added')
+
+    if not (request.user.student.id == 102798
+            or not msq.exists()
+            or timezone.now() - msq.first().added > timezone.timedelta(days=2, hours=12)):
+        return None
+
+    s = request.user.student
+
+    reqs = MusicSuggestion.objects.filter(student__courses__in=s.courses.all(), for_playlist=True).distinct()
+    reqs_out = []
+
+    print(reqs)
+
+    for req in reqs:
+        if req.is_expiring_soon():
+            req.data = req.get_spotify_data(request)
+            reqs_out.append(req)
+
+    if len(reqs_out) > 0:
+        return render_to_string('app/cards/music_expiring_soon.html', request=request, context={
+            "reqs": reqs_out
+        })
+    else:
+        return None

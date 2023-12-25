@@ -103,7 +103,8 @@ WSGI_APPLICATION = 'justcanora.wsgi.application'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
 CRONJOBS = [
-    ('30 23 * * *', 'app.tasks.cleanup.cleanup_null')
+    ('30 23 * * *', 'app.tasks.cleanup.cleanup_null'),
+    ('30 23 * * *', 'app.tasks.cleanup.cleanup_playlists')
 ]
 
 # Database
