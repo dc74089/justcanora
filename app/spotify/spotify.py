@@ -42,7 +42,7 @@ def get_default_auth_manager():
     return auth_manager
 
 
-def get_spotify(request, use_session=True):
+def get_spotify(request):
     if request is None:
         return spotipy.Spotify(auth_manager=get_default_auth_manager())
 

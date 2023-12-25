@@ -18,8 +18,8 @@ def context_processor(request):
 
 
 def get_now_playing(request):
-    return spotify.get_spotify(request, use_session=False).currently_playing()
+    return spotify.get_spotify(request).currently_playing()
 
 
 def queue_by_uri(request, uri):
-    spotify.get_spotify(request, use_session=False).add_to_queue(uri)
+    spotify.get_spotify(request).add_to_queue(uri)
