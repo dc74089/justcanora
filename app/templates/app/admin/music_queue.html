@@ -26,8 +26,8 @@
         <td><b>{{ sug.data.artists.0.name }}</b></td>
         <td>{{ sug.student.name }}</td>
         <td>{{ sug.student.all_courses_str | linebreaksbr }}</td>
-        <td><a href="#" class="btn btn-grad" onclick="select('{{ sug.id }}')">Confirm</a></td>
-        <td><a href="#" class="btn btn-grad-positive" onclick="listen('{{ sug.id }}')">Listen</a></td>
+        <td><a href="#" class="btn btn-grad" onclick="select('{{ sug.id }}'); return false;">Confirm</a></td>
+        <td><a href="#" class="btn btn-grad-positive" onclick="listen('{{ sug.id }}'); return false;">Listen</a></td>
       </tr>
     {% endfor %}
   </table>
