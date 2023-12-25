@@ -13,6 +13,7 @@ import os
 import sys
 from pathlib import Path
 
+import pytz
 from django.core.management.utils import get_random_secret_key
 from django.utils import timezone
 
@@ -183,6 +184,7 @@ LOGGING = {
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'America/New_York'
+EST = pytz.timezone("America/New_York")
 
 USE_I18N = True
 

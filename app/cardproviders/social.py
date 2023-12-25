@@ -13,7 +13,7 @@ def submit_news(request):
     enabled, _ = FeatureFlag.objects.get_or_create(id='card_news_submit')
     if not enabled: return None
 
-    if timezone.now().astimezone(timezone.get_current_timezone()).date().weekday() in settings.NEWS_DAYS:
+    if timezone.now().astimezone(settings.EST).date().weekday() in settings.NEWS_DAYS:
         nq = News.objects.filter(student=request.user.student).order_by('-added')
 
         if not nq or timezone.now() - nq.first().added > timezone.timedelta(hours=18):

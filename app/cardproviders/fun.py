@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -10,7 +11,7 @@ def allcards(request):
 
 def bday_self(request):
     bday = request.user.student.bday
-    now = timezone.now().date()
+    now = timezone.now().astimezone(settings.EST).date()
 
     if not bday: return None
 
@@ -20,7 +21,7 @@ def bday_self(request):
 
 def bday_others(request):
     student: Student = request.user.student
-    now = timezone.now().date()
+    now = timezone.now().astimezone(settings.EST).date()
 
     if not student.courses: return None
 
