@@ -27,6 +27,11 @@
           $("#fab").on('show.bs.dropdown', function (evt) {
               refresh_nowplaying()
           })
+
+          $(".animgrad").css("animation-delay", `-${Date.now()}ms`);
+          $(".btn-grad-positive").css("animation-delay", `-${Date.now()}ms`);
+          $(".btn-grad-negative").css("animation-delay", `-${Date.now()}ms`);
+          $(".btn-grad").css("animation-delay", `-${Date.now()}ms`);
       })
   </script>
 
