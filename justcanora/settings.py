@@ -26,6 +26,8 @@ DOCKER = os.getenv("DOCKER", False)
 CURRENT_ACADEMIC_YEAR = "23/24"
 NEWS_DAYS = [2, 3]
 
+PERSONAL_SPOTIFY_PLAYLIST = "spotify:playlist:07kBXGSHyNVWmOtLV3j8B6"
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 

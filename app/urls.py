@@ -18,6 +18,7 @@ urlpatterns = [
     path('admin/music/search', music.search_table, name='spotify_search'),
     path('admin/music/add', music.add_song, name='spotify_add'),
     path('admin/music/preview', music.queue_song, name='spotify_queue'),
+    path('admin/music/deny', music.deny_song, name='spotify_deny'),
 
     path('speech/evals/view', speech.view_evals, name='speech_view_evals'),
     path('speech/evals/all', speech.all_evals, name='speech_all_evals'),

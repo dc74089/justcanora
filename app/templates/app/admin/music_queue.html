@@ -8,11 +8,20 @@
                   $("#tr-" + sug_id).remove()
               })
       }
-      
+
       function listen(sug_id) {
           $.post("{% url 'spotify_queue' %}", {
               "id": sug_id
           })
+      }
+
+      function deny(sug_id) {
+          $.post("{% url 'spotify_deny' %}", {
+              "id": sug_id
+          })
+              .then(function () {
+                  $("#tr-" + sug_id).remove()
+              })
       }
   </script>
 {% endblock %}
@@ -25,9 +34,25 @@
         <td><b>{{ sug.data.name }}</b></td>
         <td><b>{{ sug.data.artists.0.name }}</b></td>
         <td>{{ sug.student.name }}</td>
-        <td>{{ sug.student.all_courses_str | linebreaksbr }}</td>
-        <td><a href="#" class="btn btn-grad" onclick="select('{{ sug.id }}'); return false;">Confirm</a></td>
+
+        {% if sug.for_playlist %}
+          <td>{{ sug.student.all_courses_str | linebreaksbr }}</td>
+        {% else %}
+          <td class="">For You</td>
+        {% endif %}
+
+        <td>
+          <a href="#" class="btn btn-grad" onclick="select('{{ sug.id }}'); return false;">
+            {% if sug.for_playlist %}
+              Confirm
+            {% else %}
+              Add to My Playlist
+            {% endif %}
+          </a>
+         </td>
+
         <td><a href="#" class="btn btn-grad-positive" onclick="listen('{{ sug.id }}'); return false;">Listen</a></td>
+        <td><a href="#" class="btn btn-grad-negative" onclick="deny('{{ sug.id }}'); return false;">Deny</a></td>
       </tr>
     {% endfor %}
   </table>

@@ -53,6 +53,7 @@ def rosters(request):
     })
 
 
+@staff_member_required
 def view_answers(request):
     questions = list(DataCollectionQuestion.objects.all())
 

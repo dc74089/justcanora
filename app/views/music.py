@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect, render
@@ -17,7 +18,8 @@ def get_now_playing(request):
     if not now_playing or not now_playing['item']:
         return HttpResponse("Nothing is playing")
 
-    return HttpResponse(f"Now Playing: <b>{now_playing['item']['name']}</b> by <b>{now_playing['item']['artists'][0]['name']}</b>")
+    return HttpResponse(
+        f"Now Playing: <b>{now_playing['item']['name']}</b> by <b>{now_playing['item']['artists'][0]['name']}</b>")
 
 
 @staff_member_required
@@ -73,15 +75,30 @@ def add_song(request):
 
     courses = sug.student.courses.all()
 
-    for c in courses:
-        if not c.playlist_id:
-            plid = playlists.create_playlist(request, c.name)
-            c.playlist_id = plid
-            c.save()
+    if sug.for_playlist:
+        for c in courses:
+            if not c.playlist_id:
+                plid = playlists.create_playlist(request, c.name)
+                c.playlist_id = plid
+                c.save()
 
-        playlists.add_song_to_playlist(request, c.playlist_id, sug.spotify_uri)
+            playlists.add_song_to_playlist(request, c.playlist_id, sug.spotify_uri)
+    else:
+        playlists.add_song_to_playlist(request, settings.PERSONAL_SPOTIFY_PLAYLIST, sug.spotify_uri)
 
     sug.investigated = True
     sug.save()
+
+    return HttpResponse(status=200)
+
+
+@csrf_exempt
+@staff_member_required
+def deny_song(request):
+    if 'id' in request.POST:
+        sug = MusicSuggestion.objects.get(id=request.POST['id'])
+        sug.investigated = True
+        sug.is_rejected = True
+        sug.save()
 
     return HttpResponse(status=200)
