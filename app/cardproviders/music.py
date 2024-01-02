@@ -17,7 +17,7 @@ def suggestion(request):
 
     if (request.user.student.id == 102798
             or not msq.exists()
-            or timezone.now() - msq.first().added > timezone.timedelta(days=2, hours=12)):
+            or timezone.now() - msq.first().added > timezone.timedelta(days=0, hours=12)):
         return render_to_string('app/cards/music.html', request=request)
 
 
@@ -42,10 +42,13 @@ def expiring_soon(request):
 
     s = request.user.student
 
-    reqs = MusicSuggestion.objects.filter(student__courses__in=s.courses.all(), for_playlist=True).distinct()
-    reqs_out = []
+    reqs = MusicSuggestion.objects.filter(
+        student__courses__in=s.courses.all(),
+        for_playlist=True,
+        is_rejected=False
+    ).distinct()
 
-    print(reqs)
+    reqs_out = []
 
     for req in reqs:
         if req.is_expiring_soon():
