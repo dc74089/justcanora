@@ -45,13 +45,22 @@ def expiring_soon(request):
     reqs = MusicSuggestion.objects.filter(
         student__courses__in=s.courses.all(),
         for_playlist=True,
-        is_rejected=False
+        is_rejected=False,
+        investigated=True
     ).distinct()
 
     reqs_out = []
 
     for req in reqs:
         if req.is_expiring_soon():
+            # Remove entry if there is a valid suggestion for that song
+            for req2 in MusicSuggestion.objects.filter(
+                    spotify_uri=req.spotify_uri,
+                    student__courses__in=s.courses.all(),
+                    investigated=True):
+                if not req2.is_expiring_soon():
+                    continue
+
             req.data = req.get_spotify_data(request)
             reqs_out.append(req)
 
