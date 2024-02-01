@@ -6,7 +6,10 @@ from app.models import Course, Student
 
 def get_dev_courses():
     for id in [12258, 12270, 12264, 12227, 12201, 12231, 12229]:
-        get_all_sections_from_course(id)
+        try:
+            get_all_sections_from_course(id)
+        except:
+            continue
 
 
 def import_course(dj_course: Course):
@@ -37,7 +40,10 @@ def import_course(dj_course: Course):
 
 def re_import_all_courses():
     for c in Course.objects.all():
-        import_course(c)
+        try:
+            import_course(c)
+        except:
+            continue
 
 
 def get_all_sections_from_course(course_id):
