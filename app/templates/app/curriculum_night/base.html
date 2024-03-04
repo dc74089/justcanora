@@ -1,0 +1,33 @@
+{% load static %}
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="{% static 'common/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'common/bootstrap/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'common/bootstrap-icons/font/bootstrap-icons.min.css' %}">
+  <script src="{% static 'common/bootstrap/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'common/jquery/jquery-3.7.0.min.js' %}"></script>
+
+  <title>{% block title %}Canora's Class{% endblock %}</title>
+
+  {% block script %}{% endblock %}
+  {% block style %}{% endblock %}
+
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark px-3 animgrad">
+  <a class="navbar-brand fw-semibold" href="{% url 'index' %}">Canora's Classes</a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</nav>
+<main class="container" style="margin-top: 68px;">
+  {% block content %}{% endblock %}
+  <div style="height: 10vh"></div>
+</main>
+</body>
+</html>

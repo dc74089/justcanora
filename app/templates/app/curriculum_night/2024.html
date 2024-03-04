@@ -1,0 +1,166 @@
+{% extends "app/curriculum_night/base.html" %}
+
+{% block style %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">x
+
+  <style>
+      body {
+          font-family: 'Open Sans', sans-serif !important;
+      }
+
+      .accordion-button:not(.collapsed) {
+      }
+
+      b, h2 {
+          background-image: linear-gradient(-30deg, #ee7752, #e73c7e, #8d00ff);
+          --bs-text-opacity: 1;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-weight: bolder;
+      }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+      <h1 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                aria-expanded="true" aria-controls="collapseOne">
+          Websites & The Internet: CS 1
+        </button>
+      </h1>
+      <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+          <h2 class="">Learn how to make your own website!</h2>
+
+          <p>We'd love to have you join us for Websites & The Internet to fulfill your Innovation Institute
+            requirement!</p>
+
+          <h4>This Course Teaches:</h4>
+          <ul>
+            <li>HTML Programming</li>
+            <li>Website Design</li>
+            <li>How the Internet Works (basic computer networking)</li>
+            <li>General Technology/MacBook Skills</li>
+          </ul>
+
+          <h4>Course Highlights:</h4>
+          <ul>
+            <li>Publish <b>real websites</b> on the internet!</li>
+            <li>Build a <b>Personal Homepage</b>, or Resume/Portfolio</li>
+            <li>Design & Build a <b>Choose Your Own Adventure Game</b></li>
+            <li>Create a <b>Website for a Product</b></li>
+            <li>Build a <b>Virtual Pet</b></li>
+          </ul>
+
+          <hr/>
+
+          <h4>From the Curriculum Guide:</h4>
+          <p>Step into the fascinating world of web design and development! In this hands-on project-based course,
+            students will grasp the basics of designing and programming websites using HTML while exploring the inner
+            workings of the internet. We will utilize the design process to conceptualize, design, program, deploy,
+            and deliver multiple websites throughout the semester. In addition, students will develop and strengthen
+            general computer skills which will help them become better users of technology in all aspects of their
+            lives. </p>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h1 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                aria-expanded="false" aria-controls="collapseTwo">
+          Programming in Python: CS 2
+        </button>
+      </h1>
+      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+          <h2>Take the next step in Computer Science!</h2>
+          <h6 style="font-weight: bold">Prerequisite: successful completion of MS Computer Science 1.</h6>
+          <p>Want to move to the next level of Computer Science and learn a professional, text-based programming
+            language? We'd love to have you join us for Programming in Python!</p>
+
+          <h4>This Course Teaches:</h4>
+          Programming in Python, including:
+          <ul>
+            <li>Basic Syntax</li>
+            <li>Variables</li>
+            <li>Lists</li>
+            <li>Loops</li>
+            <li>Dictionaries</li>
+            <li>Text-Based User Interfaces</li>
+          </ul>
+
+          <h4>Course Highlights:</h4>
+          <ul>
+            <li>Learn an <b>industry-standard</b> multipurpose programming language</li>
+            <li>Build a <b>solid foundation</b> for Upper School CS courses</li>
+            <li>Use the same tools as <b>professional programmers</b></li>
+            <li>Compete in <b>programming competitions</b> against your classmates</li>
+          </ul>
+
+          <hr/>
+
+          <h4>From the Curriculum Guide:</h4>
+          <p>Programming in Python will continue to develop on the fundamentals developed in CS I. The primary focus
+            will be on evolving students understanding of key computer programming concepts (variables, data structures,
+            control structures, Boolean logic, and syntax). Students will use the Python programming language to develop
+            effective and efficient software solutions to a variety of relevant and engaging programming challenges.
+            Although the class will be taught in Python the fundamentals learned are applicable to all programming
+            languages.</p>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h1 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Public Speaking
+        </button>
+      </h1>
+      <div id="collapseThree" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+          <h2>Build your Public Speaking skills!</h2>
+
+          <p>In every class and every career, solid Public Speaking skills will <i>always</i> be an asset. Join us as we
+            strengthen our communication skills in an inclusive, supportive environment.</p>
+
+          <h4>This Course Teaches:</h4>
+          <ul>
+            <li>General communication skills</li>
+            <li>
+              Speaking in different contexts:
+              <ul>
+                <li>Speaking to Inform</li>
+                <li>Speaking to Persuade</li>
+                <li>Speaking to Entertain</li>
+              </ul>
+            </li>
+          </ul>
+
+          <h4>Course Highlights:</h4>
+          <ul>
+            <li>Build skills that will serve you for <b>the rest of your life</b></li>
+            <li>Learn to <b>communicate effectively</b> and deliver your message clearly</li>
+            <li>Practice constructing and delivering <b>effective arguments</b></li>
+            <li>Work <b>collaboratively and constructively</b> with your peers</li>
+          </ul>
+
+          <hr/>
+
+          <h4>From the Curriculum Guide</h4>
+          <p>Public Speaking is a semester-long class dedicated to the development of public speaking and presentation
+            skills. The students will learn about the processes of communication including both verbal and non-verbal
+            communication. Informative, persuasive, and argumentative speeches, among others, will give students
+            experience with various forms of speaking and will hone advanced speaking and delivery skills. Students will
+            also learn strategies for practical, real-world and 21st century speaking scenarios, such as job interviews,
+            podcasts, and conversations with adults. The objective of this course is to develop speaking and delivery
+            skills that students will use in the Upper School, college, and beyond.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
