@@ -26,6 +26,7 @@ urlpatterns = [
     path('music/nowplaying', music.get_now_playing, name='now_playing'),
 
     path('cn', curriculum.index),
+    path('cn/dark', curriculum.index_dark),
 
     path('do', misc.misc_action, name='misc_action'),
     path('dev', index.dev, name='dev'),
