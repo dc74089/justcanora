@@ -9,7 +9,6 @@
   <style>
       body {
           font-family: 'Open Sans', sans-serif !important;
-          background: #e8dce1;
       }
 
       .accordion-button:not(.collapsed) {
@@ -25,13 +24,38 @@
       }
 
       .nav-grad {
-          background: linear-gradient(-45deg, #ff37e4, #e99312, #f0495d, #672bcb);
-          background-size: 400% 400%;
-          animation: gradient 30s ease infinite;
+          
+          background: linear-gradient(45deg, #f0495d, #672bcb);
+          background-size: 100% 100%;
+          background-position-x: 20%;
+
+          /* animation: gradient 30s ease infinite; */
           --bs-text-opacity: 1;
           color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
       }
+
+      .accordion-body {
+          background: rgba(255, 255, 255, 255) !important;
+      }
   </style>
+{% endblock %}
+
+{% block script %}
+  <script>
+      $(function () {
+          new JParticles.Particle('#main', {
+              color: ['#ff37e4', '#e99312', '#f0495d', '#672bcb'],
+              lineShape: 'spider',
+              range: 2000,
+              proximity: 100,
+              lineWidth: 0.5,
+              // Turn on parallax effect
+              parallax: true,
+              num: 0.15
+          })
+      })
+
+  </script>
 {% endblock %}
 
 {% block content %}
@@ -47,8 +71,7 @@
         <div class="accordion-body">
           <h2 class="">Learn how to make your own website!</h2>
 
-          <p>We'd love to have you join us for Websites & The Internet to fulfill your Innovation Institute
-            requirement!</p>
+          <p>Join us for Websites & The Internet to fulfill your Innovation Institute requirement!</p>
 
           <h4>This Course Teaches:</h4>
           <ul>
