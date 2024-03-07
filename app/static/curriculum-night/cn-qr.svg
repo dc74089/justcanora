@@ -362,7 +362,7 @@
     <rect x="18" y="18" height="112" width="112" clip-path="url('#clip-path-corners-square-color-0-0')" fill="#672bcb"/>
     <rect x="50" y="50" height="48" width="48" clip-path="url('#clip-path-corners-dot-color-0-0')" fill="#000"/>
     <rect x="370" y="18" height="112" width="112" clip-path="url('#clip-path-corners-square-color-1-0')"
-          fill="#ff37e4"/>
+          fill="#f0495d"/>
     <rect x="402" y="50" height="48" width="48" clip-path="url('#clip-path-corners-dot-color-1-0')" fill="#000"/>
     <rect x="18" y="370" height="112" width="112" clip-path="url('#clip-path-corners-square-color-0-1')"
           fill="#e99312"/>
