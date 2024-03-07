@@ -7,5 +7,9 @@ def index(request):
     })
 
 
+def big_qr(request):
+    return render(request, "app/curriculum_night/bigqr.html")
+
+
 def index_dark(request):
     return render(request, "app/curriculum_night/2024-darkmode.html")
