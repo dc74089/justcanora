@@ -67,19 +67,20 @@
 
 {% block script %}
   <script>
-      $(function () {
-          new JParticles.Particle('#main', {
-              color: ['#ff37e4', '#e99312', '#f0495d', '#672bcb'],
-              lineShape: 'spider',
-              range: 2000,
-              proximity: 100,
-              lineWidth: 0.5,
-              // Turn on parallax effect
-              parallax: true,
-              num: 0.15
+      {% if not qr %}
+          $(function () {
+              new JParticles.Particle('#main', {
+                  color: ['#ff37e4', '#e99312', '#f0495d', '#672bcb'],
+                  lineShape: 'spider',
+                  range: 2000,
+                  proximity: 100,
+                  lineWidth: 0.5,
+                  // Turn on parallax effect
+                  parallax: true,
+                  num: 0.15
+              })
           })
-      })
-
+      {% endif %}
   </script>
 {% endblock %}
 
