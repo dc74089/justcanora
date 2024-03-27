@@ -49,7 +49,7 @@ else:
 
 ALLOWED_HOSTS = [
     'canorasclass.com',
-    'mr.canora.us'
+    'tr.canora.us'
 ]
 
 if DEBUG:
