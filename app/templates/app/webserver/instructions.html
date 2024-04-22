@@ -1,0 +1,137 @@
+{% extends 'app/base.html' %}
+
+{% load static %}
+
+{% block script %}
+  <script>
+      $(function () {
+          $(".hide-until-ack").hide()
+
+          $("#ack").change(function () {
+              $(".hide-until-ack").show()
+              $("#ack").attr("disabled", true)
+          })
+      })
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12 col-lg-6 offset-lg-3">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">Class Webserver -- Setup Instructions</h2>
+
+          <p>This page will walk you through how to set up VS Code to publish your code to <a href="https://lhpscs.com"
+                                                                                              target="_blank">lhpscs.com</a>.
+            Please read each step carefully. </p>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">Important Information</h2>
+
+          <p>You're publishing to the real internet. Everything you publish will be visible to LHPS students, employees,
+            and anyone else who knows the (very insecure) password to access the site. </p>
+          <ul>
+            <li>You should not publish anything you wouldn't show to a parent, a teacher, an administrator, or every
+              student in your grade.
+            </li>
+            <li>You may not mention any other member of the LHP community. Not your friends. Not your enemies. Not your
+              teachers. Not even in a positive light.
+            </li>
+            <li>We keep a copy of every single thing you publish, forever. Once you upload a file, you can remove it
+              from the "live" site, but you won't be able to delete our copy. If you publish something you shouldn't we
+              will know.
+            </li>
+          </ul>
+
+          <input type="checkbox" id="ack">
+          <label for="ack">I Understand</label>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6 offset-lg-3 hide-until-ack">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="card-title">Step 1</h3>
+          <ol>
+            <li>Open Terminal using Spotlight Search</li>
+            <li>Copy the following code, paste into terminal, and press "return"</li>
+            <pre><code>
+mdkir ~/Documents/CS1
+mkdir ~/Documents/CS1/.vscode
+touch ~/Documents/CS1/.vscode/sftp.json
+            </code></pre>
+            <li>Quit (&#8984;Q) Terminal</li>
+          </ol>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="card-title">Step 2</h3>
+          <ol>
+            <li>Open Visual Studio Code</li>
+            <li>Go to the "extensions" tab on the very left (should be the 5th one down)</li>
+            <li>Install the "SFTP" extension by "Natizyskunk"</li>
+          </ol>
+          <div class="text-center">
+            <img src="{% static 'app/sftp.png' %}" class="w-25"/>
+          </div>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="card-title">Step 3</h3>
+          <ol>
+            <li>Still inside VS Code, open your CS1 folder (if it's not open already)</li>
+            <li>Inside the <code>.vscode</code> folder, you should see a file called <code>sftp.json</code>. Open it.</li>
+            <li>Delete any text that's currently inside the <code>sftp.json</code> file.</li>
+            <li>Paste the following code inside the <code>sftp.json</code> file. <b>This code is SPECIFIC TO YOU, don't share it with ANYONE.</b></li>
+
+            <pre><code>
+{
+    "name": "CS 1 Server",
+    "host": "167.71.163.179",
+    "protocol": "sftp",
+    "port": 2222,
+    "username": "{{ creds.directory }}",
+    "remotePath": "/",
+    "password": "{{ creds.password }}",
+    "ignore": [
+        ".vscode",
+        ".git",
+        ".DS_Store",
+        "ignore"
+    ]
+}
+          </code></pre>
+          </ol>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="card-title">Publishing</h3>
+          <p>Whenever you need to upload or update files on the webserver:</p>
+
+          <ol>
+            <li>In VS Code, right click on empty space underneath your files (in the explore tab)</li>
+            <li>Click "Sync Local -> Remote"</li>
+            <img src="{% static 'app/ftp_sync.png' %}" class="w-100 pe-4 pt-3"/>
+          </ol>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="card-title">Viewing</h3>
+          <p>To access your site:</p>
+
+          <ol>
+            <li>Visit <a href="https://lhpscs.com/{{ creds.directory }}">https://lhpscs.com/{{ creds.directory }}</a> </li>
+            <li>If it asks you to log in, use the username <code>mscs</code> and the password <code>mscs</code> (make sure both are all lowercase)</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

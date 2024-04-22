@@ -1,0 +1,36 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <table class="table table-hover table-striped">
+    <thead>
+    <tr>
+      <th>Student</th>
+      <th>Directory</th>
+      <th style="width: 30%">Password</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for cred in creds %}
+      <tr>
+        <td>{{ cred.student.full_name }}</td>
+        <td><a href="https://lhpscs.com/{{ cred.directory }}"
+               target="_blank">https://lhpscs.com/{{ cred.directory }}</a></td>
+        <td>
+          <details>
+            <summary>Click Here to Reveal</summary>
+            {{ cred.password }}
+          </details>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <h3>All <code>ftpasswd</code> Commands</h3>
+  <pre><code>
+    {% for cred in creds %}
+echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.directory }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
+mkdir /var/www/{{ cred.directory }}
+chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
+    {% endfor %}
+  </code></pre>
+{% endblock %}

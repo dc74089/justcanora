@@ -2,6 +2,7 @@ import json
 import re
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
 
@@ -54,6 +55,13 @@ class Student(models.Model):
 
     def all_courses_str(self):
         return "\n".join([c.name for c in self.courses.all()])
+
+    def has_web_credential(self):
+        try:
+            self.webservercredential
+            return True
+        except ObjectDoesNotExist:
+            return False
 
     def __str__(self):
         return f"{self.fname} {self.lname} ({self.id})"
@@ -216,3 +224,26 @@ class DataCollectionAnswer(models.Model):
 
     def __str__(self):
         return f"{self.student} answered {self.question}"
+
+
+class WebserverCredential(models.Model):
+    student = models.OneToOneField("Student", on_delete=models.SET_NULL, null=True, blank=True)
+    directory = models.TextField(null=True, blank=True)
+    password = models.TextField(null=True, blank=True)
+    uid = models.IntegerField(null=False, blank=False, unique=True)
+
+    @classmethod
+    def gen_uid(cls, student):
+        if student.id == 0:
+            raise Exception()
+
+        id = student.id
+
+        while True:
+            if id > 1000 and not WebserverCredential.objects.filter(uid=id).exists():
+                return id
+
+            id *= 10
+
+    def __str__(self):
+        return f"Webserver Creds for {self.student.full_name()} (/{self.directory}; {self.uid})"

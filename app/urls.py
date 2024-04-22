@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import index, auth, misc, admin, music, speech, curriculum
+from .views import index, auth, misc, admin, music, speech, curriculum, webserver
 
 urlpatterns = [
     path('', index.index, name='index'),
@@ -24,6 +24,9 @@ urlpatterns = [
     path('speech/evals/all', speech.all_evals, name='speech_all_evals'),
 
     path('music/nowplaying', music.get_now_playing, name='now_playing'),
+
+    path('webserver/instructions', webserver.instructions, name='webserver_guide'),
+    path('webserver/all_creds', webserver.all_table, name='webserver_all'),
 
     path('cn', curriculum.index),
     path('cn/dark', curriculum.index_dark),
