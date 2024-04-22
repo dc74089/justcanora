@@ -1,0 +1,22 @@
+<div class="col-12 col-md-6">
+  <div class="card">
+    <div class="card-body text-center">
+      <h2 class="text-start">Important Links</h2>
+
+      <hr/>
+
+      <div class="d-flex flex-wrap justify-content-center row-gap-2">
+
+        {% if creds %}
+          <a class="btn btn-grad mx-2" href="{% url 'webserver_guide' %}">View HTML Publishing Instructions</a>
+          <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/{{ creds.directory }}">View My CS1 Site</a>
+          <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/dcanora/">Tr. Canora's CS1 Site</a>
+        {% endif %}
+
+        {% if evals %}
+          <a class="btn btn-grad" href="{% url 'speech_view_evals' %}">View Speech Evals</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
