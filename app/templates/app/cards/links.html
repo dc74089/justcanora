@@ -17,6 +17,12 @@
           <a class="btn btn-grad" href="{% url 'speech_view_evals' %}">View Speech Evals</a>
         {% endif %}
       </div>
+
+      {% if creds %}
+        <hr/>
+
+        <p>Note: The username/password for the CS1 site is <code>mscs</code>/<code>mscs</code></p>
+      {% endif %}
     </div>
   </div>
 </div>
