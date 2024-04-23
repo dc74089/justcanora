@@ -8,10 +8,12 @@ def generate_creds(year, semester):
     s: Student
     for c in Course.objects.filter(year=year, semester=semester, type="CS1"):
         for s in c.students.all():
-            generate_cred_for_student(s)
+            generate_cred_for_student(s.id)
 
 
-def generate_cred_for_student(student):
+def generate_cred_for_student(student_id):
+    student = Student.objects.get(id=student_id)
+
     if not student.has_web_credential():
         if student.email:
             wc = WebserverCredential(

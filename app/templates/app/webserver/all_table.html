@@ -28,9 +28,9 @@
   <h3>All <code>ftpasswd</code> Commands</h3>
   <pre><code>
     {% for cred in creds %}
-echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.directory }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
 mkdir /var/www/{{ cred.directory }}
 chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
+echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.directory }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
     {% endfor %}
   </code></pre>
 {% endblock %}
