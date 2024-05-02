@@ -2,18 +2,78 @@
   <div class="card">
     <div class="card-body">
       <h2>Lunch Menu</h2>
-      <h4>{{ date }}</h4>
 
       <details>
         <summary class="my-3">Click here to expand</summary>
-        {% for k, v in menu.items %}
-          <h5>{{ k }}</h5>
-          <ul>
-            {% for item in v %}
-              <li>{{ item }}</li>
-            {% endfor %}
-          </ul>
-        {% endfor %}
+        {% if menu_today and menu_tomorrow %}
+          <table class="table table-bordered">
+            <tr>
+              <th class="w-50">{{ date_today }}</th>
+              <th class="w-50">{{ date_tomorrow }}</th>
+            </tr>
+            <tr>
+              <td>
+                {% for k, v in menu_today.items %}
+                  <h5>{{ k }}</h5>
+                  <ul>
+                    {% for item in v %}
+                      <li>{{ item }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endfor %}
+              </td>
+              <td>
+                {% for k, v in menu_tomorrow.items %}
+                  <h5>{{ k }}</h5>
+                  <ul>
+                    {% for item in v %}
+                      <li>{{ item }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endfor %}
+              </td>
+            </tr>
+          </table>
+        {% else %}
+          {% if menu_today %}
+            <table class="table table-bordered">
+              <tr>
+                <th class="w-50">{{ date_today }}</th>
+              </tr>
+              <tr>
+                <td>
+                  {% for k, v in menu_today.items %}
+                    <h5>{{ k }}</h5>
+                    <ul>
+                      {% for item in v %}
+                        <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endfor %}
+                </td>
+              </tr>
+            </table>
+          {% endif %}
+          {% if menu_tomorrow %}
+            <table class="table table-bordered">
+              <tr>
+                <th class="w-50">{{ date_tomorrow }}</th>
+              </tr>
+              <tr>
+                <td>
+                  {% for k, v in menu_tomorrow.items %}
+                    <h5>{{ k }}</h5>
+                    <ul>
+                      {% for item in v %}
+                        <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endfor %}
+                </td>
+              </tr>
+            </table>
+          {% endif %}
+        {% endif %}
       </details>
     </div>
   </div>
