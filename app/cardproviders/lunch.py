@@ -39,7 +39,7 @@ def helper_build_menu(day):
 
 def lunch_menu(request):
     try:
-        date = timezone.now().date()
+        date = timezone.now().astimezone(timezone.get_default_timezone()).date()
         tomorrow = date + timedelta(days=1)
 
         resp = requests.get(
