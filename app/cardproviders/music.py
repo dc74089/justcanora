@@ -11,11 +11,14 @@ def allcards(request):
 
 def suggestion(request):
     enabled, _ = FeatureFlag.objects.get_or_create(id='card_music_suggestion')
+    free_for_all, _ = FeatureFlag.objects.get_or_create(id='card_music_unlimited')
+
     if not enabled: return None
 
     msq = MusicSuggestion.objects.filter(student=request.user.student).order_by('-added')
 
-    if (request.user.student.id == 102798
+    if (free_for_all
+            or request.user.student.id == 102798
             or not msq.exists()
             or timezone.now() - msq.first().added > timezone.timedelta(days=0, hours=12)):
         return render_to_string('app/cards/music.html', request=request)
