@@ -1,0 +1,23 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+<div class="row">
+<div class="col-12 col-md-6 offset-md-3">
+  <div class="card">
+    <div class="card-body">
+      <h2>Scavenger Hunt Registration</h2>
+
+      <form method="post" action="{% url 'scavenger-create-team' %}">
+        {% csrf_token %}
+        <div class="my-3">
+          <label for="teamname">Team Name</label>
+          <input class="form-control" type="text" name="teamname" id="teamname" required>
+        </div>
+
+        <button class="btn btn-success">Go</button>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
