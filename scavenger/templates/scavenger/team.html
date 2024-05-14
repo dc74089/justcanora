@@ -1,0 +1,94 @@
+{% extends 'app/base.html' %}
+
+{% block style %}
+  <style>
+      body {
+          background-color: #1a1d20;
+      }
+
+      #fab {
+          display: none;
+      }
+
+      #qr img {
+          width: 100%;
+      }
+  </style>
+{% endblock %}
+
+{% block script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+          integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+      $(function () {
+          new QRCode("qr", "{{ team.id }}");
+      })
+
+      function get_team_state() {
+          $.get("{% url 'scavenger-team-state' %}").then(function (response) {
+              $(".hunt-hide").hide()
+
+              let state = response['state'];
+              if (state == "qr") {
+                  let location = response['location'];
+
+                  $("#qr").show();
+                  $("#location").html(location);
+              }
+
+              if (state == "task") {
+                  let task = response['task'];
+
+                  $("#task-div").show();
+                  $("#task").html(task);
+              }
+
+              if (state == "entry") {
+                  let location = response['location'];
+
+                  $("#entry").show();
+                  $("#kiosk-name").html(location);
+              }
+
+              if (state == "message") {
+                  let message = response['message'];
+
+                  $("#message-div").show();
+                  $("#message").html(message);
+              }
+          })
+      }
+  </script>
+{% endblock %}
+
+{% block nav %}{% endblock %}
+
+{% block content %}
+  <div class="text-center text-white px-5">
+    <h1 id="team-name" class="mb-5">{{ team.name }}</h1>
+
+    <div id="task-div" class="mb-5 hunt-hide">
+      <h2>Current Task:</h2>
+      <h3 id="task">Task goes here</h3>
+    </div>
+
+    <div id="entry" class="mb-5 hunt-hide">
+      <h2 class="mb-4">Question is displayed on <span id="kiosk-name">KIOSK</span></h2>
+      <h3>Answer:</h3>
+      <input class="form-control">
+      <a class="btn btn-success mt-3">Submit</a>
+    </div>
+
+    <div id="qr" class="mb-5 p-2 bg-white hunt-hide">
+      <h2 class="text-black">Scan this QR Code at <span id="location">LOCATION</span></h2>
+
+    </div>
+
+    <div id="message-div mb-5">
+      <h1 id="message">Return to Tr. Canora's Room</h1>
+    </div>
+
+  </div>
+{% endblock %}

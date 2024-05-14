@@ -1,0 +1,82 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <script>
+      let refresher;
+
+      $(function () {
+          const html5QrCode = new Html5Qrcode("reader");
+
+          html5QrCode.start(
+              {facingMode: "user"},
+              {
+                  fps: 10,    // Optional, frame per seconds for qr code scanning
+              },
+              (decodedText, decodedResult) => {
+                  console.log(decodedText)
+              },
+              (errorMessage) => {
+                  //console.log(errorMessage)
+              })
+              .catch((err) => {
+                  console.log(err)
+              });
+
+          getState()
+      })
+
+      function notifyTeamHere(id) {
+          $.post("{% url 'scavenger-kiosk-state' %}", {
+              "type": "teamhere",
+              "team": id
+          }).then(function (response) {
+              getState();
+              refresher = setInterval(getState, 1000);
+          })
+      }
+
+      function getState() {
+          $.get("{% url 'scavenger-kiosk-state' %}")
+              .then(function (response) {
+                  let state = response['state']
+
+                  if (state == "qr") {
+                      $("#reader").show()
+                      $("#message").hide()
+
+                      if (refresher != null) {
+                          clearInterval(refresher);
+                      }
+                  }
+
+                  if (state == "message") {
+                      $("#reader").hide()
+                      $("#message").show().html(response['message'])
+                  }
+
+              })
+      }
+
+  </script>
+{% endblock %}
+
+{% block style %}
+  <style>
+      body {
+          background-color: #1a1d20;
+      }
+
+      #fab {
+          display: none;
+      }
+  </style>
+{% endblock %}
+
+{% block nav %}{% endblock %}
+
+{% block content %}
+  <div id="reader"></div>
+  <h1 id="message"></h1>
+{% endblock %}
