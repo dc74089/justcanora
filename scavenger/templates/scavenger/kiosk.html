@@ -5,8 +5,25 @@
 
   <script>
       let refresher;
+      let did_qr_init = false;
+      let state;
+      let debounce = false;
 
-      $(function () {
+      $(getState)
+
+      document.addEventListener('click', function enableNoSleep() {
+          if (!init) {
+              try {
+                  const wakeLockPromise = navigator.wakeLock.request("screen");
+                  init = true;
+              } catch (err) {
+                  // the wake lock request fails - usually system related, such being low on battery
+                  alert(`${err.name}, ${err.message}`);
+              }
+          }
+      }, false);
+
+      function qr_init () {
           const html5QrCode = new Html5Qrcode("reader");
 
           html5QrCode.start(
@@ -16,6 +33,14 @@
               },
               (decodedText, decodedResult) => {
                   console.log(decodedText)
+                  if (state == "qr" && !debounce) {
+                      debounce = true;
+                      notifyTeamHere(decodedText)
+
+                      setTimeout(function () {
+                          debounce = false
+                      }, 1000)
+                  }
               },
               (errorMessage) => {
                   //console.log(errorMessage)
@@ -23,9 +48,8 @@
               .catch((err) => {
                   console.log(err)
               });
-
-          getState()
-      })
+          did_qr_init = true;
+      }
 
       function notifyTeamHere(id) {
           $.post("{% url 'scavenger-kiosk-state' %}", {
@@ -33,18 +57,20 @@
               "team": id
           }).then(function (response) {
               getState();
-              refresher = setInterval(getState, 1000);
           })
       }
 
       function getState() {
           $.get("{% url 'scavenger-kiosk-state' %}")
               .then(function (response) {
-                  let state = response['state']
+                  state = response['state']
 
                   if (state == "qr") {
                       $("#reader").show()
                       $("#message").hide()
+                      $("#team").hide()
+
+                      if (!did_qr_init) qr_init();
 
                       if (refresher != null) {
                           clearInterval(refresher);
@@ -54,8 +80,18 @@
                   if (state == "message") {
                       $("#reader").hide()
                       $("#message").show().html(response['message'])
+
+                      if (response['team_name'] != null) {
+                          $("#team").show()
+                          $("#team-name").html(response['team_name'])
+                      } else {
+                          $("#team").hide()
+                      }
                   }
 
+              })
+              .always(function () {
+                  setTimeout(getState, 500)
               })
       }
 
@@ -66,6 +102,16 @@
   <style>
       body {
           background-color: #1a1d20;
+          color: white;
+          text-align: center;
+      }
+
+      #location {
+          font-size: 7em;
+      }
+
+      #team, #message {
+          font-size: 3em;
       }
 
       #fab {
@@ -77,6 +123,8 @@
 {% block nav %}{% endblock %}
 
 {% block content %}
+  <h1 id="location">{{ kiosk.location }}</h1>
+  <h1 id="team" class="mb-5">Hello, <span id="team-name">Team Name</span></h1>
   <div id="reader"></div>
   <h1 id="message"></h1>
 {% endblock %}

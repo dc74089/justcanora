@@ -24,6 +24,7 @@
   <script>
       $(function () {
           new QRCode("qr", "{{ team.id }}");
+          get_team_state();
       })
 
       function get_team_state() {
@@ -58,6 +59,28 @@
                   $("#message-div").show();
                   $("#message").html(message);
               }
+
+              if (response['letters'] != null) {
+                  $("#letters").html(response['letters'])
+              }
+          }).always(function () {
+              setTimeout(get_team_state, 500)
+          })
+      }
+
+      function submit_answer() {
+          let ans = $("#answer").val()
+
+          $.post("{% url 'scavenger-team-answer-question' %}", {
+              "answer": ans
+          }).then(function (response) {
+              if (response['result'] == true) {
+                  alert("That's it! We've awarded a letter.")
+              }
+
+              if (response['result'] == false) {
+                  alert("That's not correct. No letter for you!")
+              }
           })
       }
   </script>
@@ -77,8 +100,8 @@
     <div id="entry" class="mb-5 hunt-hide">
       <h2 class="mb-4">Question is displayed on <span id="kiosk-name">KIOSK</span></h2>
       <h3>Answer:</h3>
-      <input class="form-control">
-      <a class="btn btn-success mt-3">Submit</a>
+      <input class="form-control" type="text" id="answer">
+      <a class="btn btn-success mt-3" onclick="submit_answer()">Submit</a>
     </div>
 
     <div id="qr" class="mb-5 p-2 bg-white hunt-hide">
@@ -86,8 +109,13 @@
 
     </div>
 
-    <div id="message-div mb-5">
+    <div id="message-div" class="mb-5 hunt-hide">
       <h1 id="message">Return to Tr. Canora's Room</h1>
+    </div>
+
+    <div style="position:absolute; width: 100%; bottom: 0; left: 0">
+      <h1>Your Letters So Far:</h1>
+      <h1 id="letters">ABCD</h1>
     </div>
 
   </div>
