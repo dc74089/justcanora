@@ -1,0 +1,36 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+	<script>
+    function sendCommand(command, extra) {
+        $.post("{% url 'scavenger-admin-action' %}", {
+            "action": command,
+            "data": extra
+        }).then(function (response) {
+            alert(response)
+        }).error(function (response) {
+            alert(response)
+        })
+    }
+    </script>
+{% endblock %}
+
+{% block content %}
+<table class="table table-striped">
+<tr>
+    <th>Start Hunt</th>
+    <td>Set all screens to QR, give all teams a location</td>
+    <td><a href="#" class="btn btn-primary text-white" onclick="sendCommand('start')">Start Hunt</a> </td>
+</tr>
+<tr>
+    <th>Send Popup</th>
+    <td><input type="text" id="message-popup" class="form-control"></td>
+    <td><a href="#" class="btn btn-primary text-white" onclick="confirm('Really?') && sendCommand('popup', $('#message-popup').val())">Send Message</a> </td>
+</tr>
+<tr>
+    <th>End Hunt</th>
+    <td><input type="text" id="message-end" class="form-control"></td>
+    <td><a href="#" class="btn btn-primary text-white" onclick="confirm('Really?') && sendCommand('message', $('#message-end').val())">Send Message</a> </td>
+</tr>
+</table>
+{% endblock %}

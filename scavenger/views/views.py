@@ -5,7 +5,7 @@ from django.http import HttpResponseBadRequest, JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Team, Hunt, Kiosk, Riddle
+from scavenger.models import Team, Hunt, Kiosk, Riddle
 
 
 def create_team(request):
@@ -50,9 +50,15 @@ def join_team(request):
 
 
 def team_home(request):
-    t = Team.objects.get(id=request.session['team'])
+    try:
+        t = Team.objects.get(id=request.session['team'])
 
-    return render(request, 'scavenger/team.html', {'team': t})
+        return render(request, 'scavenger/team.html', {'team': t})
+    except:
+        if 'team' in request.session:
+            del request.session['team']
+
+        return redirect('scavenger-create-team')
 
 
 def get_team_state(request):
@@ -69,10 +75,40 @@ def answer_question(request):
         team = Team.objects.get(id=request.session['team'])
         q = Riddle.objects.get(id=team.get_state().get("riddle"))
 
+        team.destination.set_state_qr()
+
         ans = request.POST['answer']
 
         if ans.strip().lower() == q.answer.strip().lower():
-            pass  #TODO: Pick up here
+            team.final_password_progression += 1
+            team.solved.add(q)
+            team.save()
+
+            if team.final_password_progression >= len(team.hunt.final_password):
+                team.set_state_message("You've got all the letters! Head back to the classroom.")
+                return JsonResponse({
+                    "result": True,
+                })
+
+            kiosks = Kiosk.objects.all().exclude(id=team.get_state().get("kiosk"))
+
+            k = random.choice(list(kiosks))
+
+            team.set_new_destination(k)
+
+            return JsonResponse({
+                "result": True
+            })
+        else:
+            kiosks = Kiosk.objects.all().exclude(id=team.get_state().get("kiosk"))
+
+            k = random.choice(list(kiosks))
+
+            team.set_new_destination(k)
+
+            return JsonResponse({
+                "result": False
+            })
 
 
 def kiosk(request):
@@ -115,10 +151,7 @@ def kiosk_state(request):
             team = Team.objects.get(id=data['team'])
             kiosk = Kiosk.objects.get(id=request.session['kiosk'])
 
-            if team.get_state().get('destination') == kiosk.id:
-                team_state = team.get_state()
-                kiosk_state = kiosk.get_state()
-
+            if team.destination.id == kiosk.id:
                 rq = Riddle.objects.all().difference(team.solved.all())
 
                 print(rq, team.solved.all())
@@ -128,15 +161,13 @@ def kiosk_state(request):
                 else:
                     return
 
-                team_state['state'] = "entry"
-                team_state['riddle'] = riddle.id
-                kiosk_state['state'] = "message"
-                kiosk_state['message'] = riddle.question
+                team.set_state_riddle(riddle.id)
+                kiosk.set_state_message(riddle.question)
 
-                team.set_state(team_state)
-                team.save()
-
-                kiosk.set_state(kiosk_state)
-                kiosk.save()
-
-                return HttpResponse(status=200)
+                return JsonResponse({
+                    "team_name": team.name
+                })
+            else:
+                return JsonResponse({
+                    "error": "You're in the wrong place!"
+                })

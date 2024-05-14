@@ -1,6 +1,7 @@
 from django.urls import path
 
-from . import views
+from .views import admin
+from .views import views
 
 urlpatterns = [
     path('', views.create_team, name='scavenger-create-team'),
@@ -12,4 +13,7 @@ urlpatterns = [
 
     path('kiosk', views.kiosk, name='scavenger-kiosk'),
     path('kiosk/state', views.kiosk_state, name='scavenger-kiosk-state'),
+
+    path('admin', admin.admin, name='scavenger-admin'),
+    path('admin/do', admin.do_action, name='scavenger-admin-action'),
 ]

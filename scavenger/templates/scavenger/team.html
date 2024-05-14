@@ -37,6 +37,8 @@
 
                   $("#qr").show();
                   $("#location").html(location);
+
+                  $("#answer").val('')
               }
 
               if (state == "task") {
@@ -75,11 +77,11 @@
               "answer": ans
           }).then(function (response) {
               if (response['result'] == true) {
-                  alert("That's it! We've awarded a letter.")
+                  alert("That's right! We've awarded a letter.")
               }
 
               if (response['result'] == false) {
-                  alert("That's not correct. No letter for you!")
+                  alert("That's not correct. No letter for you! Head to a new location to try again.")
               }
           })
       }
