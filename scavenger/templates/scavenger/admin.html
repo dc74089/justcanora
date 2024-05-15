@@ -28,7 +28,7 @@
     <tr>
       <th>Start Hunt</th>
       <td>Set all screens to QR, give all teams a location</td>
-      <td><a href="#" class="btn btn-primary text-white" onclick="sendCommand('start')">Start Hunt</a></td>
+      <td><a href="#" class="btn btn-primary text-white" onclick="confirm('Really?') && sendCommand('start')">Start Hunt</a></td>
     </tr>
     <tr>
       <th>Send Popup</th>
@@ -52,7 +52,7 @@
         </select>
       </td>
       <td><a href="#" class="btn btn-primary text-white"
-             onclick="confirm('Really?') && sendCommand('kiosk_init', $('#kiosk-select').find(':selected').val())">Go</a>
+             onclick="sendCommand('kiosk_init', $('#kiosk-select').find(':selected').val())">Go</a>
       </td>
     </tr>
     <tr>
@@ -65,7 +65,7 @@
         </select>
       </td>
       <td><a href="#" class="btn btn-primary text-white"
-             onclick="confirm('Really?') && sendCommand('team_init', $('#team-select').find(':selected').val())">Go</a>
+             onclick="sendCommand('team_init', $('#team-select').find(':selected').val())">Go</a>
       </td>
     </tr>
     <tr>
@@ -78,7 +78,7 @@
         </select>
       </td>
       <td><a href="#" class="btn btn-primary text-white"
-             onclick="confirm('Really?') && sendCommand('team_to_final', $('#team-select2').find(':selected').val())">Go</a>
+             onclick="sendCommand('team_to_final', $('#team-select2').find(':selected').val())">Go</a>
       </td>
     </tr>
   </table>
