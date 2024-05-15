@@ -71,7 +71,7 @@ def do_action(request):
         elif action == "team_to_final":
             team = Team.objects.get(id=request.POST['data'])
 
-            if team.final_password_progression == len(team.hunt.final_password):
+            if team.final_password_progression >= len(team.hunt.final_password):
                 team.set_state_final()
                 return HttpResponse("Set team to final screen.")
             else:
