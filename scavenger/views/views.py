@@ -102,7 +102,7 @@ def answer_question(request):
                     "result": True,
                 })
 
-            kiosks = Kiosk.objects.filter(active=True).exclude(id=team.get_state().get("kiosk"))
+            kiosks = Kiosk.objects.filter(active=True).exclude(id=team.destination.id)
 
             k = random.choice(list(kiosks))
 
@@ -112,7 +112,7 @@ def answer_question(request):
                 "result": True
             })
         else:
-            kiosks = Kiosk.objects.filter(active=True).exclude(id=team.get_state().get("kiosk"))
+            kiosks = Kiosk.objects.filter(active=True).exclude(id=team.destination.id)
 
             k = random.choice(list(kiosks))
 
