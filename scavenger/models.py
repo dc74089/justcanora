@@ -34,7 +34,7 @@ class Kiosk(models.Model):
         state = self.get_state()
         state['state'] = 'qr'
 
-        if state['team_name']:
+        if 'team_name' in state:
             del state['team_name']
 
         self.set_state(state)
@@ -52,7 +52,7 @@ class Kiosk(models.Model):
 
         if team_name:
             state['team_name'] = team_name
-        elif state['team_name']:
+        elif 'team_name' in state:
             del state['team_name']
 
         self.set_state(state)
