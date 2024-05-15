@@ -22,14 +22,25 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
+      let win = false;
+
       $(function () {
           new QRCode("qr", "{{ team.id }}");
           get_team_state();
       })
 
       function get_team_state() {
+          if (win) return
+
           $.get("{% url 'scavenger-team-state' %}").then(function (response) {
               $(".hunt-hide").hide()
+
+              if (response['popup'] != null) {
+                  alert(response['popup'])
+                  $.post("{% url 'scavenger-team-state' %}", {
+                      "action": "dismiss_popup"
+                  })
+              }
 
               let state = response['state'];
               if (state == "qr") {
@@ -62,6 +73,10 @@
                   $("#message").html(message);
               }
 
+              if (state == "final") {
+                  $("#final-div").show();
+              }
+
               if (response['letters'] != null) {
                   $("#letters").html(response['letters'])
               }
@@ -84,6 +99,21 @@
                   alert("That's not correct. No letter for you! Head to a new location to try again.")
               }
           })
+      }
+
+      function check_final() {
+          let val = $("#final").val()
+
+          if (val.toLowerCase() == "{{ final_answer }}".toLowerCase()) {
+              $("#final-div").hide()
+              $("#win-div").show()
+
+              $("#win-time").html(new Date().toLocaleTimeString())
+
+              win = true
+          } else {
+              alert("That's not correct.")
+          }
       }
   </script>
 {% endblock %}
@@ -113,6 +143,17 @@
 
     <div id="message-div" class="mb-5 hunt-hide">
       <h1 id="message">Return to Tr. Canora's Room</h1>
+    </div>
+
+    <div id="final-div" class="mb-5 hunt-hide">
+      <h2>What do the letters unscramble to?</h2>
+      <input id="final" class="form-control mb-3">
+      <a href="#" class="btn btn-primary" onclick="check_final()">Check</a>
+    </div>
+
+    <div id="win-div" class="mb-5 hunt-hide">
+      <h1>You Win!</h1>
+      <h2 id="win-time"></h2>
     </div>
 
     <div style="position:absolute; width: 100%; bottom: 0; left: 0">

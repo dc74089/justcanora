@@ -7,7 +7,10 @@ from scavenger.models import Kiosk, Team
 
 
 def admin(request):
-    return render(request, 'scavenger/admin.html')
+    return render(request, 'scavenger/admin.html', {
+        "teams": Team.objects.all(),
+        "kiosks": Kiosk.objects.all(),
+    })
 
 
 @staff_member_required
@@ -20,7 +23,7 @@ def do_action(request):
             for kiosk in Kiosk.objects.all():
                 kiosk.set_state_qr()
 
-            kiosks = Kiosk.objects.all()
+            kiosks = Kiosk.objects.filter(active=True)
             i = 0
 
             for team in Team.objects.all():
@@ -29,7 +32,11 @@ def do_action(request):
                 i %= len(kiosks)
 
             return HttpResponse("Game Started.")
+        elif action == "popup":
+            for team in Team.objects.all():
+                team.send_popup(request.POST['data'])
 
+            return HttpResponse("Sent.")
         elif action == "message":
             for kiosk in Kiosk.objects.all():
                 kiosk.set_state_message(request.POST.get('message', request.POST.get("data", "Return to the classroom")))
@@ -37,4 +44,25 @@ def do_action(request):
             for team in Team.objects.all():
                 team.set_state_message(request.POST.get('message', request.POST.get("data", "Return to the classroom")))
 
-            return HttpResponse("Game Ended.")
+            return HttpResponse("Game Frozen by Message.")
+        elif action == "kiosk_init":
+            kiosk = Kiosk.objects.get(id=request.POST['data'])
+
+            kiosk.set_state_qr()
+            return HttpResponse("Kiosk Initialized.")
+        elif action == "team_init":
+            team = Team.objects.get(id=request.POST['data'])
+
+            team.set_new_destination(Kiosk.objects.filter(active=True).order_by('?').first())
+            team.set_state_qr()
+
+            return HttpResponse("Team Initialized.")
+        elif action == "team_to_final":
+            team = Team.objects.get(id=request.POST['data'])
+
+            if team.final_password_progression == len(team.hunt.final_password):
+                team.set_state_final()
+                return HttpResponse("Set team to final screen.")
+            else:
+                return HttpResponse("ERROR: Team doesn't have all letters. Didn't touch them.")
+

@@ -18,6 +18,7 @@ class Kiosk(models.Model):
     hunt = models.ForeignKey(Hunt, related_name="kiosks", on_delete=models.CASCADE)
     location = models.TextField()
     state = models.TextField(default="{}")
+    active = models.BooleanField(default=True)
 
     def get_state(self):
         return json.loads(self.state)
@@ -81,10 +82,31 @@ class Team(models.Model):
         self.set_state(state)
         self.save()
 
+    def set_state_final(self):
+        state = json.loads(self.state)
+        state['state'] = "final"
+        self.set_state(state)
+        self.save()
+
     def set_new_destination(self, destination: Kiosk):
         self.destination = destination
         self.save()
         self.set_state_qr(destination.location)
+        self.save()
+
+    def send_popup(self, message):
+        state = self.get_state()
+        state['popup'] = message
+        self.set_state(state)
+        self.save()
+
+    def acknowledge_popup(self):
+        state = self.get_state()
+
+        if 'popup' in state:
+            del state['popup']
+
+        self.set_state(state)
         self.save()
 
     def __str__(self):

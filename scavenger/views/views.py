@@ -53,7 +53,10 @@ def team_home(request):
     try:
         t = Team.objects.get(id=request.session['team'])
 
-        return render(request, 'scavenger/team.html', {'team': t})
+        return render(request, 'scavenger/team.html', {
+            'team': t,
+            'final_answer': t.hunt.final_password
+        })
     except:
         if 'team' in request.session:
             del request.session['team']
@@ -61,12 +64,21 @@ def team_home(request):
         return redirect('scavenger-create-team')
 
 
+@csrf_exempt
 def get_team_state(request):
-    if 'team' in request.session:
-        t = Team.objects.get(id=request.session['team'])
-        return JsonResponse(t.get_state())
-    else:
-        return HttpResponseBadRequest()
+    if request.method == "GET":
+        if 'team' in request.session:
+            t = Team.objects.get(id=request.session['team'])
+            return JsonResponse(t.get_state())
+        else:
+            return HttpResponseBadRequest()
+    elif request.method == "POST":
+        if 'action' in request.POST:
+            if request.POST['action'] == 'dismiss_popup':
+                t = Team.objects.get(id=request.session['team'])
+                t.acknowledge_popup()
+
+                return HttpResponse(status=200)
 
 
 @csrf_exempt
