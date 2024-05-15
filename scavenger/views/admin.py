@@ -12,6 +12,7 @@ def admin(request):
         "kiosks": Kiosk.objects.all(),
     })
 
+
 def table(request):
     hunt = Hunt.objects.first()
 
@@ -48,7 +49,8 @@ def do_action(request):
             return HttpResponse("Sent.")
         elif action == "message":
             for kiosk in Kiosk.objects.all():
-                kiosk.set_state_message(request.POST.get('message', request.POST.get("data", "Return to the classroom")))
+                kiosk.set_state_message(
+                    request.POST.get('message', request.POST.get("data", "Return to the classroom")))
 
             for team in Team.objects.all():
                 team.set_state_message(request.POST.get('message', request.POST.get("data", "Return to the classroom")))
@@ -74,4 +76,3 @@ def do_action(request):
                 return HttpResponse("Set team to final screen.")
             else:
                 return HttpResponse("ERROR: Team doesn't have all letters. Didn't touch them.")
-
