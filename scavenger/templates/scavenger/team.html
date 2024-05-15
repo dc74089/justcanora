@@ -79,6 +79,7 @@
 
               if (response['letters'] != null) {
                   $("#letters").html(response['letters'])
+                  $("#letters2").html(response['letters'])
               }
           }).always(function () {
               setTimeout(get_team_state, 500)
@@ -147,7 +148,7 @@
 
     <div id="final-div" class="mb-5 hunt-hide">
       <h2>What do the letters unscramble to?</h2>
-      <h1 id="letters" class="font-monospace"></h1>
+      <h1 id="letters2" class="font-monospace"></h1>
       <input id="final" class="form-control mb-3">
       <a href="#" class="btn btn-primary" onclick="check_final()">Check</a>
     </div>
