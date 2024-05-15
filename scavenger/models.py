@@ -33,6 +33,10 @@ class Kiosk(models.Model):
     def set_state_qr(self):
         state = self.get_state()
         state['state'] = 'qr'
+
+        if state['team_name']:
+            del state['team_name']
+
         self.set_state(state)
         self.save()
 
@@ -43,6 +47,16 @@ class Kiosk(models.Model):
         self.set_state(state)
         self.save()
 
+    def set_current_team(self, team_name):
+        state = self.get_state()
+
+        if team_name:
+            state['team_name'] = team_name
+        elif state['team_name']:
+            del state['team_name']
+
+        self.set_state(state)
+        self.save()
 
     def __str__(self):
         return self.location
@@ -52,7 +66,8 @@ class Team(models.Model):
     hunt = models.ForeignKey("Hunt", on_delete=models.CASCADE)
     name = models.TextField()
     state = models.TextField(default="{}")
-    destination = models.ForeignKey("Kiosk", related_name="teams_targeting", on_delete=models.SET_NULL, null=True, blank=True)
+    destination = models.ForeignKey("Kiosk", related_name="teams_targeting", on_delete=models.SET_NULL, null=True,
+                                    blank=True)
     solved = models.ManyToManyField("Riddle", related_name="+", blank=True)
     final_password_order = models.TextField()
     final_password_progression = models.IntegerField(default=0)

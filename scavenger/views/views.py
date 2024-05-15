@@ -175,11 +175,12 @@ def kiosk_state(request):
 
                 team.set_state_riddle(riddle.id)
                 kiosk.set_state_message(riddle.question)
+                kiosk.set_current_team(team.name)
 
                 return JsonResponse({
                     "team_name": team.name
                 })
             else:
                 return JsonResponse({
-                    "error": "You're in the wrong place!"
+                    "error": f"You're in the wrong place! Go to the {team.destination.location}"
                 })

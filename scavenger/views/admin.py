@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from scavenger.models import Kiosk, Team, Hunt
 
 
+@staff_member_required
 def admin(request):
     return render(request, 'scavenger/admin.html', {
         "teams": Team.objects.all(),
@@ -13,6 +14,7 @@ def admin(request):
     })
 
 
+@staff_member_required
 def table(request):
     hunt = Hunt.objects.first()
 
