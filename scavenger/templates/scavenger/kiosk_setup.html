@@ -1,0 +1,13 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <form action="{% url 'scavenger-kiosk' %}" method="post">
+    {% csrf_token %}
+    <div class="my-3">
+      <label for="location">Location Name</label>
+      <input class="form-control" type="text" name="location" id="location" required>
+    </div>
+
+    <button class="btn btn-success">Go</button>
+  </form>
+{% endblock %}

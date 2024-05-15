@@ -56,7 +56,7 @@ if DEBUG:
     ALLOWED_HOSTS.extend([
         '127.0.0.1',
         'localhost',
-        "10.1.32.203",
+        "*",
     ])
 
 # Application definition
@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_crontab',
     'app',
+    'scavenger'
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,165 @@
+{% extends 'app/base.html' %}
+
+{% block style %}
+  <style>
+      body {
+          background-color: #1a1d20;
+      }
+
+      #fab {
+          display: none;
+      }
+
+      #qr img {
+          width: 100%;
+      }
+  </style>
+{% endblock %}
+
+{% block script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+          integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+      let win = false;
+
+      $(function () {
+          new QRCode("qr", "{{ team.id }}");
+          get_team_state();
+      })
+
+      function get_team_state() {
+          if (win) return
+
+          $.get("{% url 'scavenger-team-state' %}").then(function (response) {
+              $(".hunt-hide").hide()
+
+              if (response['popup'] != null) {
+                  alert(response['popup'])
+                  $.post("{% url 'scavenger-team-state' %}", {
+                      "action": "dismiss_popup"
+                  })
+              }
+
+              let state = response['state'];
+              if (state == "qr") {
+                  let location = response['location'];
+
+                  $("#qr").show();
+                  $("#location").html(location);
+
+                  $("#answer").val('')
+              }
+
+              if (state == "task") {
+                  let task = response['task'];
+
+                  $("#task-div").show();
+                  $("#task").html(task);
+              }
+
+              if (state == "entry") {
+                  let location = response['location'];
+
+                  $("#entry").show();
+                  $("#kiosk-name").html(location);
+              }
+
+              if (state == "message") {
+                  let message = response['message'];
+
+                  $("#message-div").show();
+                  $("#message").html(message);
+              }
+
+              if (state == "final") {
+                  $("#final-div").show();
+              }
+
+              if (response['letters'] != null) {
+                  $("#letters").html(response['letters'])
+              }
+          }).always(function () {
+              setTimeout(get_team_state, 500)
+          })
+      }
+
+      function submit_answer() {
+          let ans = $("#answer").val()
+
+          $.post("{% url 'scavenger-team-answer-question' %}", {
+              "answer": ans
+          }).then(function (response) {
+              if (response['result'] == true) {
+                  alert("That's right! We've awarded a letter.")
+              }
+
+              if (response['result'] == false) {
+                  alert("That's not correct. No letter for you! Head to a new location to try again.")
+              }
+          })
+      }
+
+      function check_final() {
+          let val = $("#final").val()
+
+          if (val.toLowerCase() == "{{ final_answer }}".toLowerCase()) {
+              $("#final-div").hide()
+              $("#win-div").show()
+
+              $("#win-time").html(new Date().toLocaleTimeString())
+
+              win = true
+          } else {
+              alert("That's not correct.")
+          }
+      }
+  </script>
+{% endblock %}
+
+{% block nav %}{% endblock %}
+
+{% block content %}
+  <div class="text-center text-white px-5">
+    <h1 id="team-name" class="mb-5">{{ team.name }}</h1>
+
+    <div id="task-div" class="mb-5 hunt-hide">
+      <h2>Current Task:</h2>
+      <h3 id="task">Task goes here</h3>
+    </div>
+
+    <div id="entry" class="mb-5 hunt-hide">
+      <h2 class="mb-4">Question is displayed on <span id="kiosk-name">KIOSK</span></h2>
+      <h3>Answer:</h3>
+      <input class="form-control" type="text" id="answer">
+      <a class="btn btn-success mt-3" onclick="submit_answer()">Submit</a>
+    </div>
+
+    <div id="qr" class="mb-5 p-2 bg-white hunt-hide">
+      <h2 class="text-black">Scan this QR Code at <span id="location">LOCATION</span></h2>
+
+    </div>
+
+    <div id="message-div" class="mb-5 hunt-hide">
+      <h1 id="message">Return to Tr. Canora's Room</h1>
+    </div>
+
+    <div id="final-div" class="mb-5 hunt-hide">
+      <h2>What do the letters unscramble to?</h2>
+      <input id="final" class="form-control mb-3">
+      <a href="#" class="btn btn-primary" onclick="check_final()">Check</a>
+    </div>
+
+    <div id="win-div" class="mb-5 hunt-hide">
+      <h1>You Win!</h1>
+      <h2 id="win-time"></h2>
+    </div>
+
+    <div style="position:absolute; width: 100%; bottom: 0; left: 0">
+      <h1>Your Letters So Far:</h1>
+      <h1 id="letters">ABCD</h1>
+    </div>
+
+  </div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <script>
+      function sendCommand(command, extra) {
+          $.post("{% url 'scavenger-admin-action' %}", {
+              "action": command,
+              "data": extra
+          }).then(function (response) {
+              alert(response)
+          }).error(function (response) {
+              alert(response)
+          })
+      }
+
+      $(function () {
+          setInterval(function () {
+              $.get("{% url 'scavenger-admin-table' %}").then(function (response) {
+                  $("#ajax-table").html(response)
+              })
+          }, 1000)
+      })
+  </script>
+{% endblock %}
+
+{% block content %}
+  <table class="table table-striped">
+    <tr>
+      <th>Start Hunt</th>
+      <td>Set all screens to QR, give all teams a location</td>
+      <td><a href="#" class="btn btn-primary text-white" onclick="sendCommand('start')">Start Hunt</a></td>
+    </tr>
+    <tr>
+      <th>Send Popup</th>
+      <td><input type="text" id="message-popup" class="form-control"></td>
+      <td><a href="#" class="btn btn-primary text-white"
+             onclick="confirm('Really?') && sendCommand('popup', $('#message-popup').val())">Send Message</a></td>
+    </tr>
+    <tr>
+      <th>End Hunt</th>
+      <td><input type="text" id="message-end" class="form-control"></td>
+      <td><a href="#" class="btn btn-primary text-white"
+             onclick="confirm('Really?') && sendCommand('message', $('#message-end').val())">Send Message</a></td>
+    </tr>
+    <tr>
+      <th>Re-Init Kiosk</th>
+      <td>
+        <select class="form-control" id="kiosk-select">
+          {% for kiosk in kiosks %}
+            <option value="{{ kiosk.id }}">{{ kiosk.location }}</option>
+          {% endfor %}
+        </select>
+      </td>
+      <td><a href="#" class="btn btn-primary text-white"
+             onclick="confirm('Really?') && sendCommand('kiosk_init', $('#kiosk-select').find(':selected').val())">Go</a>
+      </td>
+    </tr>
+    <tr>
+      <th>Re-Init Team</th>
+      <td>
+        <select class="form-control" id="team-select">
+          {% for team in teams %}
+            <option value="{{ team.id }}">{{ team.name }}</option>
+          {% endfor %}
+        </select>
+      </td>
+      <td><a href="#" class="btn btn-primary text-white"
+             onclick="confirm('Really?') && sendCommand('team_init', $('#team-select').find(':selected').val())">Go</a>
+      </td>
+    </tr>
+    <tr>
+      <th>Set Team to Final</th>
+      <td>
+        <select class="form-control" id="team-select2">
+          {% for team in teams %}
+            <option value="{{ team.id }}">{{ team.name }}</option>
+          {% endfor %}
+        </select>
+      </td>
+      <td><a href="#" class="btn btn-primary text-white"
+             onclick="confirm('Really?') && sendCommand('team_to_final', $('#team-select2').find(':selected').val())">Go</a>
+      </td>
+    </tr>
+  </table>
+
+  <div class="mt-5" id="ajax-table"></div>
+{% endblock %}

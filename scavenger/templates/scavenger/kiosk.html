@@ -1,0 +1,157 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <script>
+      let refresher;
+      let error_shower;
+      let did_qr_init = false;
+      let state;
+      let debounce = false;
+      let html5QrCode;
+
+      document.addEventListener('click', function () {
+          if (!init) {
+              try {
+                  const wakeLockPromise = navigator.wakeLock.request("screen");
+                  init = true;
+              } catch (err) {
+                  // the wake lock request fails - usually system related, such being low on battery
+                  alert(`${err.name}, ${err.message}`);
+              }
+          }
+      }, false);
+
+      $(function () {
+          $("#error").hide()
+          getState()
+      })
+
+      function qr_init() {
+          html5QrCode = new Html5Qrcode("reader");
+
+          try {
+              html5QrCode.stop()
+          } catch (e) {
+
+          }
+
+          debounce = true
+          setTimeout(function () {
+              debounce = false
+          }, 1000)
+
+          html5QrCode.start(
+              {facingMode: "user"},
+              {
+                  fps: 10,    // Optional, frame per seconds for qr code scanning
+              },
+              (decodedText, decodedResult) => {
+                  console.log(decodedText)
+                  if (state == "qr" && !debounce) {
+                      debounce = true;
+                      notifyTeamHere(decodedText)
+
+                      setTimeout(function () {
+                          debounce = false
+                      }, 1000)
+                  }
+              },
+              (errorMessage) => {
+                  //console.log(errorMessage)
+              })
+              .catch((err) => {
+                  console.log(err)
+              });
+          did_qr_init = true;
+      }
+
+      function notifyTeamHere(id) {
+
+          $.post("{% url 'scavenger-kiosk-state' %}", {
+              "type": "teamhere",
+              "team": id
+          }).then(function (response) {
+              if (response['error']) {
+                  $("#error").html(response['error']).show()
+
+                  error_shower = setTimeout(function () {
+                      $("#error").hide()
+                  }, 5000)
+              } else {
+                  html5QrCode.stop()
+              }
+          })
+      }
+
+      function getState() {
+          $.get("{% url 'scavenger-kiosk-state' %}")
+              .then(function (response) {
+                  if (state == "qr" && response['state'] == "qr") return
+                  state = response['state']
+
+                  if (state == "qr") {
+                      $("#reader").show()
+                      $("#message").hide()
+                      $("#team").hide()
+
+                      qr_init();
+
+                      if (refresher != null) {
+                          clearInterval(refresher);
+                      }
+                  }
+
+                  if (state == "message") {
+                      $("#reader").hide()
+                      $("#message").show().html(response['message'])
+
+                      if (response['team_name'] != null) {
+                          $("#team").show()
+                          $("#team-name").html(response['team_name'])
+                      } else {
+                          $("#team").hide()
+                      }
+                  }
+
+              })
+              .always(function () {
+                  setTimeout(getState, 500)
+              })
+      }
+
+  </script>
+{% endblock %}
+
+{% block style %}
+  <style>
+      body {
+          background-color: #1a1d20;
+          color: white;
+          text-align: center;
+      }
+
+      #location {
+          font-size: 7em;
+      }
+
+      #team, #message {
+          font-size: 3em;
+      }
+
+      #fab {
+          display: none;
+      }
+  </style>
+{% endblock %}
+
+{% block nav %}{% endblock %}
+
+{% block content %}
+  <h1 id="location">{{ kiosk.location }}</h1>
+  <h1 id="team" class="mb-5">Hello, <span id="team-name">Team Name</span></h1>
+  <div id="reader"></div>
+  <h1 id="message"></h1>
+  <div id="error" class="alert alert-danger">Error goes here</div>
+{% endblock %}
