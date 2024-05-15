@@ -3,13 +3,22 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from scavenger.models import Kiosk, Team
+from scavenger.models import Kiosk, Team, Hunt
 
 
 def admin(request):
     return render(request, 'scavenger/admin.html', {
         "teams": Team.objects.all(),
         "kiosks": Kiosk.objects.all(),
+    })
+
+def table(request):
+    hunt = Hunt.objects.first()
+
+    return render(request, 'scavenger/admin-table.html', {
+        "teams": Team.objects.all(),
+        "kiosks": Kiosk.objects.all(),
+        "final_password_letters": len(hunt.final_password)
     })
 
 
@@ -20,7 +29,7 @@ def do_action(request):
         action = request.POST['action']
 
         if action == "start":
-            for kiosk in Kiosk.objects.all():
+            for kiosk in Kiosk.objects.filter(active=True):
                 kiosk.set_state_qr()
 
             kiosks = Kiosk.objects.filter(active=True)

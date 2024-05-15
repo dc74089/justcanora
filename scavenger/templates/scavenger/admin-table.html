@@ -1,0 +1,33 @@
+<h1>Teams</h1>
+<table class="table table-striped">
+  <tr>
+    <th>Name</th>
+    <th>State</th>
+    <th>Destination</th>
+    <th>Progression</th>
+  </tr>
+
+  {% for team in teams %}
+    <tr>
+      <td><a href="{% url 'admin:scavenger_team_change' team.id %}">{{ team.name }}</a></td>
+      <td>{{ team.get_state_display }}</td>
+      <td>{{ team.destination }}</td>
+      <td>{{ team.final_password_progression }}/{{ final_password_letters }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+<h1>Kiosks</h1>
+<table class="table table-striped">
+  <tr>
+    <th>Name</th>
+    <th>State</th>
+  </tr>
+
+  {% for kiosk in kiosks %}
+    <tr>
+      <td><a href="{% url 'admin:scavenger_kiosk_change' kiosk.id %}">{{ kiosk.location }}</a></td>
+      <td>{{ kiosk.get_state_display }}</td>
+    </tr>
+  {% endfor %}
+</table>

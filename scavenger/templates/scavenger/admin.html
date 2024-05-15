@@ -12,6 +12,14 @@
               alert(response)
           })
       }
+
+      $(function () {
+          setInterval(function () {
+              $.get("{% url 'scavenger-admin-table' %}").then(function (response) {
+                  $("#ajax-table").html(response)
+              })
+          }, 1000)
+      })
   </script>
 {% endblock %}
 
@@ -74,4 +82,6 @@
       </td>
     </tr>
   </table>
+
+  <div class="mt-5" id="ajax-table"></div>
 {% endblock %}

@@ -15,5 +15,6 @@ urlpatterns = [
     path('kiosk/state', views.kiosk_state, name='scavenger-kiosk-state'),
 
     path('admin', admin.admin, name='scavenger-admin'),
+    path('admin/table', admin.table, name='scavenger-admin-table'),
     path('admin/do', admin.do_action, name='scavenger-admin-action'),
 ]

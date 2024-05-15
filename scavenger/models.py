@@ -23,6 +23,10 @@ class Kiosk(models.Model):
     def get_state(self):
         return json.loads(self.state)
 
+    def get_state_display(self):
+        state = self.get_state()
+        return state["state"]
+
     def set_state(self, state):
         self.state = json.dumps(state)
 
@@ -57,6 +61,10 @@ class Team(models.Model):
         state = json.loads(self.state)
         state['letters'] = self.final_password_order[:self.final_password_progression]
         return state
+
+    def get_state_display(self):
+        state = self.get_state()
+        return state["state"]
 
     def set_state(self, state):
         self.state = json.dumps(state)
