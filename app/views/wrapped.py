@@ -17,6 +17,11 @@ def wrapped2024(request):
 
 
 def wrapped_demo(request):
-    return render(request, 'app/wrapped/wrapped2024.html', {
-        'data': Wrapped2024.objects.get(student=Student.objects.get(id=3432))
-    })
+    if 'eighth' in request.GET:
+        return render(request, 'app/wrapped/wrapped2024.html', {
+            'data': Wrapped2024.objects.get(student=Student.objects.get(id=3229))
+        })
+    else:
+        return render(request, 'app/wrapped/wrapped2024.html', {
+            'data': Wrapped2024.objects.get(student=Student.objects.get(id=3432))
+        })
