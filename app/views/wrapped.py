@@ -1,7 +1,7 @@
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import render
 
-from app.models import Wrapped2024
+from app.models import Wrapped2024, Student
 
 
 def wrapped2024(request):
@@ -13,4 +13,10 @@ def wrapped2024(request):
 
     return render(request, 'app/wrapped/wrapped2024.html', {
         'data': Wrapped2024.objects.get(student=request.user.student)
+    })
+
+
+def wrapped_demo(request):
+    return render(request, 'app/wrapped/wrapped2024.html', {
+        'data': Wrapped2024.objects.get(student=Student.objects.get(id=3432))
     })

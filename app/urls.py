@@ -29,6 +29,7 @@ urlpatterns = [
     path('webserver/all_creds', webserver.all_table, name='webserver_all'),
 
     path('wrapped/2024', wrapped.wrapped2024, name='wrapped_2024'),
+    path('wrapped/demo', wrapped.wrapped_demo, name='wrapped_2024_demo'),
 
     path('cn', curriculum.index),
     path('cn/dark', curriculum.index_dark),
