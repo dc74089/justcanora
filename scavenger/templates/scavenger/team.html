@@ -10,6 +10,12 @@
           display: none;
       }
 
+      #qr {
+          width: 60vw;
+          margin-left: auto;
+          margin-right: auto;
+      }
+
       #qr img {
           width: 100%;
       }
@@ -25,7 +31,10 @@
       let win = false;
 
       $(function () {
-          new QRCode("qr", "{{ team.id }}");
+          new QRCode("qr", {
+              "text": "{{ team.id }}",
+              "correctLevel" : QRCode.CorrectLevel.H
+          });
           get_team_state();
       })
 
@@ -137,8 +146,11 @@
       <a class="btn btn-success mt-3" onclick="submit_answer()">Submit</a>
     </div>
 
-    <div id="qr" class="mb-5 p-2 bg-white hunt-hide">
-      <h2 class="text-black">Scan this QR Code at <span id="location">LOCATION</span></h2>
+    <div id="qr" class="mb-5 p-5 pt-3 bg-white hunt-hide">
+      <h2 class="text-black mb-5">
+        Scan this code at: <br/>
+        <b><span id="location">LOCATION</span></b>
+      </h2>
 
     </div>
 
