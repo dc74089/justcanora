@@ -10,11 +10,15 @@ from app.models import Student, Wrapped2024, MusicSuggestion
 def get_all():
     for student in tqdm(Student.objects.all().exclude(id__in=[2224])):
         try:
-            get_song_stats(student)
-            get_assignment_stats(student)
-            get_pageview_stats(student)
+            get_all_for_student(student)
         except:
             print(f"Problem with {student.name()}")
+
+
+def get_all_for_student(student: Student):
+    get_song_stats(student)
+    get_assignment_stats(student)
+    get_pageview_stats(student)
 
 
 def rank_all():

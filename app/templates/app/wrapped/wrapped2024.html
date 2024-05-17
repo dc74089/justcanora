@@ -23,6 +23,7 @@
 
       .panel-dark {
           background-color: #1a1d20;
+          color: white;
       }
 
       .panel-light {
@@ -35,7 +36,7 @@
 
       .mediumtext {
           font-weight: bolder;
-          font-size: min(20vh, 20vw) !important;
+          font-size: min(20vh, 15vw) !important;
       }
 
       .smalltext {
@@ -65,8 +66,12 @@
           }
       }
 
-      #downarrow {
+      .downarrow {
           animation: bounce 1.5s infinite ease-in-out;
+          position: absolute;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
       }
   </style>
 {% endblock %}
@@ -76,10 +81,6 @@
           integrity="sha512-8E3KZoPoZCD+1dgfqhPbejQBnQfBXe8FuwL4z/c8sTrgeDMFEnoyTlH3obB4/fV+6Sg0a0XF+L/6xS4Xx1fUEg=="
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
-          integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
   <script>
       $(function () { // wait for document ready
           // init
@@ -87,8 +88,6 @@
               globalSceneOptions: {
                   triggerHook: 'onLeave',
                   duration: "200%" // this works just fine with duration 0 as well
-                  // However with large numbers (>20) of pinned sections display errors can occur so every section should be unpinned once it's covered by the next section.
-                  // Normally 100% would work for this, but here 200% is used, as Panel 3 is shown for more than 100% of scrollheight due to the pause.
               }
           });
 
@@ -110,31 +109,61 @@
 {% block nav %}{% endblock %}
 
 {% block content-full %}
-  <section class="panel d-flex justify-content-center flex-column">
+  <section class="panel panel-light d-flex justify-content-center flex-column">
     <h1 class="text-center mediumtext mt-0 title-written linearound">{{ data.student.fname }}'s</h1>
     <h1 class="text-center mediumtext mt-0">School Year</h1>
     <h1 class="mediumtext text-center linearound happygradtext mt-0">WRAPPED</h1>
-    <p class="text-center fs-1" id="downarrow">&downarrow;</p>
+    <p class="text-center fs-1 downarrow">&downarrow;</p>
+  </section>
+
+  <section class="panel panel-dark d-flex justify-content-center flex-column">
+    <h1 class="smalltext">You Finished <span class="">{{ data.student.grade }}th Grade!</span></h1>
+    <p class="smallertext my-5">You were in school for around <span class="happygradtext">1,198</span> hours this
+      year,
+      but you didn't spend it all in class. You also spent your time:</p>
+    <ul class="smallertext">
+      <li>On our trip to <span class="happygradtext">
+        {% if data.student.grade == 7 %}Camp Kulaqua{% else %}NorthCarolina{% endif %}
+      </span></li>
+      <li>At our <span class="happygradtext">Middle School retreat</span></li>
+      <li>At assemblies (like with <span class="happygradtext">Ben Glenn</span> and <span class="happygradtext">Derick Lugo</span>)
+      </li>
+      <li>
+        <span style="text-decoration: line-through; color: red">
+          <span style="color: white">Wandering the halls</span>
+        </span>
+        <span class="title-written happygradtext">"Going to the Bathroom"</span>
+      </li>
+    </ul>
+    <p class="text-center fs-1 downarrow">&downarrow;</p>
+
   </section>
 
   {% if data.num_songs %}
+    <section class="panel panel-light d-flex justify-content-center flex-column">
+      <h1 class="mediumtext text-center mt-0">Remember the</h1>
+      <h1 class="mediumtext happygradtext text-center mt-0 linearound">Class Playlist?</h1>
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
+    </section>
+
     <section class="panel panel-dark">
       <h1 class="smalltext"><span class="happygradtext">Music Requests</span></h1>
-      <h1 class="text-white smalltext">This year, you requested <span class="happygradtext">{{ data.num_songs }}</span>
+      <h1 class="smalltext">This year, you requested <span class="happygradtext">{{ data.num_songs }}</span>
         songs.</h1>
 
       {% if data.rank_songs < 20 %}
-        <h2 class="text-white smallertext ms-5">&rightarrow; That puts you in the top 20!</h2>
+        <h2 class="smallertext ms-5">&rightarrow; That puts you in the top 20!</h2>
       {% endif %}
 
       {% if data.num_songs_rejected %}
-        <h1 class="text-white smalltext">Of those, <span class="happygradtext">{{ data.num_songs_rejected }}</span> were
+        <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_songs_rejected }}</span> were
           rejected</h1>
-        <h2 class="text-white smallertext ms-5">&rightarrow; Sad face :(</h2>
+        <h2 class="smallertext ms-5">&rightarrow; Womp womp :(</h2>
       {% elif data.num_songs_rejected == 0 %}
-        <h1 class="text-white smalltext">Of those, <span class="happygradtext">none</span> were rejected</h1>
-        <h2 class="text-white smallertext ms-5">&rightarrow; You've got great taste!</h2>
+        <h1 class="smalltext">Of those, <span class="happygradtext">none</span> were rejected</h1>
+        <h2 class="smallertext ms-5">&rightarrow; You've got great taste!</h2>
       {% endif %}
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
   {% endif %}
 
@@ -142,27 +171,32 @@
     <section class="panel panel-light d-flex justify-content-center flex-column">
       <h1 class="text-center mediumtext mt-0">Now, let's look at</h1>
       <h1 class="text-center smalltext happygradtext linearound">All of Your Classes</h1>
+
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
 
     <section class="panel panel-dark">
       <h1 class="smalltext"><span class="happygradtext">Assignments</span></h1>
-      <h1 class="text-white smalltext">You turned in <span class="happygradtext">{{ data.num_assignments }}</span>
+      <h1 class="smalltext">You turned in <span class="happygradtext">{{ data.num_assignments }}</span>
         assignments.</h1>
-      <h2 class="text-white smallertext ms-5">&rightarrow; Can you believe it?</h2>
+      <h2 class="smallertext ms-5">&rightarrow; Can you believe it?</h2>
 
       {% if data.num_late and data.num_late < 30 %}
-        <h1 class="text-white smalltext">Of those, <span class="happygradtext">{{ data.num_late }}</span> were late</h1>
+        <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_late }}</span> were late</h1>
 
         {% if data.num_late == 0 %}
-          <h2 class="text-white smallertext ms-5">&rightarrow; Congrats on the perfect streak!</h2>
+          <h2 class="smallertext ms-5">&rightarrow; Congrats on the perfect streak!</h2>
         {% elif data.num_late < 10 %}
-          <h2 class="text-white smallertext ms-5">&rightarrow; None of us are perfect, that's still an impressive
+          <h2 class="smallertext ms-5">&rightarrow; None of us are perfect, that's still an impressive
             number!</h2>
         {% elif data.num_late < 30 %}
-          <h2 class="text-white smallertext ms-5">&rightarrow; Not too shabby!</h2>
+          <h2 class="smallertext ms-5">&rightarrow; Not too shabby!</h2>
         {% endif %}
 
       {% endif %}
+
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
+
     </section>
   {% endif %}
 
@@ -170,33 +204,41 @@
     <section class="panel panel-light d-flex justify-content-center flex-column">
       <h1 class="text-center smalltext mt-0">Being a student is a</h1>
       <h1 class="text-center mediumtext happygradtext linearound">Full-Time Job!</h1>
+
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
 
     <section class="panel panel-dark">
       <h1 class="smalltext"><span class="happygradtext">Canvas</span></h1>
-      <h1 class="text-white smalltext">You visited <span
+      <h1 class="smalltext">You visited <span
               class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
         pages in Canvas.</h1>
-      <h2 class="text-white smallertext ms-5">&rightarrow; That's a huge number.</h2>
+      <h2 class="smallertext ms-5">&rightarrow; That's a huge number.</h2>
 
       {% if data.num_canvas_minutes %}
-        <h1 class="text-white smalltext">You spent around <span
-                class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span> minutes clicking around in your
+        <h1 class="smalltext">You spent around <span
+                class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span> minutes clicking around in
+          your
           courses.</h1>
 
-        <h2 class="text-white smallertext ms-5">&rightarrow; That's about <span
+        <h2 class="smallertext ms-5">&rightarrow; That's about <span
                 class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
       {% endif %}
+
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
+
   {% endif %}
 
   <section class="panel panel-light d-flex justify-content-center flex-column">
     <h1 class="bigtext text-center linearound mt-0"><span class="happygradtext">Wow.</span></h1>
     <h2 class="smalltext text-center">{{ data.student.grade }}th grade was one crazy year.</h2>
     <h2 class="smallertext text-center">And now it's over.</h2>
+
+    <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
-  <section class="panel panel-dark text-white d-flex justify-content-center flex-column">
+  <section class="panel panel-dark d-flex justify-content-center flex-column">
     <h1 class="smalltext mt-0">A quick note:</h1>
     <div class="handwritten smallertext">
       <p class="fw-light" style="">
@@ -213,7 +255,8 @@
           And hey -- don't be a stranger next year.
         {% endif %}
       </p>
-      <p class="mt-5">All the best,<br><span class="happygradtext smalltext">-Tr. Canora<span style="writing-mode: vertical-lr">:)</span></span></p>
+      <p class="mt-5">All the best,<br><span class="happygradtext smalltext">-Tr. Canora<span
+              style="writing-mode: vertical-lr">:)</span></span></p>
     </div>
   </section>
 {% endblock %}
