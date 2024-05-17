@@ -247,3 +247,21 @@ class WebserverCredential(models.Model):
 
     def __str__(self):
         return f"Webserver Creds for {self.student.full_name()} (/{self.directory}; {self.uid})"
+
+
+class Wrapped2024(models.Model):
+    student = models.OneToOneField("Student", on_delete=models.CASCADE, null=False, blank=False, primary_key=True)
+    num_songs = models.IntegerField(null=True, blank=True)
+    rank_songs = models.IntegerField(null=True, blank=True)
+    num_songs_rejected = models.IntegerField(null=True, blank=True)
+    num_assignments = models.IntegerField(null=True, blank=True)
+    rank_assignments = models.IntegerField(null=True, blank=True)
+    num_late = models.IntegerField(null=True, blank=True)
+    rank_late = models.IntegerField(null=True, blank=True)
+    num_canvas_minutes = models.IntegerField(null=True, blank=True)
+    rank_canvas_minutes = models.IntegerField(null=True, blank=True)
+    num_canvas_clicks = models.IntegerField(null=True, blank=True)
+    rank_canvas_clicks = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.student.name()}'s 2024 SY Wrapped"
