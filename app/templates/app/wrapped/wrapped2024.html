@@ -15,10 +15,18 @@
         rel="stylesheet">
 
   <style>
+      html {
+          scroll-snap-type: y mandatory;
+          overflow-x: hidden;
+      }
+
       .panel {
-          height: 100%;
-          width: 100%;
+          height: 100vh;
+          width: 100vw;
           padding: 48px;
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
+          position: relative;
       }
 
       .panel-dark {
@@ -36,12 +44,12 @@
 
       .mediumtext {
           font-weight: bolder;
-          font-size: min(20vh, 15vw) !important;
+          font-size: min(20vh, 12vw) !important;
       }
 
       .smalltext {
           font-weight: bolder;
-          font-size: min(10vh, 10vw) !important;
+          font-size: min(10vh, 8vw) !important;
       }
 
       .smallertext {
@@ -76,36 +84,6 @@
   </style>
 {% endblock %}
 
-{% block script %}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/ScrollMagic.min.js"
-          integrity="sha512-8E3KZoPoZCD+1dgfqhPbejQBnQfBXe8FuwL4z/c8sTrgeDMFEnoyTlH3obB4/fV+6Sg0a0XF+L/6xS4Xx1fUEg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <script>
-      $(function () { // wait for document ready
-          // init
-          var controller = new ScrollMagic.Controller({
-              globalSceneOptions: {
-                  triggerHook: 'onLeave',
-                  duration: "200%" // this works just fine with duration 0 as well
-              }
-          });
-
-          // get all slides
-          var slides = document.querySelectorAll("section.panel");
-
-          // create scene for every slide
-          for (var i = 0; i < slides.length; i++) {
-              new ScrollMagic.Scene({
-                  triggerElement: slides[i]
-              })
-                  .setPin(slides[i], {pushFollowers: false})
-                  .addTo(controller);
-          }
-      });
-  </script>
-{% endblock %}
-
 {% block nav %}{% endblock %}
 
 {% block content-full %}
@@ -129,10 +107,9 @@
       <li>At assemblies (like with <span class="happygradtext">Ben Glenn</span> and <span class="happygradtext">Derick Lugo</span>)
       </li>
       <li>
-        <span style="text-decoration: line-through; color: red">
-          <span style="color: white">Wandering the halls</span>
-        </span>
-        <span class="title-written happygradtext">"Going to the Bathroom"</span>
+        <span style="text-decoration: line-through; color: red"><span
+                style="color: white">Wandering the halls</span></span>
+        <span class="title-written happygradtext ms-2">"Going to the Bathroom"</span>
       </li>
     </ul>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
