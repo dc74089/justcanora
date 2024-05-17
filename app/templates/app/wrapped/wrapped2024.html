@@ -23,7 +23,7 @@
       .panel {
           height: 100vh;
           width: 100vw;
-          padding: 48px;
+          padding: 24px 48px 48px 48px;
           scroll-snap-align: start;
           scroll-snap-stop: always;
           position: relative;
@@ -99,15 +99,20 @@
 
   <section class="panel panel-dark">
     <h1 class="smalltext">You Finished <span class="">{{ data.student.grade }}th Grade!</span></h1>
-    <p class="smallertext my-5">You were in school for around <span class="happygradtext">1,198</span> hours this
+    <p class="smallertext my-5">We were all in school for around <span class="happygradtext">1,198</span> hours this
       year,
       but you didn't spend it all in class. You also spent your time:</p>
     <ul class="smallertext">
       <li>On our trip to <span class="happygradtext">
         {% if data.student.grade == 7 %}Camp Kulaqua{% else %}NorthCarolina{% endif %}
       </span></li>
-      <li>At our <span class="happygradtext">Middle School retreat</span></li>
-      <li>At assemblies (like with <span class="happygradtext">Ben Glenn</span> and <span class="happygradtext">Derick Lugo</span>)
+      <li>At our Middle School <span class="happygradtext">retreat</span></li>
+      {% if data.student.grade == 8 %}
+        <li>At 8th grade step-up day</li>{% endif %}
+      <li>At assemblies with
+        <span class="happygradtext">Darryl Bellamy</span>,
+        <span class="happygradtext">Ben Glenn</span> and
+        <span class="happygradtext">Derick Lugo</span>
       </li>
       <li>
         <span style="text-decoration: line-through; color: red"><span
@@ -127,7 +132,6 @@
     </section>
 
     <section class="panel panel-dark">
-      <h1 class="smalltext"><span class="happygradtext">Music Requests</span></h1>
       <h1 class="smalltext">This year, you requested <span class="happygradtext">{{ data.num_songs }}</span>
         songs.</h1>
 
@@ -156,10 +160,9 @@
     </section>
 
     <section class="panel panel-dark">
-      <h1 class="smalltext"><span class="happygradtext">Assignments</span></h1>
       <h1 class="smalltext">You turned in <span class="happygradtext">{{ data.num_assignments }}</span>
-        assignments.</h1>
-      <h2 class="smallertext ms-5">&rightarrow; Can you believe it?</h2>
+        assignments this year.</h1>
+      <h2 class="smallertext ms-5">&rightarrow; It didn't feel like that many, right?</h2>
 
       {% if data.num_late and data.num_late < 30 %}
         <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_late }}</span> were late</h1>
@@ -189,7 +192,6 @@
     </section>
 
     <section class="panel panel-dark">
-      <h1 class="smalltext"><span class="happygradtext">Canvas</span></h1>
       <h1 class="smalltext">You visited <span
               class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
         pages in Canvas.</h1>
@@ -235,8 +237,10 @@
           And hey -- don't be a stranger next year.
         {% endif %}
       </p>
-      <p class="mt-5">All the best,<br><span class="happygradtext smalltext">-Tr. Canora<span
-              style="writing-mode: vertical-lr">:)</span></span></p>
+      <p class="mt-5 fw-light">All the best,<br>
+        <span class="happygradtext smalltext fw-bold">-Tr. Canora<span
+                style="writing-mode: vertical-lr">:)</span></span>
+      </p>
     </div>
   </section>
 {% endblock %}
