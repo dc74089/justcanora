@@ -27,6 +27,9 @@
           scroll-snap-align: start;
           scroll-snap-stop: always;
           position: relative;
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
       }
 
       .panel-dark {
@@ -87,14 +90,14 @@
 {% block nav %}{% endblock %}
 
 {% block content-full %}
-  <section class="panel panel-light d-flex justify-content-center flex-column">
+  <section class="panel panel-light">
     <h1 class="text-center mediumtext mt-0 title-written linearound">{{ data.student.fname }}'s</h1>
     <h1 class="text-center mediumtext mt-0">School Year</h1>
     <h1 class="mediumtext text-center linearound happygradtext mt-0">WRAPPED</h1>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
-  <section class="panel panel-dark d-flex justify-content-center flex-column">
+  <section class="panel panel-dark">
     <h1 class="smalltext">You Finished <span class="">{{ data.student.grade }}th Grade!</span></h1>
     <p class="smallertext my-5">You were in school for around <span class="happygradtext">1,198</span> hours this
       year,
@@ -117,7 +120,7 @@
   </section>
 
   {% if data.num_songs %}
-    <section class="panel panel-light d-flex justify-content-center flex-column">
+    <section class="panel panel-light">
       <h1 class="mediumtext text-center mt-0">Remember the</h1>
       <h1 class="mediumtext happygradtext text-center mt-0 linearound">Class Playlist?</h1>
       <p class="text-center fs-1 downarrow">&downarrow;</p>
@@ -145,7 +148,7 @@
   {% endif %}
 
   {% if data.num_assignments %}
-    <section class="panel panel-light d-flex justify-content-center flex-column">
+    <section class="panel panel-light">
       <h1 class="text-center mediumtext mt-0">Now, let's look at</h1>
       <h1 class="text-center smalltext happygradtext linearound">All of Your Classes</h1>
 
@@ -178,7 +181,7 @@
   {% endif %}
 
   {% if data.num_canvas_clicks %}
-    <section class="panel panel-light d-flex justify-content-center flex-column">
+    <section class="panel panel-light">
       <h1 class="text-center smalltext mt-0">Being a student is a</h1>
       <h1 class="text-center mediumtext happygradtext linearound">Full-Time Job!</h1>
 
@@ -207,7 +210,7 @@
 
   {% endif %}
 
-  <section class="panel panel-light d-flex justify-content-center flex-column">
+  <section class="panel panel-light">
     <h1 class="bigtext text-center linearound mt-0"><span class="happygradtext">Wow.</span></h1>
     <h2 class="smalltext text-center">{{ data.student.grade }}th grade was one crazy year.</h2>
     <h2 class="smallertext text-center">And now it's over.</h2>
@@ -215,7 +218,7 @@
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
-  <section class="panel panel-dark d-flex justify-content-center flex-column">
+  <section class="panel panel-dark">
     <h1 class="smalltext mt-0">A quick note:</h1>
     <div class="handwritten smallertext">
       <p class="fw-light" style="">
