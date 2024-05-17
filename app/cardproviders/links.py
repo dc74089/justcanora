@@ -1,6 +1,6 @@
 from django.template.loader import render_to_string
 
-from app.models import WebserverCredential, Student, SpeechRubric
+from app.models import WebserverCredential, Student, SpeechRubric, FeatureFlag
 
 
 def allcards(request):
@@ -8,15 +8,18 @@ def allcards(request):
 
 
 def links(request):
-    s: Student = request.user.student
+    enabled, _ = FeatureFlag.objects.get_or_create(id='card_links')
 
-    ctx = {}
+    if enabled:
+        s: Student = request.user.student
 
-    if SpeechRubric.objects.filter(available_to_view=True, speechrating__speaker=s):
-        ctx['evals'] = True
+        ctx = {}
 
-    if WebserverCredential.objects.filter(student=request.user.student).exists():
-        ctx['creds'] = WebserverCredential.objects.filter(student=request.user.student).first()
+        if SpeechRubric.objects.filter(available_to_view=True, speechrating__speaker=s):
+            ctx['evals'] = True
 
-    if ctx:
-        return render_to_string("app/cards/links.html", ctx, request)
+        if WebserverCredential.objects.filter(student=request.user.student).exists():
+            ctx['creds'] = WebserverCredential.objects.filter(student=request.user.student).first()
+
+        if ctx:
+            return render_to_string("app/cards/links.html", ctx, request)

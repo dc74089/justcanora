@@ -1,12 +1,10 @@
 from datetime import timedelta
-from pprint import pprint
 
+from dateutil import parser
 from tqdm import tqdm
 
 from app.canvas.canvas import get_canvas
 from app.models import Student, Wrapped2024, MusicSuggestion
-
-from dateutil import parser
 
 
 def get_all():
