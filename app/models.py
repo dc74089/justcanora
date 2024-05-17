@@ -263,5 +263,45 @@ class Wrapped2024(models.Model):
     num_canvas_clicks = models.IntegerField(null=True, blank=True)
     rank_canvas_clicks = models.IntegerField(null=True, blank=True)
 
+    @classmethod
+    def rank_to_percent(cls, rank):
+        return round(rank * 100 / cls.objects.all().count())
+
+    def canvas_minutes_per_day(self):
+        return self.num_canvas_minutes // 180
+
+    def class_string(self):
+        ps = False
+        cs = False
+        adv = False
+
+        for course in self.student.courses.all():
+            print(course.type)
+            if course.type == "CS1" or course.type == "CS2":
+                cs = True
+
+            if course.type == "advisory":
+                adv = True
+
+            if course.type == "speech":
+                ps = True
+
+        if ps and cs and adv:
+            return "Computer Science, Public Speaking, and Advisory"
+        elif ps and cs:
+            return "Computer Science and Public Speaking"
+        elif cs and adv:
+            return "Computer Science and Advisory"
+        elif ps and adv:
+            return "Public Speaking and Advisory"
+        elif ps:
+            return "Public Speaking"
+        elif cs:
+            return "Computer Science"
+        elif adv:
+            return "Advisory"
+        else:
+            return "class"
+
     def __str__(self):
         return f"{self.student.name()}'s 2024 SY Wrapped"

@@ -1,0 +1,197 @@
+{% extends 'app/base.html' %}
+
+{% block style %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Nanum+Pen+Script&display=swap"
+        rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Shadows+Into+Light&display=swap"
+        rel="stylesheet">
+
+  <style>
+      .panel {
+          height: 100%;
+          width: 100%;
+          padding: 48px;
+      }
+
+      .panel-dark {
+          background-color: #1a1d20;
+      }
+
+      .panel-light {
+          background-color: white;
+      }
+
+      h1 {
+          margin-top: 48px;
+      }
+
+      .mediumtext {
+          font-weight: bolder;
+          font-size: min(20vh, 20vw) !important;
+      }
+
+      .smalltext {
+          font-weight: bolder;
+          font-size: min(10vh, 10vw) !important;
+      }
+
+      .smallertext {
+          font-weight: bolder;
+          font-size: min(5vh, 5vw) !important;
+      }
+
+      .handwritten {
+          font-family: "Nanum Pen Script", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      }
+
+      .title-written {
+          font-family: "Shadows Into Light", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      }
+  </style>
+{% endblock %}
+
+{% block script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/ScrollMagic.min.js"
+          integrity="sha512-8E3KZoPoZCD+1dgfqhPbejQBnQfBXe8FuwL4z/c8sTrgeDMFEnoyTlH3obB4/fV+6Sg0a0XF+L/6xS4Xx1fUEg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
+          integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+      $(function () { // wait for document ready
+          // init
+          var controller = new ScrollMagic.Controller({
+              globalSceneOptions: {
+                  triggerHook: 'onLeave',
+                  duration: "200%" // this works just fine with duration 0 as well
+                  // However with large numbers (>20) of pinned sections display errors can occur so every section should be unpinned once it's covered by the next section.
+                  // Normally 100% would work for this, but here 200% is used, as Panel 3 is shown for more than 100% of scrollheight due to the pause.
+              }
+          });
+
+          // get all slides
+          var slides = document.querySelectorAll("section.panel");
+
+          // create scene for every slide
+          for (var i = 0; i < slides.length; i++) {
+              new ScrollMagic.Scene({
+                  triggerElement: slides[i]
+              })
+                  .setPin(slides[i], {pushFollowers: false})
+                  .addTo(controller);
+          }
+      });
+  </script>
+{% endblock %}
+
+{% block nav %}{% endblock %}
+
+{% block content-full %}
+  <section class="panel d-flex justify-content-center flex-column">
+    <h1 class="text-center mediumtext mt-0 title-written linearound">{{ data.student.fname }}'s</h1>
+    <h1 class="text-center mediumtext mt-0">School Year</h1>
+    <h1 class="mediumtext text-center linearound happygradtext mt-0">WRAPPED</h1>
+  </section>
+
+  {% if data.num_songs %}
+    <section class="panel panel-dark">
+      <h1 class="smalltext"><span class="happygradtext">Music Requests</span></h1>
+      <h1 class="text-white smalltext">This year, you requested <span class="happygradtext">{{ data.num_songs }}</span>
+        songs.</h1>
+
+      {% if data.rank_songs < 20 %}
+        <h2 class="text-white smallertext ms-5">&rightarrow; That puts you in the top 20!</h2>
+      {% endif %}
+
+      {% if data.num_songs_rejected %}
+        <h1 class="text-white smalltext">Of those, <span class="happygradtext">{{ data.num_songs_rejected }}</span> were
+          rejected</h1>
+        <h2 class="text-white smallertext ms-5">&rightarrow; Sad face :(</h2>
+
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% if data.num_assignments %}
+    <section class="panel panel-light d-flex justify-content-center flex-column">
+      <h1 class="text-center mediumtext mt-0">Now, let's look at</h1>
+      <h1 class="text-center smalltext happygradtext linearound">All of Your Classes Together</h1>
+    </section>
+
+    <section class="panel panel-dark">
+      <h1 class="smalltext"><span class="happygradtext">Assignments</span></h1>
+      <h1 class="text-white smalltext">You turned in <span class="happygradtext">{{ data.num_assignments }}</span>
+        assignments.</h1>
+      <h2 class="text-white smallertext ms-5">&rightarrow; Can you believe it?</h2>
+
+      {% if data.num_late %}
+        <h1 class="text-white smalltext">Of those, <span class="happygradtext">{{ data.num_late }}</span> were late</h1>
+
+        {% if data.num_late == 0 %}
+          <h2 class="text-white smallertext ms-5">&rightarrow; Congrats on the perfect streak!</h2>
+        {% elif data.num_late < 10 %}
+          <h2 class="text-white smallertext ms-5">&rightarrow; None of us are perfect, that's still an impressive
+            number!</h2>
+        {% elif data.num_late < 30 %}
+          <h2 class="text-white smallertext ms-5">&rightarrow; Not too shabby!</h2>
+        {% endif %}
+
+      {% endif %}
+    </section>
+  {% endif %}
+
+  {% if data.num_canvas_clicks %}
+    <section class="panel panel-light d-flex justify-content-center flex-column">
+      <h1 class="text-center smalltext mt-0">Being a student is a</h1>
+      <h1 class="text-center mediumtext happygradtext linearound">Full-Time Job!</h1>
+    </section>
+
+    <section class="panel panel-dark">
+      <h1 class="smalltext"><span class="happygradtext">Canvas</span></h1>
+      <h1 class="text-white smalltext">You visited <span class="happygradtext">{{ data.num_canvas_clicks }}</span>
+        pages in Canvas.</h1>
+      <h2 class="text-white smallertext ms-5">&rightarrow; That's a huge number.</h2>
+
+      {% if data.num_canvas_minutes %}
+        <h1 class="text-white smalltext">You spent around <span
+                class="happygradtext">{{ data.num_canvas_minutes }}</span> minutes clicking around in your courses.</h1>
+
+        <h2 class="text-white smallertext ms-5">&rightarrow; That's about <span
+                class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
+      {% endif %}
+    </section>
+  {% endif %}
+
+  <section class="panel panel-light d-flex justify-content-center flex-column">
+    <h1 class="bigtext text-center linearound mt-0"><span class="happygradtext">Wow.</span></h1>
+    <h2 class="smalltext text-center">{{ data.student.grade }}th grade was one crazy year.</h2>
+    <h2 class="smallertext text-center">And now it's over.</h2>
+  </section>
+
+  <section class="panel panel-dark text-white d-flex justify-content-center flex-column">
+    <h1 class="smalltext mt-0">A quick note:</h1>
+    <div class="handwritten smallertext">
+      <p class="fw-light" style="">
+        {{ data.student.fname }}. Wow. It was so much fun having you in {{ data.class_string }} this year.
+        Thanks for choosing to take my class, I hope you're walking away having learned a thing or two.
+        I'm <u>so proud</u> of everything you were able to accomplish in here. </p>
+      <p class="fw-light">
+        {% if data.student.grade == 8 %}
+          <span class="happygradtext fw-bold">Go have the most amazing summer</span>,
+          and best of luck in Upper School next year!
+        {% else %}
+          <span class="happygradtext fw-bold">Go and have the most amazing summer!</span>
+          And hey -- don't be a stranger next year.
+        {% endif %}
+      </p>
+      <p class="mt-5">All the best,<br>-Tr. Canora<span style="writing-mode: vertical-lr">:)</span></p>
+    </div>
+  </section>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import index, auth, misc, admin, music, speech, curriculum, webserver
+from .views import index, auth, misc, admin, music, speech, curriculum, webserver, wrapped
 
 urlpatterns = [
     path('', index.index, name='index'),
@@ -27,6 +27,8 @@ urlpatterns = [
 
     path('webserver/instructions', webserver.instructions, name='webserver_guide'),
     path('webserver/all_creds', webserver.all_table, name='webserver_all'),
+
+    path('wrapped/2024', wrapped.wrapped2024, name='wrapped_2024'),
 
     path('cn', curriculum.index),
     path('cn/dark', curriculum.index_dark),
