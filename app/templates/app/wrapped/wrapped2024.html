@@ -1,5 +1,7 @@
 {% extends 'app/base.html' %}
 
+{% load humanize %}
+
 {% block style %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -114,7 +116,9 @@
         <h1 class="text-white smalltext">Of those, <span class="happygradtext">{{ data.num_songs_rejected }}</span> were
           rejected</h1>
         <h2 class="text-white smallertext ms-5">&rightarrow; Sad face :(</h2>
-
+      {% elif data.num_songs_rejected == 0 %}
+        <h1 class="text-white smalltext">Of those, <span class="happygradtext">none</span> were rejected</h1>
+        <h2 class="text-white smallertext ms-5">&rightarrow; You've got great taste!</h2>
       {% endif %}
     </section>
   {% endif %}
@@ -131,7 +135,7 @@
         assignments.</h1>
       <h2 class="text-white smallertext ms-5">&rightarrow; Can you believe it?</h2>
 
-      {% if data.num_late %}
+      {% if data.num_late and data.num_late < 30 %}
         <h1 class="text-white smalltext">Of those, <span class="happygradtext">{{ data.num_late }}</span> were late</h1>
 
         {% if data.num_late == 0 %}
@@ -155,13 +159,13 @@
 
     <section class="panel panel-dark">
       <h1 class="smalltext"><span class="happygradtext">Canvas</span></h1>
-      <h1 class="text-white smalltext">You visited <span class="happygradtext">{{ data.num_canvas_clicks }}</span>
+      <h1 class="text-white smalltext">You visited <span class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
         pages in Canvas.</h1>
       <h2 class="text-white smallertext ms-5">&rightarrow; That's a huge number.</h2>
 
       {% if data.num_canvas_minutes %}
         <h1 class="text-white smalltext">You spent around <span
-                class="happygradtext">{{ data.num_canvas_minutes }}</span> minutes clicking around in your courses.</h1>
+                class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span> minutes clicking around in your courses.</h1>
 
         <h2 class="text-white smallertext ms-5">&rightarrow; That's about <span
                 class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
