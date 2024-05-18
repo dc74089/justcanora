@@ -52,12 +52,12 @@
 
       .smalltext {
           font-weight: bolder;
-          font-size: min(10vh, 8vw) !important;
+          font-size: min(8vh, 8vw) !important;
       }
 
       .smallertext {
           font-weight: bolder;
-          font-size: min(5vh, 5vw) !important;
+          font-size: min(4vh, 4vw) !important;
       }
 
       .handwritten {
@@ -102,13 +102,13 @@
     <p class="smallertext my-5">We were all in school for around <span class="happygradtext">1,198</span> hours this
       year,
       but you didn't spend it all in class. You also spent your time:</p>
-    <ul class="smallertext">
+    <ul class="smallertext ms-lg-5">
       <li>On our trip to <span class="happygradtext">
-        {% if data.student.grade == 7 %}Camp Kulaqua{% else %}NorthCarolina{% endif %}
+        {% if data.student.grade == 7 %}Camp Kulaqua{% else %}North Carolina{% endif %}
       </span></li>
       <li>At our Middle School <span class="happygradtext">retreat</span></li>
       {% if data.student.grade == 8 %}
-        <li>At 8th grade step-up day</li>{% endif %}
+        <li>At 8th grade <span class="happygradtext">step-up day</span></li>{% endif %}
       <li>At assemblies with
         <span class="happygradtext">Darryl Bellamy</span>,
         <span class="happygradtext">Ben Glenn</span> and
@@ -136,16 +136,16 @@
         songs.</h1>
 
       {% if data.rank_songs < 20 %}
-        <h2 class="smallertext ms-5">&rightarrow; That puts you in the top 20!</h2>
+        <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top 20!</h2>
       {% endif %}
 
       {% if data.num_songs_rejected %}
         <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_songs_rejected }}</span> were
           rejected</h1>
-        <h2 class="smallertext ms-5">&rightarrow; Womp womp :(</h2>
+        <h2 class="smallertext ms-lg-5">&rightarrow; Womp womp :(</h2>
       {% elif data.num_songs_rejected == 0 %}
         <h1 class="smalltext">Of those, <span class="happygradtext">none</span> were rejected</h1>
-        <h2 class="smallertext ms-5">&rightarrow; You've got great taste!</h2>
+        <h2 class="smallertext ms-lg-5">&rightarrow; You've got great taste!</h2>
       {% endif %}
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
@@ -153,8 +153,8 @@
 
   {% if data.num_assignments %}
     <section class="panel panel-light">
-      <h1 class="text-center mediumtext mt-0">Now, let's look at</h1>
-      <h1 class="text-center smalltext happygradtext linearound">All of Your Classes</h1>
+      <h1 class="text-center mediumtext mt-0">{{ data.student.grade }}th grade was</h1>
+      <h1 class="text-center mediumtext happygradtext linearound">Hard Work.</h1>
 
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
@@ -162,18 +162,18 @@
     <section class="panel panel-dark">
       <h1 class="smalltext">You turned in <span class="happygradtext">{{ data.num_assignments }}</span>
         assignments this year.</h1>
-      <h2 class="smallertext ms-5">&rightarrow; It didn't feel like that many, right?</h2>
+      <h2 class="smallertext ms-lg-5">&rightarrow; But it didn't feel like that many, right?</h2>
 
-      {% if data.num_late and data.num_late < 30 %}
+      {% if data.num_late != None and data.num_late < 40 %}
         <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_late }}</span> were late</h1>
 
         {% if data.num_late == 0 %}
-          <h2 class="smallertext ms-5">&rightarrow; Congrats on the perfect streak!</h2>
-        {% elif data.num_late < 10 %}
-          <h2 class="smallertext ms-5">&rightarrow; None of us are perfect, that's still an impressive
+          <h2 class="smallertext ms-lg-5">&rightarrow; Congrats on the perfect streak!</h2>
+        {% elif data.num_late < 15 %}
+          <h2 class="smallertext ms-lg-5">&rightarrow; None of us are perfect, that's still an impressive
             number!</h2>
-        {% elif data.num_late < 30 %}
-          <h2 class="smallertext ms-5">&rightarrow; Not too shabby!</h2>
+        {% else %}
+          <h2 class="smallertext ms-lg-5">&rightarrow; Not too shabby!</h2>
         {% endif %}
 
       {% endif %}
@@ -185,7 +185,7 @@
 
   {% if data.num_canvas_clicks %}
     <section class="panel panel-light">
-      <h1 class="text-center smalltext mt-0">Being a student is a</h1>
+      <h1 class="text-center mediumtext mt-0">School was a</h1>
       <h1 class="text-center mediumtext happygradtext linearound">Full-Time Job!</h1>
 
       <p class="text-center fs-1 downarrow">&downarrow;</p>
@@ -195,7 +195,7 @@
       <h1 class="smalltext">You visited <span
               class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
         pages in Canvas.</h1>
-      <h2 class="smallertext ms-5">&rightarrow; That's a huge number.</h2>
+      <h2 class="smallertext ms-lg-5">&rightarrow; That's a huge number.</h2>
 
       {% if data.num_canvas_minutes %}
         <h1 class="smalltext">You spent around <span
@@ -203,7 +203,7 @@
           your
           courses.</h1>
 
-        <h2 class="smallertext ms-5">&rightarrow; That's about <span
+        <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
                 class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
       {% endif %}
 

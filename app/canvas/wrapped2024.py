@@ -21,6 +21,11 @@ def get_all_for_student(student: Student):
     get_pageview_stats(student)
 
 
+def get_all_for_student_by_id(sid: int):
+    stu = Student.objects.get(id=sid)
+    get_all_for_student(stu)
+
+
 def rank_all():
     num_songs = []
     num_songs_rejected = []
