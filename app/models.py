@@ -262,6 +262,7 @@ class Wrapped2024(models.Model):
     rank_canvas_minutes = models.IntegerField(null=True, blank=True)
     num_canvas_clicks = models.IntegerField(null=True, blank=True)
     rank_canvas_clicks = models.IntegerField(null=True, blank=True)
+    personal_note = models.TextField(null=True, blank=True)
 
     @classmethod
     def rank_to_percent(cls, rank):

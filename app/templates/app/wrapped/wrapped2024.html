@@ -228,6 +228,11 @@
         It was so much fun having you in {{ data.class_string }} this year.
         Thanks for choosing to take my class, I hope you learned a thing or two.
         I'm <u>so proud</u> of everything you were able to accomplish this year. </p>
+
+      {% if data.personal_note %}
+        <p class="fw-light mt-5">{{ data.personal_note }}</p>
+      {% endif %}
+
       <p class="fw-light mt-5">
         {% if data.student.grade == 8 %}
           <span class="fw-bold">Go have the most amazing summer</span>,
