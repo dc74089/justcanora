@@ -264,9 +264,31 @@ class Wrapped2024(models.Model):
     rank_canvas_clicks = models.IntegerField(null=True, blank=True)
     personal_note = models.TextField(null=True, blank=True)
 
-    @classmethod
-    def rank_to_percent(cls, rank):
-        return round(rank * 100 / cls.objects.all().count())
+    def percentile_string(self, pct):
+        if pct < 0.01:
+            return "1%"
+        elif pct < 0.05:
+            return "5%"
+        elif pct < 0.1:
+            return "10%"
+        elif pct < 0.2:
+            return "20%"
+        elif pct < 0.25:
+            return "25%"
+
+        return None
+
+    def song_percentile(self):
+        if self.rank_songs:
+            return self.percentile_string(self.rank_songs / Wrapped2024.objects.count())
+
+    def canvas_minutes_percentile(self):
+        if self.rank_canvas_minutes:
+            return self.percentile_string(self.rank_canvas_minutes / Wrapped2024.objects.count())
+
+    def canvas_clicks_percentile(self):
+        if self.rank_canvas_clicks:
+            return self.percentile_string(self.rank_canvas_clicks / Wrapped2024.objects.count())
 
     def canvas_minutes_per_day(self):
         return self.num_canvas_minutes // 180

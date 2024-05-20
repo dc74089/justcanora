@@ -135,8 +135,9 @@
       <h1 class="smalltext">This year, you requested <span class="happygradtext">{{ data.num_songs }}</span>
         songs.</h1>
 
-      {% if data.rank_songs < 20 %}
-        <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top 20!</h2>
+      {% if data.song_percentile %}
+        <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the <span
+                class="happygradtext">top {{ data.song_percentile }}</span>!</h2>
       {% endif %}
 
       {% if data.num_songs_rejected %}
@@ -195,16 +196,25 @@
       <h1 class="smalltext">You visited <span
               class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
         pages in Canvas.</h1>
-      <h2 class="smallertext ms-lg-5">&rightarrow; That's a huge number.</h2>
+      {% if data.canvas_clicks_percentile %}
+        <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the <span
+                class="happygradtext">top {{ data.canvas_clicks_percentile }}</span>!</h2>
+      {% else %}
+        <h2 class="smallertext ms-lg-5">&rightarrow; That's a huge number.</h2>
+      {% endif %}
 
       {% if data.num_canvas_minutes %}
         <h1 class="smalltext">You spent around <span
                 class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span> minutes clicking around in
           your
           courses.</h1>
-
-        <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
-                class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
+        {% if data.canvas_minutes_percentile %}
+          <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the <span
+                  class="happygradtext">top {{ data.canvas_minutes_percentile }}</span>!</h2>
+        {% else %}
+          <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
+                  class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
+        {% endif %}
       {% endif %}
 
       <p class="text-center fs-1 downarrow">&downarrow;</p>
