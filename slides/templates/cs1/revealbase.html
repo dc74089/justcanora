@@ -6,6 +6,10 @@
         integrity="sha512-0AUO8B5ll9y1ERV/55xq3HeccBGnvAJQsVGitNac/iQCLyDTGLUBMPqlupIWp/rJg0hV3WWHusXchEIdqFAv1Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/monokai.min.css"
+        integrity="sha512-z8wQkuDRFwCBfoj7KOiu1MECaRVoXx6rZQWL21x0BsVVH7JkqCp1Otf39qve6CrCycOOL5o9vgfII5Smds23rg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
   <link rel="stylesheet" href="{% static 'cs1/dominic.css' %}">
 
 
@@ -30,11 +34,16 @@
         integrity="sha512-4exkEeyVuaWUFKozXl6L3UCugl6ai1cKnrVFkWUstdrNB2sDxxmPEaHBzTlYm9wX78EjPzEBG0s8k37oPeUFIw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.min.js"
+        integrity="sha512-xkVKkN0o7xECTHSUZ9zdsBYRXiAKH7CZ3aICpW6aQJZsufVVRLhEBTDjTpC1tPzm+gNZiOeW174zXAB2fOLsTg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script>
     Reveal.initialize({
-        plugins: [RevealMarkdown],
+        plugins: [RevealMarkdown, RevealHighlight],
         width: 1280,
-        height: 720
+        height: 720,
+        hash: true
     });
 </script>
 </body>

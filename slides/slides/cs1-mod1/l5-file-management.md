@@ -1,11 +1,3 @@
----
-marp: true
-theme: gradient
-footer: Dominic Canora
-paginate: true
-headingDivider: 2
----
-
 # Files! <!-- _class: title -->
 
 # But I thought this was an HTML class...

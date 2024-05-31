@@ -51,6 +51,10 @@ section.has-light-background, section.has-light-background h1, section.has-light
     color: var(--r-main-color);
 }
 
+.reveal .slides {
+    text-align: left;
+}
+
 .reveal ::selection {
     color: var(--r-selection-color);
     background: var(--r-selection-background-color);
@@ -91,6 +95,7 @@ section.has-light-background, section.has-light-background h1, section.has-light
 
 .reveal h1 {
     font-size: var(--r-heading1-size);
+    text-align: center;
 }
 
 .reveal h2 {
@@ -189,10 +194,11 @@ section.has-light-background, section.has-light-background h1, section.has-light
     position: relative;
     width: 70%;
     margin: var(--r-block-margin) auto;
-    padding: 5px;
+    padding: 10px;
     font-style: italic;
     background: rgba(255, 255, 255, 0.05);
     box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+    text-align: center !important;
 }
 
 .reveal blockquote p:first-child,

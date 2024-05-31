@@ -1,30 +1,28 @@
----
-marp: true
-theme: gradient
-footer: Dominic Canora
-paginate: true
-headingDivider: 2
+# Lists in HTML
+
 ---
 
-# Lists in HTML <!-- _class: title -->
-
-# But first... A reminder:
+## But first... A reminder:
 When you write HTML code, at least at the start of this course, you should write it inside your `<body>` tag. Here's an example:
 
 ```html
 <html>
     <body>
-        <p>Hello, World!</p>
+      <p>Hello, World!</p>
     </body>
 </html>
 ```
 
-# Lists
+---
+
+## Lists
 When we're creating a document, presentation, poster, etc., we may want to show a list of items. 
 
-In HTML there are two types of lists:
+In HTML there are two types of lists: **Ordered Lists** and **Unordered Lists**
 
-# Ordered Lists
+---
+
+## Ordered Lists
 An **ordered list** has, well, an order. It looks like this:
 
 1. First thing
@@ -33,7 +31,9 @@ An **ordered list** has, well, an order. It looks like this:
 
 You might use it for a list of steps in a recipe, a ranking in a leaderboard, or in any other case where items have a natural ordering.
 
-# Ordered Lists
+---
+
+## Ordered Lists
 ### The HTML
 ```html
 <ol>
@@ -47,8 +47,9 @@ You might use it for a list of steps in a recipe, a ranking in a leaderboard, or
 2. Second thing
 3. Third thing
 
+---
 
-# Unordered Lists
+## Unordered Lists
 An **unordered list**, by contrast, *does not* have an order. It looks like this:
 
 * First thing
@@ -57,7 +58,9 @@ An **unordered list**, by contrast, *does not* have an order. It looks like this
 
 You might use it for a list of ingredients for a recipe, a collection of points in a presentation, or in any other case where items are not in a specific order.
 
-# Unrdered Lists
+---
+
+## Unrdered Lists
 ### The HTML
 ```html
 <ul>
@@ -71,13 +74,17 @@ You might use it for a list of ingredients for a recipe, a collection of points 
 * Second thing
 * Third thing
 
-# To Recap:
+---
+
+## To Recap:
 `<ol>` starts an Ordered List
 `<ul>` starts an Unordered List
 
 In both types, `<li>` starts a List Item
 
-# Your Turn
+---
+
+## Your Turn
 Before the end of class, create a simple webpage containing a how-to guide.
 
 Your how-to guide can be for any topic you choose. It should contain both:

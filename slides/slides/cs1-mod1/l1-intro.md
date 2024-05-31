@@ -2,13 +2,11 @@
 
 ---
 
-## What is a Website?
+# What is a Website?
 
 > A website is a collection of web pages and related content that is identified by a common domain name and published on
 > at least one web server. Websites are typically dedicated to a particular topic or purpose, such as news, education,
-> commerce, entertainment, or social media
-
--Wikipedia
+> commerce, entertainment, or social media -Wikipedia
 
 ---
 
@@ -102,25 +100,30 @@
 <td>Culminating Experience</td>
 </tr>
 </table>
----
-
-# Tr. Canora's Website
-
-`https://tr.canora.us`
 
 ---
 
-# Our Tools
+## Our Tools
+* Class Site
+* VS Code
+* Chrome DevTools
 
 ---
 
-# Tool 1: VS Code
+# Tool 1: My Website
+> `https://tr.canora.us`
 
 ---
 
-## VS Code
+## Tr. Canora's Website
+1. Visit `https://tr.canora.us` in Google Chrome
+2. Sign in with Google
+3. Answer the questions
+4. Wait for me
 
-### What is it?
+---
+
+# Tool 2: VS Code
 
 > Visual Studio Code is a code editor redefined and optimized for building and debugging modern web and cloud
 > applications. -Microsoft
@@ -160,8 +163,9 @@
 ---
 
 ## Wait here:
-
-![](STATICPREFIX/cs1/module1/vs-code-welcome.png)
+<div style="text-align: center">
+<img src="STATICPREFIX/cs1/module1/vs-code-welcome.png" style="width: 40vw"/>
+</div>
 
 ---
 
@@ -174,14 +178,10 @@
 
 ---
 
-# Tool 2: Chrome Dev Tools
-
-## Chrome DevTools
-
-### What is it?
+# Tool 3: Chrome Dev Tools 
 
 > Chrome DevTools is a set of web developer tools built directly into the Google Chrome browser. DevTools lets you edit
-> pages on-the-fly and diagnose problems quickly, which helps you build better websites, faster.
+> pages on-the-fly and diagnose problems quickly, which helps you build better websites, faster. -Google
 
 ---
 
@@ -223,12 +223,6 @@
     * You can also go to &#x22EE; -> `More Tools` -> `Developer Tools`
 4. Look through the code that makes up the page.
 5. Use the "select element" tool to find the HTML code for a specific element
-
----
-
-# Chrome DevTools
-
-We'll learn more about DevTools later in this course
 
 ---
 
