@@ -1,0 +1,41 @@
+{% load static %}
+
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css"
+        integrity="sha512-0AUO8B5ll9y1ERV/55xq3HeccBGnvAJQsVGitNac/iQCLyDTGLUBMPqlupIWp/rJg0hV3WWHusXchEIdqFAv1Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <link rel="stylesheet" href="{% static 'cs1/dominic.css' %}">
+
+
+  <title>CS1: {{ title }}</title>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+    <section data-markdown>
+      <textarea data-template>
+        {{ markdown | safe }}
+      </textarea>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.js"
+        integrity="sha512-35L3EFHQcGaTZ6QN9wAg9iK1hTPVCn8RGsscuXjm5JdmDRyOw+/IWJ4wavGkozQ8VDoddD7nV1psHgu/BYNpxQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/markdown/markdown.min.js"
+        integrity="sha512-4exkEeyVuaWUFKozXl6L3UCugl6ai1cKnrVFkWUstdrNB2sDxxmPEaHBzTlYm9wX78EjPzEBG0s8k37oPeUFIw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    Reveal.initialize({
+        plugins: [RevealMarkdown],
+        width: 1280,
+        height: 720
+    });
+</script>
+</body>
+</html>

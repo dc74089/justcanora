@@ -21,4 +21,5 @@ urlpatterns = [
     path('db/', admin.site.urls),
     path('', include('app.urls')),
     path('hunt/', include('scavenger.urls')),
+    path('slides/', include('slides.urls')),
 ]

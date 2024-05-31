@@ -71,7 +71,8 @@ INSTALLED_APPS = [
     'django_crontab',
     'django.contrib.humanize',
     'app',
-    'scavenger'
+    'scavenger',
+    'slides'
 ]
 
 MIDDLEWARE = [
