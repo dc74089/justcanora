@@ -18,11 +18,27 @@
 <body>
 <div class="reveal">
   <div class="slides">
-    <section data-markdown>
-      <textarea data-template>
-        {{ markdown | safe }}
-      </textarea>
-    </section>
+    {% if has_verticals %}
+      {% for section in slides %}
+        <section>
+          {% for slide in section %}
+            <section data-markdown>
+              <textarea data-template>
+                {{ slide | safe }}
+              </textarea>
+            </section>
+          {% endfor %}
+        </section>
+      {% endfor %}
+      {% else %}
+      {% for slide in slides %}
+        <section data-markdown>
+          <textarea data-template>
+            {{ slide | safe }}
+          </textarea>
+        </section>
+      {% endfor %}
+    {% endif %}
   </div>
 </div>
 

@@ -30,7 +30,15 @@ def slides(request, module, lesson):
 
         md = md.replace("STATICPREFIX", settings.STATIC_URL)
 
+        has_verticals = "----" in md
+
+        if has_verticals:
+            md_list = [x.split('---') for x in md.split("----")]
+        else:
+            md_list = md.split('---')
+
         return render(request, 'cs1/revealbase.html', {
             "title": "Course Intro",
-            "markdown": md
+            "slides": md_list,
+            "has_verticals": has_verticals,
         })

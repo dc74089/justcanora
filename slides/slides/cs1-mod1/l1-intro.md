@@ -1,6 +1,6 @@
 # Websites & The Internet
 
----
+----
 
 # What is a Website?
 
@@ -8,7 +8,7 @@
 > at least one web server. Websites are typically dedicated to a particular topic or purpose, such as news, education,
 > commerce, entertainment, or social media -Wikipedia
 
----
+----
 
 ## Crash Course: Languages of the Web
 
@@ -39,7 +39,7 @@
 </tbody>
 </table>
 
----
+----
 
 ## Course Overview
 
@@ -101,14 +101,14 @@
 </tr>
 </table>
 
----
+----
 
 ## Our Tools
 * Class Site
 * VS Code
 * Chrome DevTools
 
----
+----
 
 # Tool 1: My Website
 > `https://tr.canora.us`
@@ -121,7 +121,7 @@
 3. Answer the questions
 4. Wait for me
 
----
+----
 
 # Tool 2: VS Code
 
@@ -176,7 +176,7 @@
 7. In VS Code, `File` -> `Open Folder`, and find your CS 1 Folder
     * VS Code will remember which folder you have open, and open it each time you open the app.
 
----
+----
 
 # Tool 3: Chrome Dev Tools 
 
@@ -224,6 +224,6 @@
 4. Look through the code that makes up the page.
 5. Use the "select element" tool to find the HTML code for a specific element
 
----
+----
 
 # Questions?
