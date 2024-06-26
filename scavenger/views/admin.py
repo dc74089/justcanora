@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -70,6 +72,17 @@ def do_action(request):
             team.set_state_qr()
 
             return HttpResponse("Team Initialized.")
+        elif action == "team_to_loc":
+            print(request.POST.keys(), request.GET.keys())
+
+            data = json.loads(request.POST['data'])
+            team = data[0]
+            loc = data[1]
+
+            team = Team.objects.get(id=team)
+            team.set_new_destination(Kiosk.objects.get(id=loc))
+
+            return HttpResponse("Sent team to location")
         elif action == "team_to_final":
             team = Team.objects.get(id=request.POST['data'])
 

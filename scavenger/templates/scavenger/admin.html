@@ -69,6 +69,24 @@
       </td>
     </tr>
     <tr>
+      <th>Send Team to Location</th>
+      <td>
+        <select class="form-control" id="team-select2">
+          {% for team in teams %}
+            <option value="{{ team.id }}">{{ team.name }}</option>
+          {% endfor %}
+        </select>
+        <select class="form-control" id="location-select2">
+          {% for kiosk in kiosks %}
+            <option value="{{ kiosk.id }}">{{ kiosk.location }}</option>
+          {% endfor %}
+        </select>
+      </td>
+      <td><a href="#" class="btn btn-primary text-white"
+             onclick="sendCommand('team_to_loc', JSON.stringify([$('#team-select2').find(':selected').val(), $('#location-select2').find(':selected').val()]))">Go</a>
+      </td>
+    </tr>
+    <tr>
       <th>Set Team to Final</th>
       <td>
         <select class="form-control" id="team-select2">
