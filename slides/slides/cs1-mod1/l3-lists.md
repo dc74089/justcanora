@@ -13,7 +13,7 @@ When you write HTML code, at least at the start of this course, you should write
 </html>
 ```
 
----
+----
 
 ## Lists
 When we're creating a document, presentation, poster, etc., we may want to show a list of items. 
@@ -74,7 +74,7 @@ You might use it for a list of ingredients for a recipe, a collection of points 
 * Second thing
 * Third thing
 
----
+----
 
 ## To Recap:
 `<ol>` starts an Ordered List
@@ -82,7 +82,7 @@ You might use it for a list of ingredients for a recipe, a collection of points 
 
 In both types, `<li>` starts a List Item
 
----
+----
 
 ## Your Turn
 Before the end of class, create a simple webpage containing a how-to guide.

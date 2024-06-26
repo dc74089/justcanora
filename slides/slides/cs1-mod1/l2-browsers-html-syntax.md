@@ -1,6 +1,6 @@
 # Web Browsers & HTML Syntax
 
----
+----
 
 # Web Browsers
 
@@ -24,8 +24,7 @@
 * Run extensions that modify how pages behave
 * Allow webpages to access local resources (files, camera, microphone, etc.)
 
----
-
+----
 
 # HTML Syntax
 
@@ -45,7 +44,7 @@ Syntax is, at a simple level, the order of words and symbols in a language.
 
 * Computers are cruel and unforgiving. Your syntax must be nearly-perfect, or else the computer will become very confused and throw an error.
 
----
+----
 
 ## HTML Syntax
 The most basic piece of HTML is a *tag*. It looks like this:
@@ -114,7 +113,7 @@ Tags need to be closed in the correct order so they do not overlap.
 </html>
 ```
 
----
+----
 
 ## Some Common Tags
 * `<html>`: Should contain your entire webpage
@@ -125,12 +124,12 @@ Tags need to be closed in the correct order so they do not overlap.
 * `<i>`: Italic
 * `<u>`: Underline
 
----
+----
 
 ## Let's Review
 Before you start work on your first programming assignment, please open VS Code and we'll review how to create files, and how to open an HTML file in Chrome.
 
----
+----
 
 ## Try it out! <!-- _class: title -->
 Please start working on the "HTML Hello World" assignment on Canvas
