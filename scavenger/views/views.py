@@ -104,7 +104,13 @@ def answer_question(request):
 
             kiosks = Kiosk.objects.filter(active=True).exclude(id=team.destination.id)
 
-            k = random.choice(list(kiosks))
+            occupied_kiosk_ids = [t.destination.id for t in Team.objects.all()]
+            empty_kiosks = [k for k in kiosks if k not in occupied_kiosk_ids]
+
+            if empty_kiosks:
+                k = random.choice(list(empty_kiosks))
+            else:
+                k = random.choice(list(kiosks))
 
             team.set_new_destination(k)
 
