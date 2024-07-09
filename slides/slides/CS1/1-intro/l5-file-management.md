@@ -50,7 +50,7 @@ Here are some things you probably already know:
 
 ---
 
-<img src="STATICPREFIX/cs1/module1/files.png">
+<img src="STATICPREFIX/cs1/1-intro/files.png">
 
 ---
 
@@ -75,7 +75,7 @@ Or files that we want to access from anywhere?
 
 # So what's that cloud thing?
 <div style="text-align: center">
-<img src="STATICPREFIX/cs1/module1/cloud.png" style="max-height: 50vh"/>
+<img src="STATICPREFIX/cs1/1-intro/cloud.png" style="max-height: 50vh"/>
 </div>
 
 ---

@@ -12,17 +12,20 @@ def index(request):
 
     out = {}
 
-    for ct in ['CS1', 'CS2', 'ps']:
-        class_dir = os.path.join(slides_dir, ct)
+    for ct in course_types:
+        try:
+            class_dir = os.path.join(slides_dir, ct)
 
-        modules = os.listdir(class_dir)
+            modules = os.listdir(class_dir)
 
-        decks = {}
+            decks = {}
 
-        for module in sorted(modules):
-            decks[module] = list(sorted(os.listdir(os.path.join(class_dir, module))))
+            for module in sorted(modules):
+                decks[module] = list(sorted(os.listdir(os.path.join(class_dir, module))))
 
-        out[ct] = decks
+            out[ct] = decks
+        except FileNotFoundError:
+            continue
 
     return render(request, 'cs1/index.html', {'decks': out})
 

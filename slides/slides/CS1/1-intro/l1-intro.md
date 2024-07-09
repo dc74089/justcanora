@@ -164,7 +164,7 @@
 
 ## Wait here:
 <div style="text-align: center">
-<img src="STATICPREFIX/cs1/module1/vs-code-welcome.png" style="width: 40vw"/>
+<img src="STATICPREFIX/cs1/1-intro/vs-code-welcome.png" style="width: 40vw"/>
 </div>
 
 ---

@@ -6,12 +6,12 @@
 
 ----
 
-# Why CS
+# Why Public Speaking
 
 ---
 
 <div style="text-align: center">
-<img src="STATICPREFIX/cs1/1-intro/so-you-want-to-be-a-wizard.png">
+<img src="STATICPREFIX/cs2/1-intro/so-you-want-to-be-a-wizard.png">
 </div>
 
 Note:
