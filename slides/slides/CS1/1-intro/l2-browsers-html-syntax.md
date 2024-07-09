@@ -88,7 +88,6 @@ Tags need to be closed in the correct order so they do not overlap.
 
 ## Correct or Incorrect?
 ```html
-
 <html>
   <body>
     <div>

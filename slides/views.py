@@ -8,19 +8,28 @@ def index(request):
     current_dir = os.path.dirname(__file__)
     slides_dir = os.path.join(current_dir, 'slides')
 
-    modules = os.listdir(slides_dir)
+    course_types = set([course.type for course in request.user.student.courses.all()])
 
-    decks = {}
+    out = {}
 
-    for module in sorted(modules):
-        decks[module] = list(sorted(os.listdir(os.path.join(slides_dir, module))))
+    for ct in ['CS1', 'CS2', 'ps']:
+        class_dir = os.path.join(slides_dir, ct)
 
-    return render(request, 'cs1/index.html', {'decks': decks})
+        modules = os.listdir(class_dir)
+
+        decks = {}
+
+        for module in sorted(modules):
+            decks[module] = list(sorted(os.listdir(os.path.join(class_dir, module))))
+
+        out[ct] = decks
+
+    return render(request, 'cs1/index.html', {'decks': out})
 
 
-def slides(request, module, lesson):
+def slides(request, course, module, lesson):
     current_dir = os.path.dirname(__file__)
-    module_dir = os.path.join(current_dir, f'slides/{module}')
+    module_dir = os.path.join(current_dir, f'slides/{course}/{module}')
 
     filename = list(sorted(os.listdir(module_dir)))[lesson - 1]
     full_path = os.path.join(module_dir, filename)

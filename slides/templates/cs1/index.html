@@ -2,23 +2,26 @@
 
 {% block content %}
   <div class="row">
-    {% for module, decks in decks.items %}
-      <div class="col-12 col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <h1 class="card-title">{{ module }}</h1>
-            <table>
-              {% for deck in decks %}
-                <tr>
-                  <td>
-                    <a href="{% url 'slides' module forloop.counter %}">{{ deck }}</a>
-                  </td>
-                </tr>
-              {% endfor %}
-            </table>
+    {% for course, modules in decks.items %}
+      <h1>{{ course }}</h1>
+      {% for module, decks in modules.items %}
+        <div class="col-12 col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h1 class="card-title">{{ module }}</h1>
+              <table>
+                {% for deck in decks %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'slides' course module forloop.counter %}">{{ deck }}</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      {% endfor %}
     {% endfor %}
   </div>
 {% endblock %}
