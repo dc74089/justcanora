@@ -130,5 +130,5 @@ Before you start work on your first programming assignment, please open VS Code 
 
 ----
 
-## Try it out! <!-- _class: title -->
+## Try it out!
 Please start working on the "HTML Hello World" assignment on Canvas

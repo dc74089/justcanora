@@ -21,9 +21,11 @@ def index(request):
             decks = {}
 
             for module in sorted(modules):
-                decks[module] = list(sorted(os.listdir(os.path.join(class_dir, module))))
+                if '.' not in module:
+                    decks[module] = list(sorted(os.listdir(os.path.join(class_dir, module))))
 
-            out[ct] = decks
+            if decks:
+                out[ct] = decks
         except FileNotFoundError:
             continue
 
@@ -49,8 +51,10 @@ def slides(request, course, module, lesson):
         else:
             md_list = md.split('---')
 
+        title = filename.split('.')[0].replace('-', ' ').title()
+
         return render(request, 'cs1/revealbase.html', {
-            "title": "Course Intro",
+            "title": title,
             "slides": md_list,
             "has_verticals": has_verticals,
         })

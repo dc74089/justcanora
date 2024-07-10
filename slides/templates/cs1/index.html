@@ -3,7 +3,13 @@
 {% block content %}
   <div class="row">
     {% for course, modules in decks.items %}
-      <h1>{{ course }}</h1>
+      {% if course == 'CS1' %}
+        <h1>Computer Science 1</h1>
+      {% elif course == 'CS2' %}
+        <h1>Computer Science 2</h1>
+      {% elif course == 'speech' %}
+        <h1>Public Speaking</h1>
+      {% endif %}
       {% for module, decks in modules.items %}
         <div class="col-12 col-lg-4">
           <div class="card">

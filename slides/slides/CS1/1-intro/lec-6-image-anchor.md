@@ -48,13 +48,6 @@ The browser will take care of underlining the text, and changing it to a differe
 
 ----
 
-## You try!
-Before the end of class:
-* Add a picture of yourself to your "About Me" site. 
-* Add a page to your "About Me" site that lists your interests and hobbies
-
----
-
 ### For reference:
 ```html
 <img src="your-filename-here" />

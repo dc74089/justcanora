@@ -15,9 +15,9 @@
 <table>
 <thead>
 <tr>
-<th>HTML</th>
-<th>CSS</th>
-<th>JS</th>
+<th style="font-size: 2em; padding-left: 11.2px">HTML</th>
+<th style="font-size: 2em; padding-left: 11.2px">CSS</th>
+<th style="font-size: 2em; padding-left: 11.2px">JS</th>
 </tr>
 </thead>
 <tbody>
@@ -32,9 +32,9 @@
 <td>Describes the <strong>behavior</strong> of the page</td>
 </tr>
 <tr>
-<td>We write <strong>tags</strong></td>
-<td>We write <strong>selectors</strong> and <strong>statements</strong></td>
-<td>We write <strong>functions</strong> and <strong>code</strong></td>
+<th style="font-size: 1.5em; padding-left: 11.2px">The Bones</th>
+<th style="font-size: 1.5em; padding-left: 11.2px">The Skin</th>
+<th style="font-size: 1.5em; padding-left: 11.2px">The Brain</th>
 </tr>
 </tbody>
 </table>
