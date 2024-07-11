@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="{% static 'cs1/dominic.css' %}">
 
 
-  <title>CS1: {{ title }}</title>
+  <title>{{ title }}</title>
 </head>
 <body>
 <div class="reveal">
@@ -54,9 +54,13 @@
         integrity="sha512-xkVKkN0o7xECTHSUZ9zdsBYRXiAKH7CZ3aICpW6aQJZsufVVRLhEBTDjTpC1tPzm+gNZiOeW174zXAB2fOLsTg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/notes/notes.min.js"
+        integrity="sha512-tDzEYXTFwGOO3tWp8oTV3yGeZ4lG4gUt+tJFQTsP7W4jV/MJ1Rgr6m9aICicjh/ymL5GD6jkHXDi9cHKfctFGQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script>
     Reveal.initialize({
-        plugins: [RevealMarkdown, RevealHighlight],
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
         width: 1280,
         height: 720,
         hash: true
