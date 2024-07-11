@@ -51,22 +51,6 @@ When we view our webpage, it will look like this:
 <p style="color: blue;">This text will be blue</p>
 </div>
 
----
-
-## Multiple CSS Properties
-
-You can use multiple CSS properties inside the same `style` block. That looks like this:
-
-```html
-<p style="color: blue; background-color: yellow;">Sup</p>
-```
-
-When we view our webpage, it will look like this:
-
-<div style="margin-left: 64px; margin-right: 64px">
-<p style="color: blue; background-color: yellow;">Sup</p>
-</div>
-
 ----
 
 ## Common CSS Attributes

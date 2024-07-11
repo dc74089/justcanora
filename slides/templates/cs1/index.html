@@ -1,5 +1,7 @@
 {% extends 'app/base.html' %}
 
+{% load slides_filename %}
+
 {% block content %}
   <div class="row">
     {% for course, modules in decks.items %}
@@ -14,14 +16,16 @@
         <div class="col-12 col-lg-4">
           <div class="card">
             <div class="card-body">
-              <h1 class="card-title">{{ module }}</h1>
+              <h2 class="card-title">{{ module | format_filename }}</h2>
               <table>
                 {% for deck in decks %}
-                  <tr>
-                    <td>
-                      <a href="{% url 'slides' course module forloop.counter %}">{{ deck }}</a>
-                    </td>
-                  </tr>
+                  {% if deck %}
+                    <tr>
+                      <td>
+                        <a href="{% url 'slides' course module forloop.counter %}" class="font-monospace">{{ deck | format_filename }}</a>
+                      </td>
+                    </tr>
+                  {% endif %}
                 {% endfor %}
               </table>
             </div>

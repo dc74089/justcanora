@@ -22,7 +22,8 @@ def index(request):
 
             for module in sorted(modules):
                 if '.' not in module:
-                    decks[module] = list(sorted(os.listdir(os.path.join(class_dir, module))))
+                    files = os.listdir(os.path.join(class_dir, module))
+                    decks[module] = list(sorted([x if x[0] != '.' else '' for x in files]))
 
             if decks:
                 out[ct] = decks
