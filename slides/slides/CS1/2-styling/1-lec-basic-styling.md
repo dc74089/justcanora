@@ -12,11 +12,11 @@ We want to add some <span style="color: #00ff55;">color</span> and <span style="
 
 Said another way, we have the bones, now it's time for...
 
-----
+---
 
 # The Skin
 
----
+----
 
 ## CSS
 It's time to add our second language to the mix!

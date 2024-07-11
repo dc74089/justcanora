@@ -3,6 +3,8 @@ import os
 from django.conf import settings
 from django.shortcuts import render
 
+from slides.templatetags.slides_filename import format_filename
+
 
 def index(request):
     current_dir = os.path.dirname(__file__)
@@ -12,7 +14,7 @@ def index(request):
 
     out = {}
 
-    for ct in course_types:
+    for ct in sorted(course_types):
         try:
             class_dir = os.path.join(slides_dir, ct)
 
@@ -52,7 +54,7 @@ def slides(request, course, module, lesson):
         else:
             md_list = md.split('---')
 
-        title = filename.split('.')[0].replace('-', ' ').title()
+        title = format_filename(filename)
 
         return render(request, 'cs1/revealbase.html', {
             "title": title,
