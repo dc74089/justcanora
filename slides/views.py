@@ -2,6 +2,7 @@ import os
 
 from django.conf import settings
 from django.shortcuts import render
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 from slides.templatetags.slides_filename import format_filename
 
@@ -35,6 +36,7 @@ def index(request):
     return render(request, 'cs1/index.html', {'decks': out})
 
 
+@xframe_options_sameorigin
 def slides(request, course, module, lesson):
     current_dir = os.path.dirname(__file__)
     module_dir = os.path.join(current_dir, f'slides/{course}/{module}')
