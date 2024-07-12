@@ -85,9 +85,5 @@ def do_action(request):
             return HttpResponse("Sent team to location")
         elif action == "team_to_final":
             team = Team.objects.get(id=request.POST['data'])
-
-            if team.final_password_progression >= len(team.hunt.final_password):
-                team.set_state_final()
-                return HttpResponse("Set team to final screen.")
-            else:
-                return HttpResponse("ERROR: Team doesn't have all letters. Didn't touch them.")
+            team.set_state_final()
+            return HttpResponse("Set team to final screen.")

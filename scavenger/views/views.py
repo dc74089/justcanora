@@ -149,9 +149,13 @@ def kiosk(request):
             return redirect('scavenger-kiosk')
     else:
         if 'kiosk' in request.session:
-            return render(request, 'scavenger/kiosk.html', {
-                'kiosk': Kiosk.objects.get(id=request.session['kiosk'])
-            })
+            try:
+                return render(request, 'scavenger/kiosk.html', {
+                    'kiosk': Kiosk.objects.get(id=request.session['kiosk'])
+                })
+            except:
+                request.session.clear()
+                return redirect('scavenger-kiosk')
         else:
             return render(request, 'scavenger/kiosk_setup.html')
 
