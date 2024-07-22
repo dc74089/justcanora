@@ -156,4 +156,14 @@ Confident Understanding of:
 
 ----
 
+## AI Policy
+> I affirm that I will not utilize Artificial Intelligence (AI) tools or applications for any aspect of assignments for this course. I understand that the use of AI in my assignment is strictly prohibited and that any violation of this policy may result in academic consequences as outlined by the LHP Honor Code. I commit to completing my assignments through my own efforts, ensuring academic integrity and the authenticity of my work.
+
+---
+
+# Do Now: 
+# AI Policy Quiz on Canvas
+
+----
+
 # Questions?
