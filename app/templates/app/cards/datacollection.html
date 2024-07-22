@@ -1,13 +1,21 @@
+<script>
+  function do_submit() {
+      $("#dc-sub").prop("disabled", true)
+
+      return true;
+  }
+</script>
+
 <div class="col-12 col-md-6">
   <div class="card">
     <div class="card-body">
       <h2>{{ q.question }}</h2>
-      <form action="{% url 'misc_action' %}" method="post">
+      <form action="{% url 'misc_action' %}" method="post" onsubmit="return do_submit();">
         {% csrf_token %}
         <input class="d-none" name="action" value="datacollection">
         <input class="d-none" name="qid" value="{{ q.id }}">
         <textarea class="form-control" name="answer"></textarea>
-        <button class="btn btn-grad mt-3">Submit</button>
+        <button class="btn btn-grad mt-3" id="dc-sub">Submit</button>
       </form>
     </div>
   </div>
