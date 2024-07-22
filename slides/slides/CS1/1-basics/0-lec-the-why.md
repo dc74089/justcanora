@@ -4,6 +4,27 @@
 
 # The Boring Stuff
 
+Note:
+Call me Teacher Canora.
+
+Be nice.
+
+We're all just people... Make my job easy, I'll make yours easy.
+
+Self-care basket is in the corner. Take what you need. 1 mint per day. 
+* Mints
+* Lotion
+* Pads & Tampons
+* Hand Sanitizer
+* Hair Ties & Bobby Pins
+* Earring Backs
+
+Also available upon request (*talk to me*):
+* Chapstick
+* Deodorant
+* Hand Warmers
+* Sewing Kit
+
 ----
 
 # Why CS
@@ -15,7 +36,16 @@
 </div>
 
 Note:
-This is hidden
+One of my favorite series as a kid was So You Want to Be a Wizard. In the books, two kids (Kit and Nita)
+are inducted as wizards. 
+
+Magic in these books is done by mastery of The Speech. The Speech is a language that the universe speaks.
+Everything, from trees to rocks to the air can speak and listen in The Speech. To cast a spell, a wizard
+uses The Speech to speak their objective, and suggest a way of making it happen. Magically, it happens. 
+
+I see programming as the same type of wizardry as the kids in these books. Just like wizards are scholars
+of The Speech, programmers are scholars of these "magical" languages where, in order to bring something
+into existence, all you have to do is speak it. 
 
 ----
 
@@ -79,3 +109,12 @@ This is hidden
         </tr>
     </tbody>
 </table>
+
+----
+
+## Course Materials
+* MacBook (fully charged)
+
+Note:
+We don't use paper in this class. Don't worry about bringing anything except a MacBook
+into my room.

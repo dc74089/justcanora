@@ -22,7 +22,7 @@
                   {% if deck %}
                     <tr>
                       <td>
-                        <a href="{% url 'slides' course module forloop.counter %}" class="font-monospace">{{ deck | format_filename }}</a>
+                        <a href="{% url 'slides' course module forloop.counter %}" class="font-monospace" target="_blank">{{ deck | format_filename }}</a>
                       </td>
                     </tr>
                   {% endif %}

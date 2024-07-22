@@ -57,9 +57,12 @@ def slides(request, course, module, lesson):
             md_list = md.split('---')
 
         title = format_filename(filename)
+        show_notes = request.user.student.grade and request.user.student.grade <= 8
+        show_notes = show_notes or request.GET.get('show_notes', False)
 
         return render(request, 'cs1/revealbase.html', {
             "title": title,
             "slides": md_list,
             "has_verticals": has_verticals,
+            "show_notes": "true" if show_notes else "false"
         })
