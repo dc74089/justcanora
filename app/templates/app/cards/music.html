@@ -1,5 +1,6 @@
 <script>
     var spot_uri;
+    let submitting = false;
 
     function music_1() {
         $.get("{% url 'misc_action' %}", {
@@ -19,6 +20,12 @@
     }
 
     function music_2() {
+        if (submitting) return;
+        submitting = true;
+
+        $("#final_submit").prop("disabled", true).html("Loading...")
+        $("#final_discard").addClass("disabled")
+
         let csrf = $("[name='csrfmiddlewaretoken']").val()
         
         $.post("{% url 'misc_action' %}", {
@@ -85,8 +92,8 @@
         </tr>
       </table>
       <div class="mt-3">
-        <button class="btn btn-grad" onclick="music_2()">Yes</button>
-        <a class="btn btn-outline-danger" onclick="location.reload()">No</a>
+        <button class="btn btn-grad" onclick="music_2()" id="final_submit">Yes</button>
+        <a class="btn btn-outline-danger" onclick="location.reload()" id="final_discard">No</a>
       </div>
     </div>
   </div>
