@@ -59,4 +59,8 @@ Speaking to Entertain
 
 ----
 
-#
+# An Activity
+
+Note:
+In this class, community is going to be incredibly important. We're going to start with an 
+icebreaker to help everyone get to know each other.
