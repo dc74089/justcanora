@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from app.models import MusicSuggestion, News, DataCollectionAnswer, DataCollectionQuestion, Course, Student, \
     SpeechRating, SpeechRubric
 from app.spotify.search import search
+from app.views.music import add_song_helper
 
 
 def misc_action(request):
@@ -29,6 +30,17 @@ def misc_action(request):
                 spotify_uri=data['uri']
             )
             ms.save()
+
+            other_sug = MusicSuggestion.objects.filter(
+                spotify_uri=ms.spotify_uri,
+                investigated=True,
+                is_rejected=False,
+                for_playlist=True
+            )
+
+            if other_sug.exists():
+                add_song_helper(request, ms.id)
+
         elif data['action'] == 'music_rescue':
             old = MusicSuggestion.objects.get(id=data['req_id'])
 

@@ -124,6 +124,7 @@ class MusicSuggestion(models.Model):
     student = models.ForeignKey("Student", on_delete=models.CASCADE)
     for_playlist = models.BooleanField()
     investigated = models.BooleanField(default=False)
+    investigated_date = models.DateTimeField(null=True, blank=True)
     spotify_uri = models.CharField(max_length=100, null=True, blank=True)
     added = models.DateTimeField(auto_now_add=True)
     is_null = models.BooleanField(default=False, null=False, blank=False)
@@ -144,10 +145,16 @@ class MusicSuggestion(models.Model):
             return data
 
     def is_expired(self):
-        return timezone.now() > self.added + timezone.timedelta(days=30)
+        if self.investigated_date:
+            return timezone.now() > self.investigated_date + timezone.timedelta(days=30)
+        else:
+            return True
 
     def is_expiring_soon(self):
-        return not self.is_expired() and timezone.now() > self.added + timezone.timedelta(days=23)
+        if self.investigated_date:
+            return not self.is_expired() and timezone.now() > self.investigated_date + timezone.timedelta(days=27)
+        else:
+            return False
 
     def __str__(self):
         if self.artist:

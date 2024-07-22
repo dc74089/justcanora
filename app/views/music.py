@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from app.models import MusicSuggestion
@@ -62,16 +63,13 @@ def queue_song(request):
     return HttpResponse(status=200)
 
 
-@csrf_exempt
-@staff_member_required
-def add_song(request):
-    if request.method != "POST": return HttpResponseBadRequest()
+def add_song_helper(request, sug_id):
+    """
+    Adds a song to all applicable playlists.
+    Separated from the View function so it can be automatically called when songs are already marked clean
+    """
 
-    data = request.POST
-
-    if 'id' not in data: return HttpResponseBadRequest()
-
-    sug = MusicSuggestion.objects.get(id=int(data['id']))
+    sug = MusicSuggestion.objects.get(id=sug_id)
 
     courses = sug.student.courses.all()
 
@@ -87,7 +85,21 @@ def add_song(request):
         playlists.add_song_to_playlist(request, settings.PERSONAL_SPOTIFY_PLAYLIST, sug.spotify_uri)
 
     sug.investigated = True
+    sug.is_rejected = False
+    sug.investigated_date = timezone.now()
     sug.save()
+
+
+@csrf_exempt
+@staff_member_required
+def add_song(request):
+    if request.method != "POST": return HttpResponseBadRequest()
+
+    data = request.POST
+
+    if 'id' not in data: return HttpResponseBadRequest()
+
+    add_song_helper(request, int(data['id']))
 
     return HttpResponse(status=200)
 
