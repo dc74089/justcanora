@@ -1,4 +1,18 @@
 {% extends 'app/base.html' %}
+{% load thumbnail %}
+
+{% block style %}
+  <style>
+      img.propic {
+          height: 50px;
+      }
+
+      .invisible-button {
+          background: transparent;
+          border: none !important;
+      }
+  </style>
+{% endblock %}
 
 {% block content %}
   {% for courses in semesters %}
@@ -13,7 +27,22 @@
 
             {% for student in course.students_sorted %}
               <tr>
-                <td><a href="{% url 'admin:app_student_change' student.id %}">{{ student.full_name }}</a></td>
+                <td style="display: flex; justify-content: space-between; align-items: center">
+                  <a href="{% url 'admin:app_student_change' student.id %}">
+                    {{ student.full_name }}
+                  </a>
+                  {% if student.picture %}
+                    {% thumbnail student.picture "200x200" crop="center" as propic %}
+                      <button class="invisible-button float-end" popovertarget="popover-{{ course.id }}-{{ student.id }}">
+                        <img class="img-circle propic" src="{{ propic.url }}">
+                      </button>
+                    {% endthumbnail %}
+
+                    <div id="popover-{{ course.id }}-{{ student.id }}" popover>
+                      <img src="{{ student.picture.url }}" style="max-width: 80vw; max-height: 80vh">
+                    </div>
+                  {% endif %}
+                </td>
               </tr>
             {% endfor %}
           </table>

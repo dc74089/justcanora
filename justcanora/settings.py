@@ -70,9 +70,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_crontab',
     'django.contrib.humanize',
+    'sorl.thumbnail',
+    
     'app',
     'scavenger',
-    'slides'
+    'slides',
 ]
 
 MIDDLEWARE = [
