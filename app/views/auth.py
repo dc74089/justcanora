@@ -64,7 +64,15 @@ def google(request):
         uq = User.objects.filter(email=email)
 
         if uq.exists():
-            # Existing User
+            user = uq.first()
+            student = user.student
+
+            if not student.is_active():
+                return render(request, 'app/error.html', {
+                    "short": "This site is available for Tr. Canora's current students only",
+                    "message": f"We found a student with that email address, but they are not in any active classes. Please show this screen to Tr. Canora so they can fix it.\n\n{pprint.pformat(idinfo)}"
+                })
+
             do_login(request, uq.first(), backend='django.contrib.auth.backends.ModelBackend')
 
             return redirect('index')
@@ -73,7 +81,13 @@ def google(request):
             sq = Student.objects.filter(email=email)
 
             if sq.exists():
-                stu = sq.first()
+                stu: Student = sq.first()
+
+                if not stu.is_active():
+                    return render(request, 'app/error.html', {
+                        "short": "This site is available for Tr. Canora's current students only",
+                        "message": f"We found a student with that email address, but they are not in any active classes. Please show this screen to Tr. Canora so they can fix it.\n\n{pprint.pformat(idinfo)}"
+                    })
 
                 u = User(username=email, email=email)
                 u.save()
@@ -86,7 +100,7 @@ def google(request):
             else:
                 return render(request, 'app/error.html', {
                     "short": "I don't know of a student with that email",
-                    "message": f"We can't find a student with that email address. Please show this screen to Dominic and it'll be taken care of.\n\n{pprint.pformat(idinfo)}"
+                    "message": f"We can't find a student with that email address. Please show this screen to Tr. Canora so they can fix it.\n\n{pprint.pformat(idinfo)}"
                 })
 
     except ValueError as e:

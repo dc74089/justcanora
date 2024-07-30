@@ -1,6 +1,7 @@
 import json
 import re
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -53,8 +54,11 @@ class Student(models.Model):
         first_letters = [a[0] for a in names]
         return "".join(first_letters)
 
+    def is_active(self):
+        return self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR).exists()
+
     def all_courses_str(self):
-        return "\n".join([c.name for c in self.courses.all()])
+        return "\n".join([c.name for c in self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR)])
 
     def has_web_credential(self):
         try:
@@ -88,20 +92,21 @@ class Course(models.Model):
 
     academic_years = (
         ("23/24", "2023-24"),
+        ("24/25", "2023-24"),
     )
 
     course_id = models.IntegerField(null=False, blank=False)
     section_id = models.IntegerField(null=False, blank=False)
     period = models.IntegerField(null=True, blank=True)
     semester = models.IntegerField(null=True, blank=True)
-    year = models.CharField(max_length=100, choices=academic_years, default="23/24")
+    year = models.CharField(max_length=100, choices=academic_years, default="24/25")
     name = models.TextField()
     students = models.ManyToManyField("Student", related_name="courses")
     type = models.CharField(max_length=100, choices=course_types, default="other")
     playlist_id = models.CharField(max_length=100, null=True, blank=True)
 
     def students_sorted(self):
-        return self.students.all().order_by('fname')
+        return self.students.all().exclude(grade__gt=8).order_by('fname')
 
     def short_name(self):
         return f"S{self.semester}P{self.period}"
