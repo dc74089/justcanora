@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.template.loader import render_to_string
 
 from app.models import Student, FeatureFlag, SpeechRubric, SpeechRating
@@ -17,7 +18,7 @@ def peer_eval(request):
         rubric_name = flag.get_config().get("rubric_name")
         rubric = SpeechRubric.objects.get(speech=rubric_name)
 
-        for c in s.courses.all():
+        for c in s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER):
             if c.type == "speech":
                 students = c.students.all().order_by('fname')
                 rq = list(SpeechRating.objects.filter(rubric=rubric, author=s))

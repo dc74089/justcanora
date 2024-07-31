@@ -54,8 +54,11 @@ class Student(models.Model):
         first_letters = [a[0] for a in names]
         return "".join(first_letters)
 
-    def is_active(self):
-        return self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR).exists()
+    def is_active(self, enforce_semester=False):
+        if enforce_semester:
+            return self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER).exists()
+        else:
+            return self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR).exists()
 
     def all_courses_str(self):
         return "\n".join([c.name for c in self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR)])
