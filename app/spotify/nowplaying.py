@@ -1,5 +1,3 @@
-from django.http import HttpResponse
-
 from app.models import FeatureFlag
 from app.spotify import spotify
 

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.template.loader import render_to_string
 
 from app.models import WebserverCredential, Student, SpeechRubric, FeatureFlag
@@ -15,7 +16,13 @@ def links(request):
 
         ctx = {}
 
-        if SpeechRubric.objects.filter(available_to_view=True, speechrating__speaker=s):
+        if s.is_active(enforce_semester=True):
+            ctx['slides'] = True
+
+        if SpeechRubric.objects.filter(available_to_view=True, speechrating__speaker=s) \
+                and s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR,
+                                     semester=settings.CURRENT_SEMESTER,
+                                     type="speech").exists():
             ctx['evals'] = True
 
         if WebserverCredential.objects.filter(student=request.user.student).exists():

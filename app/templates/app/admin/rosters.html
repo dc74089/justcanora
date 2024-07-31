@@ -1,4 +1,20 @@
 {% extends 'app/base.html' %}
+{% load thumbnail %}
+
+{% block style %}
+  <style>
+      img.propic {
+          height: 50px;
+          width: 50px;
+          object-fit: cover;
+      }
+
+      .invisible-button {
+          background: transparent;
+          border: none !important;
+      }
+  </style>
+{% endblock %}
 
 {% block content %}
   {% for courses in semesters %}
@@ -7,15 +23,38 @@
       {% for course in courses %}
         <div class="col-12 col-md-6 col-lg-4">
           <table class="table table-striped table-hover">
+            <thead>
             <tr>
               <th>{{ course.name }}</th>
             </tr>
+            </thead>
 
+            <tbody>
             {% for student in course.students_sorted %}
               <tr>
-                <td><a href="{% url 'admin:app_student_change' student.id %}">{{ student.full_name }}</a></td>
+                <td style="display: flex; justify-content: space-between; align-items: center">
+                  <a href="{% url 'admin:app_student_change' student.id %}">
+                    {{ student.full_name }}
+                  </a>
+                  {% if student.picture %}
+                    <button class="invisible-button float-end" popovertarget="popover-{{ course.id }}-{{ student.id }}">
+                      <img class="img-circle propic" src="{{ student.picture.url }}">
+                    </button>
+
+                    <div id="popover-{{ course.id }}-{{ student.id }}" popover>
+                      <img src="{{ student.picture.url }}"
+                           style="max-width: 80vw; max-height: 80vh; min-width: 400px; min-height: 400px">
+                    </div>
+                  {% endif %}
+                </td>
               </tr>
             {% endfor %}
+            </tbody>
+          <tfoot>
+          <tr>
+            <td class="text-center">{{ course.students_sorted.count }} Students</td>
+          </tr>
+          </tfoot>
           </table>
         </div>
       {% endfor %}

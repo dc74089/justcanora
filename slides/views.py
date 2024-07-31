@@ -11,7 +11,9 @@ def index(request):
     current_dir = os.path.dirname(__file__)
     slides_dir = os.path.join(current_dir, 'slides')
 
-    course_types = set([course.type for course in request.user.student.courses.all()])
+    cq = request.user.student.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER)
+
+    course_types = set([course.type for course in cq])
 
     out = {}
 

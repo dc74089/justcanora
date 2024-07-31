@@ -7,7 +7,10 @@
 
       <div class="d-flex flex-wrap justify-content-center row-gap-2">
 
-        <a class="btn btn-grad-positive mx-5" style="flex-basis: 100%;" href="{% url 'slides_index' %}">View Slides</a>
+        {% if slides %}
+          <a class="btn btn-grad-positive mx-5" style="flex-basis: 100%;" href="{% url 'slides_index' %}">View
+            Slides</a>
+        {% endif %}
 
         {% if creds %}
           <a class="btn btn-grad mx-2" href="{% url 'webserver_guide' %}">View HTML Publishing Instructions</a>

@@ -1,7 +1,5 @@
-from pprint import pprint
-
 from app.models import MusicSuggestion, News, Course
-from app.spotify import spotify, playlists
+from app.spotify import playlists
 
 
 def cleanup_null():
