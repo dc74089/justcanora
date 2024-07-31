@@ -1,13 +1,10 @@
 import os.path
 import re
-from pprint import pprint
 
-import requests
 from django.core.files.base import ContentFile
 
 from app.canvas.canvas import get_canvas
 from app.models import Course, Student
-from dateutil.parser import parse
 
 
 def get_dev_courses():

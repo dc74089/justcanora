@@ -1,13 +1,10 @@
-from pprint import pprint
-
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseBadRequest, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from app.models import Course, FeatureFlag, MusicSuggestion, DataCollectionQuestion
-from app.spotify import spotify
+from app.models import Course, FeatureFlag, DataCollectionQuestion
 
 
 @staff_member_required

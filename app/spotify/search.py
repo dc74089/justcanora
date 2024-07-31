@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from app.spotify import spotify
 
 
