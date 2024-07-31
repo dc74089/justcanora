@@ -5,6 +5,8 @@
   <style>
       img.propic {
           height: 50px;
+          width: 50px;
+          object-fit: cover;
       }
 
       .invisible-button {
@@ -32,14 +34,12 @@
                     {{ student.full_name }}
                   </a>
                   {% if student.picture %}
-                    {% thumbnail student.picture "200x200" crop="center" as propic %}
-                      <button class="invisible-button float-end" popovertarget="popover-{{ course.id }}-{{ student.id }}">
-                        <img class="img-circle propic" src="{{ propic.url }}">
-                      </button>
-                    {% endthumbnail %}
+                    <button class="invisible-button float-end" popovertarget="popover-{{ course.id }}-{{ student.id }}">
+                      <img class="img-circle propic" src="{{ student.picture.url }}">
+                    </button>
 
                     <div id="popover-{{ course.id }}-{{ student.id }}" popover>
-                      <img src="{{ student.picture.url }}" style="max-width: 80vw; max-height: 80vh">
+                      <img src="{{ student.picture.url }}" style="max-width: 80vw; max-height: 80vh; min-width: 400px; min-height: 400px">
                     </div>
                   {% endif %}
                 </td>

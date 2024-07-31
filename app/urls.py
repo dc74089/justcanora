@@ -7,8 +7,8 @@ urlpatterns = [
 
     path('login/', auth.login, name='login'),
     path('logout/', auth.logout, name='logout'),
-    path('auth/google/', auth.google, name='google_callback'),
-    path('auth/spotify/', auth.spotify_response, name='spotify_callback'),
+    path('auth/google', auth.google, name='google_callback'),
+    path('auth/spotify', auth.spotify_response, name='spotify_callback'),
 
     path('admin/', admin.admin, name='admin'),
     path('admin/setflag/', admin.set_flag, name='set_flag'),
