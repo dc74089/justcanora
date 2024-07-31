@@ -83,7 +83,7 @@ class PicRequest(models.Model):
 class Course(models.Model):
     course_types = (
         ("advisory", "Advisory"),
-        ("CS1", "App Design"),
+        ("CS1", "Web Dev"),
         ("CS2", "Python"),
         ("speech", "Public Speaking"),
         ("team", "Robotics Team"),

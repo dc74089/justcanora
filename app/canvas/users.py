@@ -74,6 +74,11 @@ def get_all_sections_from_course(course_id):
         c.students.clear()
         c.save()
 
+        if "CS II" in c.name: c.type = "CS2"
+        elif "CS I" in c.name: c.type = "CS1"
+        elif "Speaking" in c.name: c.type = "speech"
+        elif "Advisory" in c.name: c.type = "advisory"
+
         try:
             match = re.search("(\d+)\(A\)", c.name)
             pd = int(match.group(1))
