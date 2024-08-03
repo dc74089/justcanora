@@ -37,12 +37,14 @@
                     {{ student.full_name }}
                   </a>
                   {% if student.picture %}
+                    {% thumbnail student.picture "50x50" crop="center" as im %}
                     <button class="invisible-button float-end" popovertarget="popover-{{ course.id }}-{{ student.id }}">
-                      <img class="img-circle propic" src="{{ student.picture.url }}">
+                      <img class="img-circle propic" src="{{ im.url }}">
                     </button>
+                    {% endthumbnail %}
 
                     <div id="popover-{{ course.id }}-{{ student.id }}" popover>
-                      <img src="{{ student.picture.url }}"
+                      <img src="{{ student.picture.url }}" loading="lazy"
                            style="max-width: 80vw; max-height: 80vh; min-width: 400px; min-height: 400px">
                     </div>
                   {% endif %}
