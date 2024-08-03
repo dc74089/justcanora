@@ -2,7 +2,54 @@
 
 ----
 
+STARTMEONLY
+
+# About Me
+
+---
+
+## Things I Like
+<div style="display: flex; flex-direction: row; justify-content: center; gap: 12px">
+<img src="STATICPREFIX/common/1-intro/receiptify.png" style="max-height: 70vh;">
+<img src="STATICPREFIX/common/1-intro/croissant.png" style="max-height: 70vh;">
+<img src="STATICPREFIX/common/1-intro/hhn.png" style="max-height: 70vh;">
+</div>
+
+---
+
+## Things I Did Over Summer
+<div style="display: flex; flex-direction: row; justify-content: center; gap: 12px">
+<img src="STATICPREFIX/common/1-intro/baconsummer.jpg" style="max-height: 70vh;">
+<img src="STATICPREFIX/common/1-intro/disco.jpg" style="max-height: 70vh;">
+<img src="STATICPREFIX/common/1-intro/wonderlab.jpg" style="max-height: 70vh;">
+<img src="STATICPREFIX/common/1-intro/hiltonhead.png" style="max-height: 70vh;">
+</div>
+
+---
+
+## Things I Did Over Summer
+<div style="display: flex; flex-direction: row; justify-content: center; gap: 12px">
+<img src="STATICPREFIX/common/1-intro/citymuseum.jpg" style="max-height: 70vh;">
+<img src="STATICPREFIX/common/1-intro/belay.jpg" style="max-height: 70vh;">
+<img src="STATICPREFIX/common/1-intro/lindsay.jpg" style="max-height: 70vh;">
+</div>
+
+---
+
+# What About You?
+
+----
+
+ENDMEONLY
+
 # The Boring Stuff
+
+---
+
+## The Boring Stuff
+* Expectations
+* How This Course Works
+* The Basket
 
 Note:
 Call me Teacher Canora.
@@ -22,7 +69,6 @@ Self-care basket is in the corner. Take what you need. 1 mint per day.
 Also available upon request (*talk to me*):
 * Chapstick
 * Deodorant
-* Hand Warmers
 * Sewing Kit
 
 ----
@@ -32,7 +78,7 @@ Also available upon request (*talk to me*):
 ---
 
 <div style="text-align: center">
-<img src="STATICPREFIX/cs2/1-intro/so-you-want-to-be-a-wizard.png">
+<img src="STATICPREFIX/common/1-intro/so-you-want-to-be-a-wizard.png">
 </div>
 
 Note:

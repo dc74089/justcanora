@@ -10,7 +10,7 @@
         integrity="sha512-z8wQkuDRFwCBfoj7KOiu1MECaRVoXx6rZQWL21x0BsVVH7JkqCp1Otf39qve6CrCycOOL5o9vgfII5Smds23rg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
-  <link rel="stylesheet" href="{% static 'cs1/dominic.css' %}">
+  <link rel="stylesheet" href="{% static 'common/dominic.css' %}">
 
 
   <title>{{ title }}</title>
@@ -59,14 +59,14 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
-    let notes = {{ show_notes }}
+    let notes = !{{ is_teacher }}
 
     Reveal.initialize({
         plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
         width: 1280,
         height: 720,
         hash: true,
-        showNotes: {{ show_notes }}
+        showNotes: !{{ is_teacher }}
     });
 
     Reveal.addKeyBinding(
