@@ -103,7 +103,34 @@
 
 ----
 
+# Big Rules
+
+Note:
+Writing code is a critically important part of learning any programming language. In this course, our big rule is that
+students must write all of their own code: the code you turn in should be directly typed by your fingers, and must be
+substantially yours. This means that:
+
+* When giving or receiving assistance from peers, "help with your mouth, not with your hands". Students are welcome to
+  discuss assignments, review each others' code, and help troubleshoot, but students may not type code into another
+  students' computer or document.
+* When using an outside resource (including AI), students may use small pieces of suggested code, but must type it into
+  their document themselves (ie, no copy-pasting).
+
+You're publishing to the real internet. Everything you publish will be visible to LHPS students, employees, and anyone
+else who knows the (very insecure) password to access the site.
+
+* You should not publish anything you wouldn't show to a parent, a teacher, an administrator, or any student in your
+  grade.
+* You may not talk about, or even mention, any member of the LHP community on your site. Not your best friend. Not your
+  worst enemy. Not even if you're speaking in a positive way.
+* We keep a copy of every single thing you publish. Once you upload a file, you can remove it from the "live" site, but
+  you won't be able to delete our copy. If you publish something you shouldn't, we will know, and we will have a record
+  of it forever.
+
+----
+
 ## Our Tools
+
 * Class Site
 * VS Code
 * Chrome DevTools
@@ -111,11 +138,13 @@
 ----
 
 # Tool 1: My Website
+
 > `https://tr.canora.us`
 
 ---
 
 ## Tr. Canora's Website
+
 1. Visit `https://tr.canora.us` in Google Chrome
 2. Sign in with Google
 3. Answer the questions
@@ -163,6 +192,7 @@
 ---
 
 ## Wait here:
+
 <div style="text-align: center">
 <img src="STATICPREFIX/cs1/1-intro/vs-code-welcome.png" style="width: 40vw"/>
 </div>
@@ -178,7 +208,7 @@
 
 ----
 
-# Tool 3: Chrome Dev Tools 
+# Tool 3: Chrome Dev Tools
 
 > Chrome DevTools is a set of web developer tools built directly into the Google Chrome browser. DevTools lets you edit
 > pages on-the-fly and diagnose problems quickly, which helps you build better websites, faster. -Google
