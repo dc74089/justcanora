@@ -1,12 +1,17 @@
 from django.template.loader import render_to_string
 from django.utils import timezone
 
+from spotipy.oauth2 import SpotifyOauthError
+
 from app.models import MusicSuggestion, FeatureFlag
 from app.spotify import spotify
 
 
 def allcards(request):
-    return [x for x in [suggestion(request), login(request), expiring_soon(request)] if x is not None]
+    try:
+        return [x for x in [suggestion(request), login(request), expiring_soon(request)] if x is not None]
+    except SpotifyOauthError:
+        return []
 
 
 def suggestion(request):

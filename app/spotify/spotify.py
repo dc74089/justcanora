@@ -2,6 +2,7 @@ import os
 
 import spotipy
 from spotipy import SpotifyOAuth, CacheHandler
+from spotipy.oauth2 import SpotifyOauthError
 
 from app.models import FeatureFlag
 
@@ -50,9 +51,12 @@ def get_spotify(request):
 
 
 def needs_login(request):
-    am = get_auth_manager(request)
+    try:
+        am = get_auth_manager(request)
 
-    return not am.validate_token(am.get_cached_token())
+        return not am.validate_token(am.get_cached_token())
+    except SpotifyOauthError:
+        return True
 
 
 def get_login_url(request):
