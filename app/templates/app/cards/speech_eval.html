@@ -1,9 +1,17 @@
+<script>
+  function do_submit() {
+      $("#submit_btn").prop("disabled", true);
+
+      return true;
+  }
+</script>
+
 <div class="col-12 col-md-6">
   <div class="card mb-2">
     <div class="card-body">
       <h2 class="card-title">Speech Evaluation</h2>
     <h4>{{ rubric.speech }}</h4>
-      <form method="post" action="{% url 'misc_action' %}">
+      <form method="post" action="{% url 'misc_action' %}" onsubmit="return do_submit();">
         {% csrf_token %}
         <input class="d-none" name="action" value="speech_eval">
         <input class="d-none" name="rubric" value="{{ rubric.id }}">
@@ -33,7 +41,7 @@
         {% endfor %}
 
         <div class="mt-3">
-          <button class="btn btn-grad">Submit</button>
+          <button class="btn btn-grad" id="submit_btn">Submit</button>
         </div>
       </form>
     </div>
