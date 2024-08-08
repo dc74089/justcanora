@@ -61,7 +61,12 @@ class Student(models.Model):
             return self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR).exists()
 
     def all_courses_str(self):
-        return "\n".join([c.name for c in self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR)])
+        return "\n".join([
+            c.name for c in self.courses.filter(
+                year=settings.CURRENT_ACADEMIC_YEAR,
+                semester=settings.CURRENT_SEMESTER
+            )
+        ])
 
     def has_web_credential(self):
         try:
