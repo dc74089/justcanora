@@ -25,10 +25,17 @@ def bday_others(request):
 
     if not student.courses: return None
 
-    bq = Student.objects.filter(bday__month=now.month, bday__day=now.day, courses__in=student.courses.all()).exclude(
-        id=student.id)
+    bq = Student.objects.filter(
+        bday__month=now.month,
+        bday__day=now.day,
+        courses__in=student.courses.all()
+    ).exclude(
+        id=student.id
+    )
 
-    if bq.exists():
+    blist = [s for s in bq if s.is_active()]
+
+    if blist:
         return render_to_string("app/cards/happy_bday_others.html",
                                 {"students": bq},
                                 request=request)
