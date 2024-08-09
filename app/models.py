@@ -56,7 +56,10 @@ class Student(models.Model):
 
     def is_active(self, enforce_semester=False):
         if enforce_semester:
-            return self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER).exists()
+            return (
+                self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER) |
+                self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, name__contains="YR")
+            ).exists()
         else:
             return self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR).exists()
 
@@ -80,12 +83,6 @@ class Student(models.Model):
 
     def __bool__(self):
         return self.courses.exists()
-
-
-class PicRequest(models.Model):
-    student = models.ForeignKey('Student', on_delete=models.CASCADE)
-    picture = models.ImageField(upload_to='requested')
-    approved = models.BooleanField(null=True, blank=True)
 
 
 class Course(models.Model):
