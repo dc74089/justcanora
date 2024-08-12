@@ -1,3 +1,5 @@
+from oauth2_provider.models import clear_expired
+
 from app.models import MusicSuggestion, News, Course
 from app.spotify import playlists
 
@@ -25,3 +27,7 @@ def cleanup_playlists():
 
                     if not keep:
                         playlists.remove_song_from_playlist(None, course.playlist_id, song['track']['uri'])
+
+
+def clear_tokens():
+    clear_expired()
