@@ -72,10 +72,16 @@ INSTALLED_APPS = [
     'django_crontab',
     'django.contrib.humanize',
     'sorl.thumbnail',
-    
+    'oauth2_provider',
+
     'app',
     'scavenger',
     'slides',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'oauth2_provider.backends.OAuth2Backend',
 ]
 
 MIDDLEWARE = [
@@ -85,6 +91,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

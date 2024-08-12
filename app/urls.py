@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import index, auth, misc, admin, music, speech, curriculum, webserver, wrapped
+from .views import index, auth, misc, admin, music, speech, curriculum, webserver, wrapped, jetbrains
 
 urlpatterns = [
     path('', index.index, name='index'),
@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', auth.logout, name='logout'),
     path('auth/google', auth.google, name='google_callback'),
     path('auth/spotify', auth.spotify_response, name='spotify_callback'),
+    path('auth/jetbrains/userdata', jetbrains.userdata, name='jetbrains_userdata'),
 
     path('admin/', admin.admin, name='admin'),
     path('admin/setflag/', admin.set_flag, name='set_flag'),

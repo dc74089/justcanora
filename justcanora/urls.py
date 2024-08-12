@@ -18,9 +18,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from oauth2_provider import urls as oauth2_urls
+
 from justcanora import settings
 
 urlpatterns = [
+    path('o/', include(oauth2_urls)),
     path('db/', admin.site.urls),
     path('', include('app.urls')),
     path('hunt/', include('scavenger.urls')),
