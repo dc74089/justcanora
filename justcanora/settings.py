@@ -84,6 +84,10 @@ AUTHENTICATION_BACKENDS = [
     'oauth2_provider.backends.OAuth2Backend',
 ]
 
+OAUTH2_PROVIDER = {
+    "PKCE_REQUIRED": False
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'app.middleware.prevent_cache.PreventCacheMiddleware',
