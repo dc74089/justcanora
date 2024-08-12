@@ -23,7 +23,7 @@ from oauth2_provider import urls as oauth2_urls
 from justcanora import settings
 
 urlpatterns = [
-    path('o/', include(oauth2_urls)),
+    path('o/', include(oauth2_urls.base_urlpatterns)),
     path('db/', admin.site.urls),
     path('', include('app.urls')),
     path('hunt/', include('scavenger.urls')),
