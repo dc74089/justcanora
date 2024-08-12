@@ -105,6 +105,11 @@ Python is a programming language that is:
 * General-Purpose
 * Imperative
 
+Note:
+**High Level**: Programmers are more worried about *algorithms* than *memory management*
+**General Purpose**: Can be used for almost any purpose
+**Imperative**: Programmers write a list of instructions that are executed one "step" at a time
+
 ---
 
 ## Python in the Real World
@@ -112,6 +117,12 @@ Python is a programming language that is:
 * AI
 * Data Science
 * Web
+
+Note:
+* Python is the 3rd most popular programming language as of a 2024 survey (first is JS, second is HTML/CSS)
+* Popular AI libraries include TensorFlow, Keras, and PyTorch
+* Popular Data Science libraries include Pandas, NumPy, SciPy, and MatPlotLib
+* Popular Web libraries include Django and Flask
 
 ----
 
@@ -133,6 +144,20 @@ Confident Understanding of:
 * Live Coding
 * Code Reviews
 * **Trust**
+
+Note:
+I ask for your trust because at times, I will put you into situations where you feel "shaky".
+This is because problem-solving is one of the most important parts of programming. 
+
+In math, every quadratic equation is solved using the same steps. In programming, every solution is
+more or less unique. I will give you tools and teach you how to use them, but it will be your job to
+figure out how to use those tools to accomplish a given task. 
+
+---
+
+<div style="text-align: center">
+<img src="STATICPREFIX/common/1-intro/growth-learning-panic.png" style="max-height: 80vh">
+</div>
 
 ---
 

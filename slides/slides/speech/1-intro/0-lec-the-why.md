@@ -85,6 +85,12 @@ Also available upon request (*talk to me*):
 * Constructing an Argument
 * Microphone Skills
 
+---
+
+<div style="text-align: center">
+<img src="STATICPREFIX/common/1-intro/growth-learning-panic.png" style="max-height: 80vh">
+</div>
+
 ----
 
 ## Course Map

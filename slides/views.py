@@ -27,7 +27,7 @@ def index(request):
             decks = {}
 
             for module in sorted(modules):
-                if '.' not in module:
+                if settings.DEBUG or '.' not in module:
                     files = os.listdir(os.path.join(class_dir, module))
                     decks[module] = list(sorted([x if x[0] != '.' else '' for x in files]))
 
@@ -50,7 +50,7 @@ def slides(request, course, module, lesson):
     with open(full_path, 'r') as f:
         md = f.read()
 
-        md = md.replace("STATICPREFIX", settings.STATIC_URL)
+        md = md.replace("STATICPREFIX", settings.STATIC_URL.rstrip('/'))
 
         if request.user.is_staff:
             md = md.replace("STARTMEONLY", '')
