@@ -18,6 +18,10 @@
           <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/dcanora/">Tr. Canora's CS1 Site</a>
         {% endif %}
 
+        {% if pycharm %}
+          <a class="btn btn-grad mx-2" href="{% url 'jetbrains_setup_instructions' %}">View PyCharm Instructions</a>
+        {% endif %}
+
         {% if evals %}
           <a class="btn btn-grad" href="{% url 'speech_view_evals' %}">View Speech Evals</a>
         {% endif %}

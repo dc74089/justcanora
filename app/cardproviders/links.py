@@ -28,5 +28,8 @@ def links(request):
         if WebserverCredential.objects.filter(student=request.user.student).exists():
             ctx['creds'] = WebserverCredential.objects.filter(student=request.user.student).first()
 
+        if s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER).exists():
+            ctx['pycharm'] = True
+
         if ctx:
             return render_to_string("app/cards/links.html", ctx, request)

@@ -29,6 +29,8 @@ urlpatterns = [
     path('webserver/instructions/', webserver.instructions, name='webserver_guide'),
     path('webserver/all_creds/', webserver.all_table, name='webserver_all'),
 
+    path('pycharm/instructions/', jetbrains.setup_instructions, name='jetbrains_setup_instructions'),
+
     path('wrapped/2024/', wrapped.wrapped2024, name='wrapped_2024'),
     path('wrapped/demo/', wrapped.wrapped_demo, name='wrapped_2024_demo'),
 

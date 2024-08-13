@@ -1,0 +1,65 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12 col-lg-6 offset-lg-3">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">PyCharm -- Setup Instructions</h2>
+
+          <p>This page will walk you through how to set up PyCharm.</p>
+          <p>Please read each step carefully.</p>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="card-title">Step 1: Download PyCharm</h3>
+          <ol>
+            <li>Open Manager</li>
+            <li>Find "PyCharm" (make sure it says <b>Mosyle Catalog</b>)</li>
+            <li>Click "Install" (if you see "Reinstall", it's already installed!)</li>
+          </ol>
+
+          <div class="text-center">
+            <img src="{% static 'app/pycharm-manager.png' %}" style="width: 50%; border: 1px solid">
+          </div>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="card-title">Step 2: Enter License Info</h3>
+          <ol>
+            <li>Open PyCharm</li>
+            <li>
+              It should ask you for a license. 
+              If it does not, click the gear in the bottom left, then click "Manage Licenses"
+            </li>
+            <li>Choose "License Server"</li>
+            <li>Enter <code>https://lhps.fls.jetbrains.com/</code> in the "Server Address" box.</li>
+            <li>Click "Activate"</li>
+          </ol>
+
+          <div class="text-center">
+            <img src="{% static 'app/pycharm-license-server.png' %}" style="width: 100%">
+          </div>
+        </div>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="card-title">Step 2: Log In</h3>
+          <ol>
+            <li>
+              In the window that opens, click the blue/green icon.
+              <b>You don't need to enter your username or password.</b>
+            </li>
+          </ol>
+
+          <div class="text-center">
+            <img src="{% static 'app/favicon.svg' %}" style="width: 25%">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
