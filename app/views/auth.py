@@ -113,6 +113,6 @@ def spotify_response(request):
         return render(request, 'app/error.html')
 
     print("Setting token for DB")
-    spotify.get_auth_manager(request).get_access_token(request.GET.get('code'))
+    spotify.get_auth_manager(request).get_access_token(request.GET.get('code'), check_cache=False)
 
     return redirect(request.session.pop('next', 'index'))
