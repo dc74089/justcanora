@@ -1,11 +1,11 @@
-Django~=5.0.7
+Django~=5.0.8
 mysqlclient~=2.1.1
 google-auth~=2.29.0
-requests~=2.32.0
+requests~=2.32.3
 canvasapi~=3.2.0
 Pillow~=10.4.0
 spotipy~=2.23.0
 django-crontab~=0.7.1
-tqdm~=4.66.4
+tqdm~=4.66.5
 sorl-thumbnail~=12.10.0
 django-oauth-toolkit~=2.4.0
