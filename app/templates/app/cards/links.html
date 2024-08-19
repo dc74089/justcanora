@@ -15,6 +15,9 @@
         {% if creds %}
           <a class="btn btn-grad mx-2" href="{% url 'webserver_guide' %}">View HTML Publishing Instructions</a>
           <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/{{ creds.directory }}">View My CS1 Site</a>
+        {% endif %}
+      
+        {% if htmlref %}
           <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/dcanora/">Tr. Canora's CS1 Site</a>
         {% endif %}
 

@@ -28,7 +28,10 @@ def links(request):
         if WebserverCredential.objects.filter(student=request.user.student).exists():
             ctx['creds'] = WebserverCredential.objects.filter(student=request.user.student).first()
 
-        if s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER).exists():
+        if s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER, type="CS1").exists():
+            ctx['htmlref'] = True
+
+        if s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER, type="CS2").exists():
             ctx['pycharm'] = True
 
         if ctx:
