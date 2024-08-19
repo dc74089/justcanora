@@ -21,7 +21,7 @@ Can generally be split into three categories:
 
 ----
 
-# Nonverbal Communication
+# Verbal Communication
 
 ---
 
