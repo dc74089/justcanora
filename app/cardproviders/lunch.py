@@ -40,7 +40,7 @@ def helper_build_menu(day):
 
 
 def lunch_menu(request):
-    flag, _ = FeatureFlag.objects.get_or_create(name='card_lunch')
+    flag, _ = FeatureFlag.objects.get_or_create(id='card_lunch')
 
     if not flag: return None
 
