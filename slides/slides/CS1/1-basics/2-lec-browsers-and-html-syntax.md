@@ -131,3 +131,14 @@ Before you start work on your first programming assignment, please open VS Code 
 
 ## Try it out!
 Please start working on the "HTML Hello World" assignment on Canvas
+
+----
+
+## Try it out!
+
+1. Create a file named `history.html`
+2. Using the tags we've learned so far (in a way that makes sense), create a webpage about your history
+   * Tell me about your past.
+   * Where have you lived? 
+   * Where have you gone to school? 
+   * Etc.
