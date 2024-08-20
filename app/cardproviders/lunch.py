@@ -4,6 +4,8 @@ import requests
 from django.template.loader import render_to_string
 from django.utils import timezone
 
+from app.models import FeatureFlag
+
 
 def allcards(request):
     return [x for x in [lunch_menu(request)] if x is not None]
@@ -38,6 +40,10 @@ def helper_build_menu(day):
 
 
 def lunch_menu(request):
+    flag, _ = FeatureFlag.objects.get_or_create(name='card_lunch')
+
+    if not flag: return None
+
     try:
         date = timezone.now().astimezone(timezone.get_default_timezone()).date()
         tomorrow = date + timedelta(days=1)
