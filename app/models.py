@@ -57,18 +57,23 @@ class Student(models.Model):
     def is_active(self, enforce_semester=False):
         if enforce_semester:
             return (
-                self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER) |
-                self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, name__contains="YR")
+                    self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER) |
+                    self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, name__contains="YR")
             ).exists()
         else:
             return self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR).exists()
 
     def all_courses_str(self):
+        q = self.courses.filter(
+            year=settings.CURRENT_ACADEMIC_YEAR,
+            semester=settings.CURRENT_SEMESTER
+        ) | self.courses.filter(
+            year=settings.CURRENT_ACADEMIC_YEAR,
+            name__contains="YR"
+        )
+
         return "\n".join([
-            c.name for c in self.courses.filter(
-                year=settings.CURRENT_ACADEMIC_YEAR,
-                semester=settings.CURRENT_SEMESTER
-            )
+            c.name for c in q
         ])
 
     def has_web_credential(self):

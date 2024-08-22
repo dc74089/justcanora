@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from app.models import MusicSuggestion
+from app.models import MusicSuggestion, Course
 from app.spotify import spotify, playlists, nowplaying
 from app.spotify.search import search
 
@@ -71,7 +71,13 @@ def add_song_helper(request, sug_id):
 
     sug = MusicSuggestion.objects.get(id=sug_id)
 
-    courses = sug.student.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR)
+    courses = sug.student.courses.filter(
+            year=settings.CURRENT_ACADEMIC_YEAR,
+            semester=settings.CURRENT_SEMESTER
+        ) | sug.student.courses.filter(
+            year=settings.CURRENT_ACADEMIC_YEAR,
+            name__contains="YR"
+        )
 
     if sug.for_playlist:
         for c in courses:
