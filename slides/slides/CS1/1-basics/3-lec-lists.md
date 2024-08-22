@@ -60,7 +60,7 @@ You might use it for a list of ingredients for a recipe, a collection of points 
 
 ---
 
-## Unrdered Lists
+## Unordered Lists
 ### The HTML
 ```html
 <ul>
