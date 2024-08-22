@@ -71,7 +71,7 @@ def add_song_helper(request, sug_id):
 
     sug = MusicSuggestion.objects.get(id=sug_id)
 
-    courses = sug.student.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER)
+    courses = sug.student.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR)
 
     if sug.for_playlist:
         for c in courses:
