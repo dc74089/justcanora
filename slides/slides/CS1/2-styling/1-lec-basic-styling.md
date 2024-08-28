@@ -56,6 +56,9 @@ When we view our webpage, it will look like this:
 ## Common CSS Attributes
 Below is a list of common CSS attributes:
 
+* `height` and `width`: Controls how big an element is on the screen
+  * We use either pixels (like `24px`) or percentages (like `50%`) as our units
+  * Make sure your unit is touching your number!
 * `text-align`: Control where (horizontally) child items are.
   * Options are `left`, `right`, and `center`
 * `color`: Controls the color of text.
@@ -64,9 +67,8 @@ Below is a list of common CSS attributes:
   * <span style="background-color: darkgreen;">Like This</span>
 * `font-family`: Sets the font of text inside an element
   * By default, here are your options: arial, verdana, tahoma, georgia, garamond, monospace, cursive
-* `height` and `width`: Controls how big an element is on the screen
-  * We use either pixels (like `24px`) or percentages (like `50%`) as our units
-  * Make sure your unit is touching your number!
+* `font-size`: Sets the size of text inside an element
+  * Your unit for this is `pt`. Make sure your unit is touching your number!
 
 &nbsp;
 
