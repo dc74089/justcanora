@@ -62,6 +62,8 @@ Below is a list of common CSS attributes:
   * <span style="color: yellow;">Like This</span>
 * `background-color`: Controls the background color of an element
   * <span style="background-color: darkgreen;">Like This</span>
+* `font-family`: Sets the font of text inside an element
+  * By default, here are your options: arial, verdana, tahoma, georgia, garamond, monospace, cursive
 * `height` and `width`: Controls how big an element is on the screen
   * We use either pixels (like `24px`) or percentages (like `50%`) as our units
   * Make sure your unit is touching your number!
