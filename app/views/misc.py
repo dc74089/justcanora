@@ -129,3 +129,7 @@ def misc_action(request):
                 return JsonResponse(results["tracks"]["items"][0])
 
         return redirect('index')
+
+
+def redirect_robotics(request):
+    return redirect('https://docs.google.com/forms/d/e/1FAIpQLSd5rXYIFaysv2E4qnHkr0-0tdg35cLJU-u72qNp2EjqFjBIKA/viewform?usp=sf_link')

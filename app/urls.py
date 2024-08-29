@@ -38,6 +38,8 @@ urlpatterns = [
     path('cn/dark/', curriculum.index_dark),
     path('cn/bigqr/', curriculum.big_qr),
 
+    path('robotics', misc.redirect_robotics),
+
     path('do/', misc.misc_action, name='misc_action'),
     path('dev/', index.dev, name='dev'),
 ]
