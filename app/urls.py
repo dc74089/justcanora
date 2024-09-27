@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import index, auth, misc, admin, music, speech, curriculum, webserver, wrapped, jetbrains
+from .views import index, auth, misc, admin, music, speech, curriculum, webserver, wrapped, jetbrains, dance
 
 urlpatterns = [
     path('', index.index, name='index'),
@@ -37,6 +37,8 @@ urlpatterns = [
     path('cn/', curriculum.index),
     path('cn/dark/', curriculum.index_dark),
     path('cn/bigqr/', curriculum.big_qr),
+
+    path('dance', dance.dance_index),
 
     path('robotics', misc.redirect_robotics),
 

@@ -1,0 +1,76 @@
+{% extends 'app/base.html' %}
+
+{% block style %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+    <style>
+        .marker {
+            font-family: "Permanent Marker", cursive;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+
+{% endblock %}
+
+{% block script %}
+	<script>
+        
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Halloween Dance Song Requests</h1>
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <div class="card mt-5">
+                <div class="card-body text-center">
+                    <h2 class="marker">A song to scream-sing</h2>
+
+                    <input type="text" class="form-control">
+                    <a class="btn btn-grad-positive mt-3">Search</a>
+
+                    <table class="table table-hover mt-3">
+                        {% for x in '01234' %}
+                            <tr>
+                                <td class="">
+                                    <img style="height: 50px" id="music-art" class="me-2"
+                                         src="https://i.scdn.co/image/ab67616d0000b273ce5da542e3aec8325e844311">
+                                    <b><span id="music-song">It's Raining Men</span></b>
+                                    by
+                                    <b><span id="music-artist">The Weather Girls</span></b>
+                                </td>
+                                <td class="text-end">
+                                    <a class="btn btn-grad-positive">Choose</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card mt-5">
+                <div class="card-body text-center">
+                    <h2 class="marker">A song for your best friend</h2>
+
+                    <table class="mt-4 w-100">
+                            <tr>
+                                <td class="">
+                                    <img style="height: 200px" id="music-art" class="me-2"
+                                         src="https://i.scdn.co/image/ab67616d0000b273ce5da542e3aec8325e844311">
+                                </td>
+                                <td class="text-end" style="font-size: 2em">
+                                    <p><b><span id="music-song">It's Raining Men</span></b></p>
+                                    <p>by <b><span id="music-artist">The Weather Girls</span></b>
+                                    </p>
+                                </td>
+                            </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
