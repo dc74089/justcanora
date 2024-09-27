@@ -14,7 +14,7 @@ def dance_index(request):
     elif 'dance_request_identity' in request.session:
         identity = request.session['dance_request_identity']
     else:
-        identity = uuid.uuid4()
+        identity = str(uuid.uuid4())
         request.session['dance_request_identity'] = identity
         request.session.save()
 
@@ -56,7 +56,7 @@ def dance_choose(request):
         elif 'dance_request_identity' in request.session:
             identity = request.session['dance_request_identity']
         else:
-            identity = uuid.uuid4()
+            identity = str(uuid.uuid4())
             request.session['dance_request_identity'] = identity
             request.session.save()
 
