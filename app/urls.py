@@ -38,7 +38,9 @@ urlpatterns = [
     path('cn/dark/', curriculum.index_dark),
     path('cn/bigqr/', curriculum.big_qr),
 
-    path('dance', dance.dance_index),
+    path('dance', dance.dance_index, name='dance_index'),
+    path('dance/search', dance.dance_search, name='dance_search'),
+    path('dance/choose', dance.dance_choose, name='dance_choose'),
 
     path('robotics', misc.redirect_robotics),
 

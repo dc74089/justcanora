@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
+from urllib3 import request
 
 
 class FeatureFlag(models.Model):
@@ -350,3 +351,36 @@ class Wrapped2024(models.Model):
 
     def __str__(self):
         return f"{self.student.name()}'s 2024 SY Wrapped"
+
+
+class DanceRequestCategory(models.Model):
+    name = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
+class DanceRequest(models.Model):
+    requestor = models.TextField()
+    category = models.ForeignKey(DanceRequestCategory, on_delete=models.CASCADE)
+    spotify_uri = models.CharField(max_length=255)
+    data = models.TextField(null=True, blank=True)
+
+    def get_spotify_data(self, request):
+        if self.data:
+            return json.loads(self.data)
+        elif request:
+            from app.spotify import search
+
+            data = search.get_by_uri(request, self.spotify_uri)
+
+            self.data = json.dumps(data)
+            self.save()
+
+            return data
+        else:
+            return None
+
+
+    def __str__(self):
+        return f"{self.requestor}: {self.category}"

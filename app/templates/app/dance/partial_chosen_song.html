@@ -1,0 +1,14 @@
+<table class="my-4 w-100">
+    <tr>
+        <td class="w-100">
+            <img id="music-art" class="w-100"
+                 src="{{ song.album.images.0.url }}">
+        </td>
+    </tr>
+    <tr>
+        <td class="text-center" style="font-size: 2em">
+            <p><b class="marker"><span id="music-song">{{ song.name }}</span></b></p>
+            <p><b class="marker"><span id="music-artist">{{ song.artists.0.name }}</span></b></p>
+        </td>
+    </tr>
+</table>
