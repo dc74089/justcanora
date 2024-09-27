@@ -1,8 +1,10 @@
+{% load static %}
+
 <table class="my-4 w-100">
     <tr>
-        <td class="w-100">
-            <img id="music-art" class="w-100"
-                 src="{{ song.album.images.0.url }}">
+        <td class="w-100" style="position:relative;">
+            <img id="music-art" class="w-100" src="{{ song.album.images.0.url }}">
+            <img style="display:none; position:absolute; left: 0; right: 0; width: 100%;z-index: 1;" src="{% static 'app/splatter.png' %}">
         </td>
     </tr>
     <tr>

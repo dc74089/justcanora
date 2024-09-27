@@ -2,8 +2,7 @@
     {% for track in results %}
         <tr>
             <td class="">
-                <img style="height: 50px" id="music-art" class="me-2"
-                     src="{{ track.album.images.0.url }}">
+                <img style="height: 50px" id="music-art" class="me-2" src="{{ track.album.images.0.url }}">
                 <b><span id="music-song">{{ track.name }}</span></b>
                 by
                 <b><span id="music-artist">{{ track.artists.0.name }}</span></b>

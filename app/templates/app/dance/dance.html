@@ -1,7 +1,11 @@
 {% extends 'app/base.html' %}
 
-{% block nav %}
+{% load static %}
 
+{% block nav %}
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark px-3">
+        <h1 class="marker mx-auto text-danger">Halloween Dance Song Requests</h1>
+    </nav>
 {% endblock %}
 
 {% block style %}
@@ -12,18 +16,28 @@
     <style>
         body {
             background-color: #111;
-            color: red;
+            color: white;
+            
+            background-image: url("{% static 'app/splatter.png' %}");
+            background-repeat: no-repeat;
+            background-position: bottom right;
+        }
+
+        nav {
+            border-bottom: thin solid #888;
         }
 
         .marker {
             font-family: "Permanent Marker", cursive;
             font-weight: 400;
             font-style: normal;
-            color: red;
         }
 
-        .card {
-            background-color: rgb(33, 37, 41);
+        .bloody {
+            background-image: url("{% static 'app/splatter2.png' %}");
+            background-repeat: no-repeat;
+            background-position: bottom;
+            background-size: 100% auto;
         }
     </style>
 
@@ -52,19 +66,18 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="text-center marker">Halloween Dance Song Requests</h1>
     <div class="row">
         {% for cat in categories %}
             <div class="col-12 col-lg-4">
-                <div class="card mt-5">
-                    <div class="card-body text-center">
-                        <h3 class="marker">{{ cat.name }}</h3>
+                <div class="card mt-5 bg-dark">
+                    <div class="card-body text-center position-relative overflow-hidden bloody">
+                        <h3 class="marker text-white">{{ cat.name }}</h3>
 
                         <div class="results-container" id="results-{{ cat.id }}">
                             {{ cat.selected }}
                         </div>
 
-                        <input type="text" class="form-control" id="search-{{ cat.id }}">
+                        <input type="text" class="form-control bg-black text-white" id="search-{{ cat.id }}">
                         <a class="btn btn-grad-negative mt-3" onclick="do_search('{{ cat.id }}')">Search</a>
                     </div>
                 </div>
