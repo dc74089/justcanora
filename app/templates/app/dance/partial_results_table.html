@@ -1,13 +1,14 @@
 <table class="table table-dark table-hover mt-3">
     {% for track in results %}
         <tr>
-            <td class="">
+            <td class="align-middle" style="width: 65px">
                 <img style="height: 50px" id="music-art" class="me-2" src="{{ track.album.images.0.url }}">
-                <b><span id="music-song">{{ track.name }}</span></b>
-                by
-                <b><span id="music-artist">{{ track.artists.0.name }}</span></b>
             </td>
-            <td class="text-end">
+            <td class="align-middle">
+                <p class="mb-1"><b><span id="music-song">{{ track.name }}</span></b></p>
+                <p class="mb-0">by <b><span id="music-artist">{{ track.artists.0.name }}</span></b></p>
+            </td>
+            <td class="text-end align-middle">
                 <a class="btn btn-grad-negative" onclick="choose('{{ category }}', '{{ track.uri }}')">Choose</a>
             </td>
         </tr>
