@@ -60,6 +60,7 @@
                 "song": song_uri
             }, function (response) {
                 $("#results-" + cat_id).html(response)
+                $("#search-" + cat_id).val("")
             })
         }
     </script>
