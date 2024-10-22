@@ -1,0 +1,26 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped table-hover">
+                <tr>
+                    <th>Count</th>
+                    <th>Name</th>
+                    <th>Artist</th>
+                    <th>Categories</th>
+                    <th>Popularity</th>
+                </tr>
+                {% for song in requests %}
+                    <tr>
+                        <td>{{ song.count }}</td>
+                        <td>{{ song.name }}</td>
+                        <td>{{ song.artist }}</td>
+                        <td>{{ song.categories | linebreaks }}</td>
+                        <td>{{ song.popularity }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

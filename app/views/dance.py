@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
@@ -76,3 +77,36 @@ def dance_choose(request):
         return render(request, 'app/dance/partial_chosen_song.html', {
             "song": req.get_spotify_data(request)
         })
+
+
+def get_artist(data):
+    try:
+        return ", ".join(art['name'] for art in data['artists'])
+    except:
+        return ""
+
+
+@login_required
+def dance_view(request):
+    reqs_by_uri = {}
+
+    for req in DanceRequest.objects.all():
+        if req.spotify_uri not in reqs_by_uri:
+            reqs_by_uri[req.spotify_uri] = []
+
+        reqs_by_uri[req.spotify_uri].append(req)
+
+
+    out = []
+    for uri, reqs in reqs_by_uri.items():
+        out.append({
+            "name": reqs[0].get_spotify_data(request).get('name'),
+            "artist": get_artist(reqs[0].get_spotify_data(request)),
+            "categories":  ",\n".join(set(req.category.name for req in reqs)),
+            "popularity": reqs[0].get_spotify_data(request).get('popularity'),
+            "count": len(reqs),
+        })
+
+    return render(request, 'app/dance/view_requests.html', {
+        "requests": sorted(out, key=lambda x: x['count'], reverse=True),
+    })
