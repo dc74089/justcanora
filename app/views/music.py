@@ -74,6 +74,7 @@ def do_play_pause(request):
         return HttpResponse(status=200)
 
 
+@csrf_exempt
 def do_skip(request):
     if request.headers.get('key', "") == 'oinkoinkboom':
         nowplaying.next_track(request)
