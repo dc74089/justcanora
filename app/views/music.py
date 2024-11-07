@@ -44,6 +44,7 @@ def get_now_playing_json(request):
     })
 
 
+@csrf_exempt
 def do_play_pause(request):
     if request.headers.get('key', "") == 'oinkoinkboom':
         nowplaying.play_pause(request)
