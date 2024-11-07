@@ -44,6 +44,13 @@ def get_now_playing_json(request):
     })
 
 
+def do_play_pause(request):
+    if 'key' in request.POST and request.POST['key'] == 'oinkoinkboom':
+        nowplaying.play_pause(request)
+
+        return HttpResponse(status=200)
+
+
 @staff_member_required
 def music_queue(request):
     if spotify.needs_login(request):

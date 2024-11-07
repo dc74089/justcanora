@@ -22,5 +22,20 @@ def get_now_playing(request):
     return spotify.get_spotify(request).currently_playing()
 
 
+def play(request):
+    spotify.get_spotify(request).start_playback()
+
+
+def pause(request):
+    spotify.get_spotify(request).pause_playback()
+
+
+def play_pause(request):
+    if spotify.get_spotify(request).current_playback().get("is_playing", False):
+        pause(request)
+    else:
+        play(request)
+
+
 def queue_by_uri(request, uri):
     spotify.get_spotify(request).add_to_queue(uri)
