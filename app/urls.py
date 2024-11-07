@@ -26,7 +26,7 @@ urlpatterns = [
 
     path('music/nowplaying/', music.get_now_playing, name='now_playing'),
     path('music/nowplaying/json/', music.get_now_playing_json, name='now_playing_json'),
-    path('music/playpause/', music.get_now_playing_json, name='now_playing_json'),
+    path('music/playpause/', music.do_play_pause, name='now_playing_json'),
 
     path('webserver/instructions/', webserver.instructions, name='webserver_guide'),
     path('webserver/all_creds/', webserver.all_table, name='webserver_all'),
