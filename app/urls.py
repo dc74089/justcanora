@@ -28,6 +28,7 @@ urlpatterns = [
     path('music/nowplaying/json/', music.get_now_playing_json, name='now_playing_json'),
     path('music/next/json/', music.get_next_song_json, name='now_playing_json'),
     path('music/playpause/', music.do_play_pause, name='now_playing_json'),
+    path('music/skiptrack/', music.do_skip, name='skip_track'),
 
     path('webserver/instructions/', webserver.instructions, name='webserver_guide'),
     path('webserver/all_creds/', webserver.all_table, name='webserver_all'),

@@ -46,5 +46,9 @@ def play_pause(request):
         play(request)
 
 
+def next_track(request):
+    spotify.get_spotify(request).next_track()
+
+
 def queue_by_uri(request, uri):
     spotify.get_spotify(request).add_to_queue(uri)

@@ -74,6 +74,13 @@ def do_play_pause(request):
         return HttpResponse(status=200)
 
 
+def do_skip(request):
+    if request.headers.get('key', "") == 'oinkoinkboom':
+        nowplaying.next_track(request)
+
+        return HttpResponse(status=200)
+
+
 @staff_member_required
 def music_queue(request):
     if spotify.needs_login(request):
