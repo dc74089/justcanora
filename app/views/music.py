@@ -25,12 +25,18 @@ def get_now_playing(request):
 
 def get_now_playing_json(request):
     if not nowplaying.now_playing_available(request, check_auth=False):
-        return HttpResponse("There was a problem")
+        return JsonResponse({
+            "title": "There Was a Problem",
+            "artist": "There Was a Problem"
+        })
 
     now_playing = nowplaying.get_now_playing(request)
 
     if not now_playing or not now_playing['item']:
-        return HttpResponse("Nothing is playing")
+        return JsonResponse({
+            "title": "Nothing is Playing",
+            "artist": "Nothing is Playing"
+        })
 
     return JsonResponse({
         "title": now_playing['item']['name'],
@@ -87,12 +93,12 @@ def add_song_helper(request, sug_id):
     sug = MusicSuggestion.objects.get(id=sug_id)
 
     courses = sug.student.courses.filter(
-            year=settings.CURRENT_ACADEMIC_YEAR,
-            semester=settings.CURRENT_SEMESTER
-        ) | sug.student.courses.filter(
-            year=settings.CURRENT_ACADEMIC_YEAR,
-            name__contains="YR"
-        )
+        year=settings.CURRENT_ACADEMIC_YEAR,
+        semester=settings.CURRENT_SEMESTER
+    ) | sug.student.courses.filter(
+        year=settings.CURRENT_ACADEMIC_YEAR,
+        name__contains="YR"
+    )
 
     if sug.for_playlist:
         for c in courses:
