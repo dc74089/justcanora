@@ -44,6 +44,28 @@ def get_now_playing_json(request):
     })
 
 
+
+def get_next_song_json(request):
+    if not nowplaying.now_playing_available(request, check_auth=False):
+        return JsonResponse({
+            "title": "There Was a Problem",
+            "artist": "There Was a Problem"
+        })
+
+    next = nowplaying.get_next_track(request)
+
+    if not next or not next['item']:
+        return JsonResponse({
+            "title": "Nothing is Playing",
+            "artist": "Nothing is Playing"
+        })
+
+    return JsonResponse({
+        "title": next['name'],
+        "artist": next['artists'][0]['name']
+    })
+
+
 @csrf_exempt
 def do_play_pause(request):
     if request.headers.get('key', "") == 'oinkoinkboom':
@@ -149,3 +171,4 @@ def deny_song(request):
         sug.save()
 
     return HttpResponse(status=200)
+

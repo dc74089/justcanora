@@ -22,6 +22,15 @@ def get_now_playing(request):
     return spotify.get_spotify(request).currently_playing()
 
 
+def get_queue(request):
+    return spotify.get_spotify(request).queue()
+
+
+def get_next_track(request):
+    queue = get_queue(request)
+    return queue.get("queue", [None])[0]
+
+
 def play(request):
     spotify.get_spotify(request).start_playback()
 
