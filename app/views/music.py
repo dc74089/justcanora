@@ -54,7 +54,7 @@ def get_next_song_json(request):
 
     next = nowplaying.get_next_track(request)
 
-    if not next or not next['item']:
+    if not next:
         return JsonResponse({
             "title": "Nothing is Playing",
             "artist": "Nothing is Playing"
