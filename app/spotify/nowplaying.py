@@ -2,9 +2,9 @@ from app.models import FeatureFlag
 from app.spotify import spotify
 
 
-def now_playing_available(request):
+def now_playing_available(request, check_auth=True):
     try:
-        logged_in = request.user.is_authenticated
+        logged_in = not check_auth or request.user.is_authenticated
         flag, _ = FeatureFlag.objects.get_or_create(id="fab_now_playing")
 
         return logged_in and flag and not spotify.needs_login(request)

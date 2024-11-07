@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -21,6 +21,21 @@ def get_now_playing(request):
 
     return HttpResponse(
         f"Now Playing: <b>{now_playing['item']['name']}</b> by <b>{now_playing['item']['artists'][0]['name']}</b>")
+
+
+def get_now_playing_json(request):
+    if not nowplaying.now_playing_available(request, check_auth=False):
+        return HttpResponse("There was a problem")
+
+    now_playing = nowplaying.get_now_playing(request)
+
+    if not now_playing or not now_playing['item']:
+        return HttpResponse("Nothing is playing")
+
+    return JsonResponse({
+        "title": now_playing['item']['name'],
+        "artist": now_playing['item']['artists'][0]['name']
+    })
 
 
 @staff_member_required
