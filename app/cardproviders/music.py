@@ -1,6 +1,5 @@
 from django.template.loader import render_to_string
 from django.utils import timezone
-
 from spotipy.oauth2 import SpotifyOauthError
 
 from app.models import MusicSuggestion, FeatureFlag
@@ -19,6 +18,7 @@ def suggestion(request):
     free_for_all, _ = FeatureFlag.objects.get_or_create(id='card_music_unlimited')
 
     if not enabled: return None
+    if spotify.needs_login(request): return None
 
     msq = MusicSuggestion.objects.filter(student=request.user.student).order_by('-added')
 
