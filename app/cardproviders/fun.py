@@ -2,7 +2,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from app.models import Student, FeatureFlag, Wrapped2024
+from app.models import Student, FeatureFlag, Wrapped2025
 
 
 def allcards(request):
@@ -46,5 +46,5 @@ def bday_others(request):
 def wrapped2024(request):
     enabled, _ = FeatureFlag.objects.get_or_create(id='card_wrapped')
 
-    if enabled and Wrapped2024.objects.filter(student=request.user.student).exists():
+    if enabled and Wrapped2025.objects.filter(student=request.user.student).exists():
         return render_to_string("app/cards/wrapped.html", request=request)

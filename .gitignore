@@ -5,3 +5,4 @@ env/
 *.json
 media/
 yearbook/*.jpg
+**/.DS_Store
