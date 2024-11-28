@@ -364,9 +364,16 @@ class TeacherWrapped2025(models.Model):
     num_zeros = models.IntegerField(null=True, blank=True)
     num_canvas_minutes = models.IntegerField(null=True, blank=True)
     num_canvas_clicks = models.IntegerField(null=True, blank=True)
+    kulaqua = models.BooleanField(default=False)
+    nc = models.BooleanField(default=False)
+    new_to_ccc = models.BooleanField(default=False)
+    personal_note = models.TextField(null=True, blank=True)
 
     def canvas_minutes_per_day(self):
         return self.num_canvas_minutes // 180
+
+    def fname(self):
+        return self.name.split()[0]
 
     def __str__(self):
         return f"{self.name}'s 2025 SY Wrapped"

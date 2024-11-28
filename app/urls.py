@@ -35,8 +35,9 @@ urlpatterns = [
 
     path('pycharm/instructions/', jetbrains.setup_instructions, name='jetbrains_setup_instructions'),
 
-    path('wrapped/2024/', wrapped.wrapped2024, name='wrapped_2024'),
-    path('wrapped/demo/', wrapped.wrapped_demo, name='wrapped_2024_demo'),
+    path('wrapped/2024/', wrapped.wrapped2024, name='wrapped'),
+    path('wrapped/demo/', wrapped.wrapped_demo, name='wrapped_demo'),
+    path('wrapped/teacher/demo/', wrapped.wrapped_teacher_demo, name='wrapped_teacher_demo'),
 
     path('cn/', curriculum.index),
     path('cn/dark/', curriculum.index_dark),
