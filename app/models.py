@@ -1,5 +1,7 @@
 import json
+import random
 import re
+import string
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -254,6 +256,14 @@ class WebserverCredential(models.Model):
     directory = models.TextField(null=True, blank=True)
     password = models.TextField(null=True, blank=True)
     uid = models.IntegerField(null=False, blank=False, unique=True)
+    shark = models.BooleanField(default=False, null=False, blank=False)
+
+    def username(self):
+        return self.directory.split("/")[-1] if self.directory else None
+
+    @classmethod
+    def gen_password(cls):
+        return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20))
 
     @classmethod
     def gen_uid(cls, student):

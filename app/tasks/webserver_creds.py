@@ -11,6 +11,19 @@ def generate_creds(year, semester):
             generate_cred_for_student(s.id)
 
 
+def generate_shark_tank_creds():
+    for pd in [3, 4, 5, 6]:
+        for group in [1, 2, 3, 4, 5]:
+            wc = WebserverCredential(
+                directory=f"sharkfall24/{pd}-{group}",
+                password=WebserverCredential.gen_password(),
+                uid=int(f"99{pd}{group}"),
+                shark=True
+            )
+
+            wc.save()
+
+
 def generate_cred_for_student(student_id):
     student = Student.objects.get(id=student_id)
 
@@ -19,7 +32,7 @@ def generate_cred_for_student(student_id):
             wc = WebserverCredential(
                 student=student,
                 directory=student.email.split("@")[0],
-                password=''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20)),
+                password=WebserverCredential.gen_password(),
                 uid=WebserverCredential.gen_uid(student)
             )
             wc.save()
