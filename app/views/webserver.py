@@ -15,5 +15,5 @@ def instructions(request):
 @staff_member_required
 def all_table(request):
     return render(request, "app/webserver/all_table.html", {
-        "creds": WebserverCredential.objects.all().order_by('student__lname')
+        "creds": WebserverCredential.objects.all().order_by('student__lname', 'directory')
     })
