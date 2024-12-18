@@ -1,18 +1,18 @@
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import render
 
-from app.models import Wrapped2025, Student, TeacherWrapped2025
+from app.models import Wrapped, Student, TeacherWrapped
 
 
 def wrapped2024(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
-    if not Wrapped2025.objects.filter(student=request.user.student).exists():
+    if not Wrapped.objects.filter(student=request.user.student).exists():
         return HttpResponseBadRequest()
 
     return render(request, 'app/wrapped/wrapped2025.html', {
-        'data': Wrapped2025.objects.get(student=request.user.student)
+        'data': Wrapped.objects.get(student=request.user.student)
     })
 
 
@@ -24,18 +24,18 @@ def teacher_wrapped_2025(request):
 def wrapped_demo(request):
     if 'student' in request.GET:
         return render(request, 'app/wrapped/wrapped2025.html', {
-            'data': Wrapped2025.objects.get(student=Student.objects.get(id=int(request.GET['student']))),
+            'data': Wrapped.objects.get(student=Student.objects.get(id=int(request.GET['student']))),
             'now_playing_available': False
         })
     else:
         return render(request, 'app/wrapped/wrapped2025.html', {
-            'data': Wrapped2025.objects.get(student=Student.objects.get(id=3432)),
+            'data': Wrapped.objects.get(student=Student.objects.get(id=3432)),
             'now_playing_available': False
         })
 
 
 def wrapped_teacher_demo(request):
     return render(request, 'app/wrapped/teacherwrapped2025.html', {
-        'data': TeacherWrapped2025.objects.get(teacher_id=11862),
+        'data': TeacherWrapped.objects.get(teacher_id=11862),
         'now_playing_available': False
     })

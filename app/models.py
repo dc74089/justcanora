@@ -282,7 +282,7 @@ class WebserverCredential(models.Model):
         return f"Webserver Creds for {self.student.full_name()} (/{self.directory}; {self.uid})"
 
 
-class Wrapped2025(models.Model):
+class Wrapped(models.Model):
     student = models.OneToOneField("Student", on_delete=models.CASCADE, null=False, blank=False, primary_key=True)
     num_songs = models.IntegerField(null=True, blank=True)
     rank_songs = models.IntegerField(null=True, blank=True)
@@ -313,15 +313,15 @@ class Wrapped2025(models.Model):
 
     def song_percentile(self):
         if self.rank_songs:
-            return self.percentile_string(self.rank_songs / Wrapped2025.objects.count())
+            return self.percentile_string(self.rank_songs / Wrapped.objects.count())
 
     def canvas_minutes_percentile(self):
         if self.rank_canvas_minutes:
-            return self.percentile_string(self.rank_canvas_minutes / Wrapped2025.objects.count())
+            return self.percentile_string(self.rank_canvas_minutes / Wrapped.objects.count())
 
     def canvas_clicks_percentile(self):
         if self.rank_canvas_clicks:
-            return self.percentile_string(self.rank_canvas_clicks / Wrapped2025.objects.count())
+            return self.percentile_string(self.rank_canvas_clicks / Wrapped.objects.count())
 
     def canvas_minutes_per_day(self):
         return self.num_canvas_minutes // 180
@@ -363,7 +363,7 @@ class Wrapped2025(models.Model):
         return f"{self.student.name()}'s 2025 SY Wrapped"
 
 
-class TeacherWrapped2025(models.Model):
+class TeacherWrapped(models.Model):
     teacher_id = models.IntegerField(null=False, blank=False, unique=True, primary_key=True)
     email = models.EmailField(unique=True)
     name = models.TextField(null=False, blank=False)

@@ -5,7 +5,7 @@ from dateutil import parser
 from tqdm import tqdm
 
 from app.canvas.canvas import get_canvas
-from app.models import Student, Wrapped2025, MusicSuggestion
+from app.models import Student, Wrapped, MusicSuggestion
 
 
 def get_all():
@@ -28,15 +28,15 @@ def get_all_for_student_by_id(sid: int):
 
 
 def rank_all():
-    num_songs = sorted([x.num_songs for x in Wrapped2025.objects.all() if x.num_songs], reverse=True)
-    num_assignments = sorted([x.num_assignments for x in Wrapped2025.objects.all() if x.num_assignments], reverse=True)
-    num_late = sorted([x.num_late for x in Wrapped2025.objects.all() if x.num_late], reverse=True)
-    num_canvas_minutes = sorted([x.num_canvas_minutes for x in Wrapped2025.objects.all() if x.num_canvas_minutes],
+    num_songs = sorted([x.num_songs for x in Wrapped.objects.all() if x.num_songs], reverse=True)
+    num_assignments = sorted([x.num_assignments for x in Wrapped.objects.all() if x.num_assignments], reverse=True)
+    num_late = sorted([x.num_late for x in Wrapped.objects.all() if x.num_late], reverse=True)
+    num_canvas_minutes = sorted([x.num_canvas_minutes for x in Wrapped.objects.all() if x.num_canvas_minutes],
                                 reverse=True)
-    num_canvas_clicks = sorted([x.num_canvas_clicks for x in Wrapped2025.objects.all() if x.num_canvas_clicks],
+    num_canvas_clicks = sorted([x.num_canvas_clicks for x in Wrapped.objects.all() if x.num_canvas_clicks],
                                reverse=True)
 
-    for wrapped in Wrapped2025.objects.all():
+    for wrapped in Wrapped.objects.all():
         with suppress(ValueError): wrapped.rank_songs = num_songs.index(wrapped.num_songs)
         with suppress(ValueError): wrapped.rank_assignments = num_assignments.index(wrapped.num_assignments)
         with suppress(ValueError): wrapped.rank_late = num_late.index(wrapped.num_late)
@@ -63,7 +63,7 @@ def get_assignment_stats(student: Student):
             if sub.late:
                 late += 1
 
-    sw, _ = Wrapped2025.objects.get_or_create(student=student)
+    sw, _ = Wrapped.objects.get_or_create(student=student)
 
     sw.num_assignments = assignments
     sw.num_late = late
@@ -112,7 +112,7 @@ def get_pageview_stats(student: Student):
     print(f"Sessions: {sessions}")
     print(f"Seconds: {seconds}")
 
-    sw, _ = Wrapped2025.objects.get_or_create(student=student)
+    sw, _ = Wrapped.objects.get_or_create(student=student)
 
     sw.num_canvas_clicks = pageviews
     sw.num_canvas_minutes = seconds // 60
@@ -121,7 +121,7 @@ def get_pageview_stats(student: Student):
 
 
 def get_song_stats(student: Student):
-    sw, _ = Wrapped2025.objects.get_or_create(student=student)
+    sw, _ = Wrapped.objects.get_or_create(student=student)
 
     sw.num_songs = MusicSuggestion.objects.filter(student=student).count()
     sw.num_songs_rejected = MusicSuggestion.objects.filter(student=student, is_rejected=True).count()

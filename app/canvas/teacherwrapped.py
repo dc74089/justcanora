@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from app.canvas.canvas import get_canvas
-from app.models import TeacherWrapped2025
+from app.models import TeacherWrapped
 
 from dateutil import parser
 
@@ -16,7 +16,7 @@ def get_user_info(teacher_id):
     canvas = get_canvas()
     u = canvas.get_user(teacher_id)
 
-    tw, _ = TeacherWrapped2025.objects.get_or_create(teacher_id=teacher_id)
+    tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
     tw.email = u.email
     tw.name = u.name
 
@@ -63,7 +63,7 @@ def get_course_stats(teacher_id):
                 if sub.score == 0:
                     zero += 1
 
-    tw, _ = TeacherWrapped2025.objects.get_or_create(teacher_id=teacher_id)
+    tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
 
     tw.num_announcements = announcements
     tw.num_assignments = len(assignments)
@@ -115,7 +115,7 @@ def get_pageview_stats(teacher_id):
     print(f"Sessions: {sessions}")
     print(f"Seconds: {seconds}")
 
-    tw, _ = TeacherWrapped2025.objects.get_or_create(teacher_id=teacher_id)
+    tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
 
     tw.num_canvas_clicks = pageviews
     tw.num_canvas_minutes = seconds // 60
