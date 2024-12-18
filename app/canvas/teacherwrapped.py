@@ -6,6 +6,48 @@ from app.models import TeacherWrapped
 from dateutil import parser
 
 
+all_ms_teachers = [
+    1544, # Bartz
+    1549, # Brewer
+    8035, # Capers
+    1592, # Cortelyou
+    8045, # Darden
+    1723, # Daugherty
+    1546, # Denard
+    11858, # Fitz
+    11862, # Funston
+    14543, # Gaudreault
+    4542, # Glascock
+    8000, # Goodman
+    4219, # Gower
+    2618, # Harris
+    9881, # Higgs
+    1552, # Hujik
+    1553, # R. Lee
+    13153, # Mercado
+    1653, # Pazmino
+    4220, # Rassa
+    1705, # Robelo
+    1687, # Schaeffer
+    8015, # Shaffer
+    9880, # Stein
+    1557, # Sweet
+    1558, # Vander Meulen
+    11859, # Walsh
+    4644, # Wang
+    1690, # Young
+    14546, # Ziegler
+]
+
+
+def do_all():
+    for teacher_id in all_ms_teachers:
+        try:
+            get_all_for_teacher(teacher_id)
+        except:
+            print(f"Problem with {teacher_id}")
+
+
 def get_all_for_teacher(canvas_id=11862):
     get_user_info(canvas_id)
     get_course_stats(canvas_id)
