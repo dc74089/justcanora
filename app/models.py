@@ -363,8 +363,13 @@ class Wrapped(models.Model):
         return f"{self.student.name()}'s 2025 SY Wrapped"
 
 
+def generate_wrapped_key():
+    return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20))
+
+
 class TeacherWrapped(models.Model):
     teacher_id = models.IntegerField(null=False, blank=False, unique=True, primary_key=True)
+    key = models.CharField(max_length=50, null=False, blank=False, unique=True, default=generate_wrapped_key)
     email = models.EmailField(unique=True)
     name = models.TextField(null=False, blank=False)
     num_announcements = models.IntegerField(null=True, blank=True)

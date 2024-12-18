@@ -4,7 +4,7 @@ from django.shortcuts import render
 from app.models import Wrapped, Student, TeacherWrapped
 
 
-def wrapped2024(request):
+def wrapped(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
 
@@ -16,9 +16,13 @@ def wrapped2024(request):
     })
 
 
-def teacher_wrapped_2025(request):
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden()
+def wrapped_teacher(request, key):
+    tw = TeacherWrapped.objects.get(key=key)
+
+    return render(request, 'app/wrapped/teacherwrapped2025.html', {
+        'data': tw,
+        'now_playing_available': False
+    })
 
 
 def wrapped_demo(request):
