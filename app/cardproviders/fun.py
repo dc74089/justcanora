@@ -31,13 +31,14 @@ def bday_others(request):
         courses__in=student.courses.all()
     ).exclude(
         id=student.id
-    )
+    ).distinct()
 
-    blist = [s for s in bq if s.is_active()]
+    # blist = [s for s in bq if s.is_active()]  # Limit to active students
+    blist = list(bq)
 
     if blist:
         return render_to_string("app/cards/happy_bday_others.html",
-                                {"students": bq},
+                                {"students": blist},
                                 request=request)
     else:
         return None
