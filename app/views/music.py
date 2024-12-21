@@ -44,7 +44,6 @@ def get_now_playing_json(request):
     })
 
 
-
 def get_next_song_json(request):
     if not nowplaying.now_playing_available(request, check_auth=False):
         return JsonResponse({
@@ -91,8 +90,11 @@ def music_queue(request):
         return redirect(spotify.get_login_url(request))
 
     sugs = MusicSuggestion.objects.filter(investigated=False).exclude(spotify_uri__isnull=True).exclude(spotify_uri="")
+
     for sug in sugs:
         sug.data = sug.get_spotify_data(request)
+
+    sugs = [sug for sug in sugs if sug.student.is_active(enforce_semester=True)]
 
     return render(request, "app/admin/music_queue.html", {
         "suggestions": sugs
@@ -179,4 +181,3 @@ def deny_song(request):
         sug.save()
 
     return HttpResponse(status=200)
-
