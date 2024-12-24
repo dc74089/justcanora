@@ -14,7 +14,6 @@ urlpatterns = [
     path('admin/', admin.admin, name='admin'),
     path('admin/setflag/', admin.set_flag, name='set_flag'),
     path('admin/rosters/', admin.rosters, name='rosters'),
-    path('admin/answers/', admin.view_answers, name='datacollection_answers'),
     path('admin/music/queue/', music.music_queue, name='music_queue'),
     path('admin/music/search/', music.search_table, name='spotify_search'),
     path('admin/music/add/', music.add_song, name='spotify_add'),

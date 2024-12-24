@@ -4,7 +4,7 @@ from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from app.models import Course, FeatureFlag, DataCollectionQuestion
+from app.models import Course, FeatureFlag
 
 
 @staff_member_required
@@ -48,34 +48,3 @@ def rosters(request):
     return render(request, "app/admin/rosters.html", {
         "semesters": (s1, s2)
     })
-
-
-@staff_member_required
-def view_answers(request):
-    questions = list(DataCollectionQuestion.objects.all())
-
-    if request.GET.get('question'):
-        q = DataCollectionQuestion.objects.get(id=request.GET['question'])
-        answers = q.answers.all()
-
-        ans_dict = {}
-        out = []
-
-        for ans in answers:
-            for course in ans.student.courses.all():
-                if course not in ans_dict:
-                    ans_dict[course] = []
-
-                ans_dict[course].append(ans)
-
-        for course in sorted(ans_dict.keys(), key=lambda x: str(x.semester) + str(x.period)):
-            out.append((course, sorted(ans_dict[course], key=lambda x: x.student.fname)))
-
-        return render(request, 'app/admin/datacollection_answers.html', {
-            "questions": questions,
-            "answers": out
-        })
-    else:
-        return render(request, 'app/admin/datacollection_answers.html', {
-            "questions": questions
-        })

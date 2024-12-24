@@ -1,8 +1,7 @@
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect
 
-from app.models import MusicSuggestion, News, DataCollectionAnswer, DataCollectionQuestion, Course, Student, \
-    SpeechRating, SpeechRubric
+from app.models import MusicSuggestion, Course, Student, SpeechRating, SpeechRubric
 from app.spotify.search import search
 from app.views.music import add_song_helper
 
@@ -53,26 +52,6 @@ def misc_action(request):
                 investigated=True
             )
             ms.save()
-        elif data['action'] == 'news':
-            news = News(
-                student=request.user.student,
-                news=data['news'],
-            )
-            news.save()
-        elif data['action'] == 'addquestion':
-            dcq = DataCollectionQuestion(
-                question=data['question']
-            )
-            dcq.save()
-            dcq.courses.set(Course.objects.all())
-            dcq.save()
-        elif data['action'] == 'datacollection':
-            dca = DataCollectionAnswer(
-                student=request.user.student,
-                question_id=data['qid'],
-                answer=data['answer']
-            )
-            dca.save()
         elif data['action'] == 'speech_eval':
             speaker = Student.objects.get(id=data['speaker'])
             rubric = SpeechRubric.objects.get(id=data['rubric'])
@@ -108,13 +87,6 @@ def misc_action(request):
             )
 
             ms.save()
-        elif data['action'] == 'dismissnews':
-            n = News(
-                student=request.user.student,
-                is_null=True
-            )
-
-            n.save()
         elif data['action'] == 'approvespeechrating':
             evl = SpeechRating.objects.get(id=data['id'])
             evl.available_to_view = True
