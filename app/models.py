@@ -279,7 +279,10 @@ class WebserverCredential(models.Model):
             id *= 10
 
     def __str__(self):
-        return f"Webserver Creds for {self.student.full_name()} (/{self.directory}; {self.uid})"
+        if self.student:
+            return f"Webserver Creds for {self.student.full_name()} (/{self.directory}; {self.uid})"
+        else:
+            return f"Webserver Creds for (/{self.directory}; {self.uid})"
 
 
 class Wrapped(models.Model):
