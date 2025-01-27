@@ -10,7 +10,7 @@
 ---
 
 <div style="text-align: center; width: 100%">
-    <img src="STATICPREFIX/CS2/2-lists/film.png" style="width: 100%">
+    <img src="STATICPREFIX/cs2/2-lists/film.png" style="width: 100%">
 </div>
 
 Note:
