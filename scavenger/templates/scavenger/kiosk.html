@@ -17,6 +17,7 @@
               try {
                   const wakeLockPromise = navigator.wakeLock.request("screen");
                   init = true;
+                  console.log("WakeLock Acquired");
               } catch (err) {
                   // the wake lock request fails - usually system related, such being low on battery
                   alert(`${err.name}, ${err.message}`);
@@ -47,6 +48,7 @@
               {facingMode: "user"},
               {
                   fps: 10,    // Optional, frame per seconds for qr code scanning
+                  showZoomSliderIfSupported: false
               },
               (decodedText, decodedResult) => {
                   console.log(decodedText)
@@ -60,7 +62,7 @@
                   }
               },
               (errorMessage) => {
-                  //console.log(errorMessage)
+                  console.log(errorMessage)
               })
               .catch((err) => {
                   console.log(err)
