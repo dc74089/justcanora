@@ -68,8 +68,8 @@ def do_action(request):
         elif action == "team_init":
             team = Team.objects.get(id=request.POST['data'])
 
-            team.set_new_destination(Kiosk.objects.filter(active=True).order_by('?').first())
-            team.set_state_qr()
+            dest = Kiosk.objects.filter(active=True).order_by('?').first()
+            team.set_new_destination(dest)
 
             return HttpResponse("Team Initialized.")
         elif action == "team_to_loc":
