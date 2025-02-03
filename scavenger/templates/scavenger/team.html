@@ -112,7 +112,7 @@
       }
 
       function check_final() {
-          let val = $("#final").val()
+          let val = $("#final").val().trim()
 
           if (val.toLowerCase() == "{{ final_answer }}".toLowerCase()) {
               $("#final-div").hide()
