@@ -6,9 +6,9 @@
           $.post("{% url 'scavenger-admin-action' %}", {
               "action": command,
               "data": extra
-          }).then(function (response) {
+          }).done(function (response) {
               alert(response)
-          }).error(function (response) {
+          }).fail(function (response) {
               alert(response)
           })
       }
@@ -58,20 +58,20 @@
     <tr>
       <th>Re-Init Team</th>
       <td>
-        <select class="form-control" id="team-select">
+        <select class="form-control" id="team-select-init">
           {% for team in teams %}
             <option value="{{ team.id }}">{{ team.name }}</option>
           {% endfor %}
         </select>
       </td>
       <td><a href="#" class="btn btn-primary text-white"
-             onclick="sendCommand('team_init', $('#team-select').find(':selected').val())">Go</a>
+             onclick="sendCommand('team_init', $('#team-select-init').find(':selected').val())">Go</a>
       </td>
     </tr>
     <tr>
       <th>Send Team to Location</th>
       <td>
-        <select class="form-control" id="team-select2">
+        <select class="form-control" id="team-select-sendtoloc">
           {% for team in teams %}
             <option value="{{ team.id }}">{{ team.name }}</option>
           {% endfor %}
@@ -83,20 +83,20 @@
         </select>
       </td>
       <td><a href="#" class="btn btn-primary text-white"
-             onclick="sendCommand('team_to_loc', JSON.stringify([$('#team-select2').find(':selected').val(), $('#location-select2').find(':selected').val()]))">Go</a>
+             onclick="sendCommand('team_to_loc', JSON.stringify([$('#team-select-sendtoloc').find(':selected').val(), $('#location-select2').find(':selected').val()]))">Go</a>
       </td>
     </tr>
     <tr>
       <th>Set Team to Final</th>
       <td>
-        <select class="form-control" id="team-select2">
+        <select class="form-control" id="team-select-final">
           {% for team in teams %}
             <option value="{{ team.id }}">{{ team.name }}</option>
           {% endfor %}
         </select>
       </td>
       <td><a href="#" class="btn btn-primary text-white"
-             onclick="sendCommand('team_to_final', $('#team-select2').find(':selected').val())">Go</a>
+             onclick="sendCommand('team_to_final', $('#team-select-fonal').find(':selected').val())">Go</a>
       </td>
     </tr>
   </table>
