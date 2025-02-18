@@ -77,7 +77,7 @@ We can include some hidden information in the `head` of our site, including:
 ## Selectors
 * When we are putting CSS *inline* (the way we've always done it so far), we don't need to specify *which thing* is being styled
 * When we put CSS in the head, we do. 
-* The simplest selector is just a type of tag, like `img`, `td`, or `body` (or any others)
+* The simplest selector is just a type of tag, like `img`, `a`, or `body` (or any others)
 
 ---
 
