@@ -40,7 +40,6 @@ urlpatterns = [
     path('wrapped/teacher/demo/', wrapped.wrapped_teacher_demo, name='wrapped_teacher_demo'),
 
     path('cn/', curriculum.index),
-    path('cn/dark/', curriculum.index_dark),
     path('cn/bigqr/', curriculum.big_qr),
 
     path('dance', dance.dance_index, name='dance_index'),

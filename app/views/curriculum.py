@@ -8,8 +8,6 @@ def index(request):
 
 
 def big_qr(request):
-    return render(request, "app/curriculum_night/bigqr.html")
-
-
-def index_dark(request):
-    return render(request, "app/curriculum_night/darkmode.html")
+    return render(request, "app/curriculum_night/bigqr.html", {
+        "qr": True
+    })
