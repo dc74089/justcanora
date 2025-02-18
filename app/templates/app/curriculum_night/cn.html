@@ -67,7 +67,6 @@
 
 {% block script %}
   <script>
-      {% if not qr %}
           $(function () {
               new JParticles.Particle('#main', {
                   color: ['#ff37e4', '#e99312', '#f0495d', '#672bcb'],
@@ -80,7 +79,6 @@
                   num: 0.15
               })
           })
-      {% endif %}
   </script>
 {% endblock %}
 
