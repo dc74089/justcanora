@@ -58,4 +58,4 @@ It looks like this:
 ---
 
 # You try!
-Add a page to your "About Me" site that includes your class schedule. Include the period number, the course name, and the teacher for each class.
+Create a page that includes your class schedule. Include the period number, the course name, and the teacher for each class.
