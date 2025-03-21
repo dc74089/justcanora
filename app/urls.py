@@ -48,6 +48,7 @@ urlpatterns = [
     path('dance/results', dance.dance_view, name='dance_view'),
 
     path('robotics', misc.redirect_robotics),
+    path('d147bbac-2a07-4cb1-aa86-47f9ede420db', misc.back_to_work),
 
     path('do/', misc.misc_action, name='misc_action'),
     path('dev/', index.dev, name='dev'),

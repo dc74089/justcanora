@@ -1,0 +1,42 @@
+{% load static %}
+
+<html>
+<head>
+  <title>Back to Work</title>
+  
+  <style>
+    .masked-text {
+            background: url('{% static 'app/skin.png' %}') no-repeat center;
+            background-size: cover;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+  </style>
+
+  <script>
+      function startSiren() {
+          let isRed = true;
+          setInterval(() => {
+              document.body.style.backgroundColor = isRed ? 'red' : 'blue';
+              isRed = !isRed;
+          }, 500); // Change every 500 milliseconds
+      }
+
+      // Start the siren effect when the page loads
+      window.onload = startSiren;
+  </script>
+</head>
+
+<body>
+<div style="display: flex; justify-content: space-around">
+  <img src="{% static 'app/eye.png' %}" style="width: 30vw">
+  <img src="{% static 'app/eye.png' %}" style="width: 30vw">
+</div>
+
+<div style="text-align: center" class="masked-text">
+  <h1 style="font-size: 90px; margin-top: 20px">Hey.</h1>
+  <h1>I think you should be doing something else.</h1>
+  <h3>Back on task, please.</h3>
+</div>
+</body>
+</html>

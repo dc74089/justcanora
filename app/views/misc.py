@@ -1,5 +1,5 @@
 from django.http import HttpResponseBadRequest, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 from app.models import MusicSuggestion, Course, Student, SpeechRating, SpeechRubric
 from app.spotify.search import search
@@ -101,6 +101,10 @@ def misc_action(request):
                 return JsonResponse(results["tracks"]["items"][0])
 
         return redirect('index')
+
+
+def back_to_work(request):
+    return render(request, 'app/backtowork.html')
 
 
 def redirect_robotics(request):
