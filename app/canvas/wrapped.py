@@ -8,6 +8,10 @@ from app.canvas.canvas import get_canvas
 from app.models import Student, Wrapped, MusicSuggestion
 
 
+def get_sample():
+    get_all_for_student_by_id(12809)
+
+
 def get_all():
     for student in tqdm(Student.objects.all().exclude(id__in=[2224])):
         try:

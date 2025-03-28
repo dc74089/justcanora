@@ -106,13 +106,13 @@
       <li>On a trip to <span class="happygradtext">
         {% if data.student.grade == 7 %}Camp Kulaqua{% else %}North Carolina{% endif %}
       </span></li>
-      <li>At a Middle School <span class="happygradtext">retreat</span></li>
+      <li>At a Middle School <span class="happygradtext">Retreat</span></li>
       {% if data.student.grade == 8 %}
-        <li>At 8th grade <span class="happygradtext">step-up day</span></li>{% endif %}
+        <li>At 8th grade <span class="happygradtext">step-up day</span></li>
+      {% endif %}
       <li>At assemblies with
-        <span class="happygradtext">Darryl Bellamy</span>,
-        <span class="happygradtext">Ben Glenn</span> and
-        <span class="happygradtext">Derick Lugo</span>
+        <span class="happygradtext">Derreck Kayongo</span>
+        and <span class="happygradtext">The Yale Whiffenpoofs</span>
       </li>
       <li>
         <span style="text-decoration: line-through; color: red"><span
@@ -170,7 +170,7 @@
 
         {% if data.num_late == 0 %}
           <h2 class="smallertext ms-lg-5">&rightarrow; Congrats on the perfect streak!</h2>
-        {% elif data.num_late < 15 %}
+        {% elif data.num_late < 20 %}
           <h2 class="smallertext ms-lg-5">&rightarrow; None of us are perfect, that's still an impressive
             number!</h2>
         {% else %}

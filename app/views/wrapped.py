@@ -33,7 +33,7 @@ def wrapped_demo(request):
         })
     else:
         return render(request, 'app/wrapped/wrapped2025.html', {
-            'data': Wrapped.objects.get(student=Student.objects.get(id=3432)),
+            'data': Wrapped.objects.get(student=Student.objects.get(id=12809)),
             'now_playing_available': False
         })
 

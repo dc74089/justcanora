@@ -48,7 +48,11 @@ def do_all():
             print(f"Problem with {teacher_id}")
 
 
-def get_all_for_teacher(canvas_id=11862):
+def get_sample():
+    get_all_for_teacher(11862)
+
+
+def get_all_for_teacher(canvas_id):
     get_user_info(canvas_id)
     get_course_stats(canvas_id)
     get_pageview_stats(canvas_id)
