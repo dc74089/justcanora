@@ -3,14 +3,14 @@
 <html>
 <head>
   <title>Back to Work</title>
-  
+
   <style>
-    .masked-text {
-            background: url('{% static 'app/skin2.jpg' %}') no-repeat center;
-            background-size: cover;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+      .masked-text {
+          background: url('{% static 'app/skin2.jpg' %}') no-repeat center;
+          background-size: cover;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+      }
   </style>
 
   <script>
@@ -20,6 +20,10 @@
               document.body.style.backgroundColor = isRed ? 'red' : 'blue';
               isRed = !isRed;
           }, 500); // Change every 500 milliseconds
+
+          setTimeout(() => {
+              window.location.replace("https://lhps.instructure.com");
+          }, 30000);
       }
 
       // Start the siren effect when the page loads
