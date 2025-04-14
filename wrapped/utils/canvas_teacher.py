@@ -1,10 +1,10 @@
 from datetime import timedelta
 
 from app.canvas.canvas import get_canvas
-from app.models import TeacherWrapped
 
 from dateutil import parser
 
+from wrapped.models import TeacherWrapped
 
 all_ms_teachers = [
     1544, # Bartz

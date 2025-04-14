@@ -5,11 +5,8 @@ from dateutil import parser
 from tqdm import tqdm
 
 from app.canvas.canvas import get_canvas
-from app.models import Student, Wrapped, MusicSuggestion
-
-
-def get_sample():
-    get_all_for_student_by_id(12809)
+from app.models import Student, MusicSuggestion
+from wrapped.models import Wrapped
 
 
 def get_all():

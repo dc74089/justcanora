@@ -2,7 +2,8 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from app.models import Student, FeatureFlag, Wrapped
+from app.models import Student, FeatureFlag
+from wrapped.models import Wrapped
 
 
 def allcards(request):
@@ -47,5 +48,5 @@ def bday_others(request):
 def wrapped2024(request):
     enabled, _ = FeatureFlag.objects.get_or_create(id='card_wrapped')
 
-    if enabled and Wrapped.objects.filter(student=request.user.student).exists():
+    if enabled and Wrapped.objects.filter(student=request.user.student).exists() and request.user.student.grade:
         return render_to_string("app/cards/wrapped.html", request=request)

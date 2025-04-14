@@ -3,6 +3,8 @@
 import app.models
 from django.db import migrations, models
 
+import wrapped
+
 
 class Migration(migrations.Migration):
 
@@ -14,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='teacherwrapped',
             name='key',
-            field=models.CharField(default=app.models.generate_wrapped_key, max_length=50, unique=True),
+            field=models.CharField(default=wrapped.models.generate_wrapped_key, max_length=50, unique=True),
         ),
     ]

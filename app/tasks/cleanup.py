@@ -1,12 +1,11 @@
 from oauth2_provider.models import clear_expired
 
-from app.models import MusicSuggestion, News, Course
+from app.models import MusicSuggestion, Course
 from app.spotify import playlists
 
 
 def cleanup_null():
     MusicSuggestion.objects.filter(is_null=True).delete()
-    News.objects.filter(is_null=True).delete()
 
 
 def cleanup_playlists():

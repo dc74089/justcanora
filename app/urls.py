@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import index, auth, misc, admin, music, speech, curriculum, webserver, wrapped, jetbrains, dance
+from .views import index, auth, misc, admin, music, speech, curriculum, webserver, jetbrains, dance
 
 urlpatterns = [
     path('', index.index, name='index'),
@@ -33,11 +33,6 @@ urlpatterns = [
     path('webserver/all_creds/', webserver.all_table, name='webserver_all'),
 
     path('pycharm/instructions/', jetbrains.setup_instructions, name='jetbrains_setup_instructions'),
-
-    path('wrapped/', wrapped.wrapped, name='wrapped'),
-    path('wrapped/demo/', wrapped.wrapped_demo, name='wrapped_demo'),
-    path('wrapped/teacher/<str:key>', wrapped.wrapped_teacher, name='wrapped_teacher'),
-    path('wrapped/teacher/demo/', wrapped.wrapped_teacher_demo, name='wrapped_teacher_demo'),
 
     path('cn/', curriculum.index),
     path('cn/bigqr/', curriculum.big_qr),

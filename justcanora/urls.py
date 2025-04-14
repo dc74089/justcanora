@@ -28,6 +28,7 @@ urlpatterns = [
     path('', include('app.urls')),
     path('hunt/', include('scavenger.urls')),
     path('slides/', include('slides.urls')),
+    path('wrapped/', include('wrapped.urls')),
 ]
 
 if settings.DEBUG:
