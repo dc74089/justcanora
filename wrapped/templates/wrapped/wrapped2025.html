@@ -137,8 +137,8 @@
         songs.</h1>
 
       {% if data.song_percentile %}
-        <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the <span
-                class="happygradtext">top {{ data.song_percentile }}</span>!</h2>
+        <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
+                class="happygradtext">{{ data.song_percentile }}</span>!</h2>
       {% endif %}
 
       {% if data.num_songs_rejected %}
@@ -198,8 +198,8 @@
               class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
         pages in Canvas.</h1>
       {% if data.canvas_clicks_percentile %}
-        <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the <span
-                class="happygradtext">top {{ data.canvas_clicks_percentile }}</span>!</h2>
+        <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
+                class="happygradtext">{{ data.canvas_clicks_percentile }}</span>!</h2>
       {% else %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That's a huge number.</h2>
       {% endif %}
@@ -210,12 +210,11 @@
           your
           courses.</h1>
         {% if data.canvas_minutes_percentile %}
-          <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the <span
-                  class="happygradtext">top {{ data.canvas_minutes_percentile }}</span>!</h2>
-        {% else %}
+          <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
+                  class="happygradtext">{{ data.canvas_minutes_percentile }}</span>!</h2>
+        {% endif %}
           <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
                   class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
-        {% endif %}
       {% endif %}
 
       <p class="text-center fs-1 downarrow">&downarrow;</p>
