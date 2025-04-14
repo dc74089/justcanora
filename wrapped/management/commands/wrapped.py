@@ -21,18 +21,18 @@ class Command(BaseCommand):
             if type == "student":
                 if id:
                     student = Student.objects.get(id=id)
-                    canvas_student.get_all_for_student(student)
+                    wrapped_student.get_all_for_student(student)
                 elif get_all:
-                    canvas_student.get_all()
-                    canvas_student.rank_all()
+                    wrapped_student.get_all()
+                    wrapped_student.rank_all()
 
             elif type == "teacher":
                 if id:
-                    canvas_teacher.get_all_for_teacher(id)
+                    wrapped_teacher.get_all_for_teacher(id)
                 elif get_all:
-                    canvas_teacher.do_all()
+                    wrapped_teacher.do_all()
         elif action == 'rank':
             if type == "student":
-                canvas_student.rank_all()
+                wrapped_student.rank_all()
             elif type == "teacher":
                 self.stderr.write("Ranking not supported for teachers")
