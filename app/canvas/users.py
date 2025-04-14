@@ -25,6 +25,8 @@ def import_course(dj_course: Course):
 
     if sec.students:
         for student in sec.students:
+            if student['id'] == 2224: continue  # ZTutor ZZ
+
             s, created = Student.objects.get_or_create(
                 id=student['id']
             )
