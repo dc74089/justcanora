@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
 from app.models import Student
-from wrapped.utils import canvas_student, canvas_teacher
+from wrapped.utils import wrapped_student, wrapped_teacher
 
 
 class Command(BaseCommand):

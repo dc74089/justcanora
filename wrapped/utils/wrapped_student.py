@@ -40,11 +40,11 @@ def rank_all():
                                reverse=True)
 
     for wrapped in Wrapped.objects.all():
-        with suppress(ValueError): wrapped.rank_songs = num_songs.index(wrapped.num_songs)
-        with suppress(ValueError): wrapped.rank_assignments = num_assignments.index(wrapped.num_assignments)
-        with suppress(ValueError): wrapped.rank_late = num_late.index(wrapped.num_late)
-        with suppress(ValueError): wrapped.rank_canvas_minutes = num_canvas_minutes.index(wrapped.num_canvas_minutes)
-        with suppress(ValueError): wrapped.rank_canvas_clicks = num_canvas_clicks.index(wrapped.num_canvas_clicks)
+        with suppress(ValueError): wrapped.rank_songs = num_songs.index(wrapped.num_songs) + 1
+        with suppress(ValueError): wrapped.rank_assignments = num_assignments.index(wrapped.num_assignments) + 1
+        with suppress(ValueError): wrapped.rank_late = num_late.index(wrapped.num_late) + 1
+        with suppress(ValueError): wrapped.rank_canvas_minutes = num_canvas_minutes.index(wrapped.num_canvas_minutes) + 1
+        with suppress(ValueError): wrapped.rank_canvas_clicks = num_canvas_clicks.index(wrapped.num_canvas_clicks) + 1
 
         wrapped.save()
 
