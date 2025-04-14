@@ -4,224 +4,224 @@
 {% block title %}{{ data.name }}'s SY Wrapped{% endblock %}
 
 {% block style %}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Nanum+Pen+Script&display=swap"
-          rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Nanum+Pen+Script&display=swap"
+        rel="stylesheet">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Shadows+Into+Light&display=swap"
-          rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Shadows+Into+Light&display=swap"
+        rel="stylesheet">
 
-    <style>
-        html {
-            scroll-snap-type: y mandatory;
-            overflow-x: hidden;
-        }
+  <style>
+      html {
+          scroll-snap-type: y mandatory;
+          overflow-x: hidden;
+      }
 
-        .panel {
-            height: 100vh;
-            width: 100vw;
-            padding: 24px 48px 48px 48px;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-        }
+      .panel {
+          height: 100vh;
+          width: 100vw;
+          padding: 24px 48px 48px 48px;
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
+          position: relative;
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
+      }
 
-        .panel-dark {
-            background-color: #1a1d20;
-            color: white;
-        }
+      .panel-dark {
+          background-color: #1a1d20;
+          color: white;
+      }
 
-        .panel-light {
-            background-color: white;
-        }
+      .panel-light {
+          background-color: white;
+      }
 
-        h1 {
-            margin-top: 48px;
-        }
+      h1 {
+          margin-top: 48px;
+      }
 
-        .mediumtext {
-            font-weight: bolder;
-            font-size: min(20vh, 12vw) !important;
-        }
+      .mediumtext {
+          font-weight: bolder;
+          font-size: min(20vh, 12vw) !important;
+      }
 
-        .smalltext {
-            font-weight: bolder;
-            font-size: min(8vh, 8vw) !important;
-        }
+      .smalltext {
+          font-weight: bolder;
+          font-size: min(8vh, 8vw) !important;
+      }
 
-        .smallertext {
-            font-weight: bolder;
-            font-size: min(4vh, 4vw) !important;
-        }
+      .smallertext {
+          font-weight: bolder;
+          font-size: min(4vh, 4vw) !important;
+      }
 
-        .handwritten {
-            font-family: "Nanum Pen Script", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-        }
+      .handwritten {
+          font-family: "Nanum Pen Script", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      }
 
-        .title-written {
-            font-family: "Shadows Into Light", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-        }
+      .title-written {
+          font-family: "Shadows Into Light", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      }
 
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
+      @keyframes bounce {
+          0%, 100% {
+              transform: translateY(0);
+          }
+          50% {
+              transform: translateY(-10px);
+          }
+      }
 
-        .downarrow {
-            animation: bounce 1.5s infinite ease-in-out;
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-    </style>
+      .downarrow {
+          animation: bounce 1.5s infinite ease-in-out;
+          position: absolute;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
+      }
+  </style>
 {% endblock %}
 
 {% block nav %}{% endblock %}
 
 {% block content-full %}
-    <section class="panel panel-light">
-        <h1 class="text-center mediumtext mt-0 title-written linearound">{{ data.name }}'s</h1>
-        <h1 class="text-center mediumtext mt-0">School Year</h1>
-        <h1 class="mediumtext text-center linearound happygradtext mt-0">WRAPPED</h1>
-        <p class="text-center fs-1 downarrow">&downarrow;</p>
-    </section>
+  <section class="panel panel-light">
+    <h1 class="text-center mediumtext mt-0 title-written linearound">{{ data.name }}'s</h1>
+    <h1 class="text-center mediumtext mt-0">School Year</h1>
+    <h1 class="mediumtext text-center linearound happygradtext mt-0">WRAPPED</h1>
+    <p class="text-center fs-1 downarrow">&downarrow;</p>
+  </section>
 
-    <section class="panel panel-dark">
-        <h1 class="smalltext">You Finished <span class="happygradtext">SY 24-25</span>!</h1>
-        <p class="smallertext my-5">We were all in school for around <span class="happygradtext">1,198</span> hours this
-            year, but you didn't spend it all teaching. You also spent your time:</p>
-        <ul class="smallertext ms-lg-5">
-            <li>
-                Grabbing a <span class="happygradtext">coffee</span> or a <span class="happygradtext">soda</span> 
-                in the lounge (if the machines were working)
-            </li>
-        
-            {% if data.kulaqua %}
-                <li>At a <span class="happygradtext">Camp Kulaqua</span> glow party</li>
-            {% endif %}
-            {% if data.nc %}
-                <li>In <span class="happygradtext">North Carolina</span>, helping Asheville rebuild</li>
-            {% endif %}
-            <li>Adjusting your schedule around <span class="happygradtext">TWO hurricanes</span></li>
-            <li>
+  <section class="panel panel-dark">
+    <h1 class="smalltext">You Finished <span class="happygradtext">SY 24-25</span>!</h1>
+    <p class="smallertext my-5">We were all in school for around <span class="happygradtext">1,198</span> hours this
+      year, but you didn't spend it all teaching. You also spent your time:</p>
+    <ul class="smallertext ms-lg-5">
+      <li>
+        Grabbing a <span class="happygradtext">coffee</span> or a <span class="happygradtext">soda</span>
+        in the lounge (if the machines were working)
+      </li>
+
+      {% if data.kulaqua %}
+        <li>At a <span class="happygradtext">Camp Kulaqua</span> glow party</li>
+      {% endif %}
+      {% if data.nc %}
+        <li>In <span class="happygradtext">North Carolina</span>, braving the bitter cold</li>
+      {% endif %}
+      <li>Adjusting your schedule around <span class="happygradtext">TWO hurricanes</span></li>
+      <li>
         <span style="text-decoration: line-through; color: red"><span
                 style="color: white">Complaining about your students</span></span>
-                <span class="title-written happygradtext ms-2">"Consulting with your Colleagues"</span>
-            </li>
-        </ul>
-        <p class="text-center fs-1 downarrow">&downarrow;</p>
+        <span class="title-written happygradtext ms-2">"Consulting with your Colleagues"</span>
+      </li>
+    </ul>
+    <p class="text-center fs-1 downarrow">&downarrow;</p>
 
-    </section>
+  </section>
 
-    {% if data.num_assignments %}
-        <section class="panel panel-light">
-            <h1 class="text-center mediumtext mt-0">Your Students</h1>
-            <h1 class="text-center mediumtext happygradtext linearound">Did Things!</h1>
-
-            <p class="text-center fs-1 downarrow">&downarrow;</p>
-        </section>
-
-        <section class="panel panel-dark">
-            <h1 class="smalltext">You assigned <span class="happygradtext">{{ data.num_assignments }}</span>
-                assignments in Canvas.</h1>
-            <h2 class="smallertext ms-lg-5">&rightarrow; Though if you ask a student, it was <i>at least</i> double that
-            </h2>
-
-            <h1 class="smalltext">You graded <span class="happygradtext">{{ data.num_graded }}</span> submissions</h1>
-
-            {% if data.num_late != None %}
-                <h2 class="smallertext ms-lg-5">&rightarrow; Of those, <span
-                        class="happygradtext">{{ data.num_late }}</span> were late</h2>
-            {% endif %}
-
-            {% if data.num_zeros != None %}
-                <h2 class="smallertext ms-lg-5">&rightarrow; <span class="happygradtext">{{ data.num_zeros }}</span>
-                    went in as a zero</h2>
-            {% endif %}
-
-            <h2 class="smallertext ms-lg-5">&rightarrow; Sigh...</h2>
-
-            <p class="text-center fs-1 downarrow">&downarrow;</p>
-
-        </section>
-    {% endif %}
-
-    {% if data.num_canvas_clicks %}
-        <section class="panel panel-light">
-            <h1 class="text-center mediumtext mt-0">Speaking of</h1>
-            <h1 class="text-center mediumtext happygradtext linearound">Canvas...</h1>
-
-            <p class="text-center fs-1 downarrow">&downarrow;</p>
-        </section>
-
-        <section class="panel panel-dark">
-            <h1 class="smalltext">You visited <span
-                    class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
-                pages in Canvas.</h1>
-            <h2 class="smallertext ms-lg-5">&rightarrow; That's a huge number.</h2>
-
-            {% if data.num_canvas_minutes %}
-                <h1 class="smalltext">You spent around <span
-                        class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span> minutes clicking around in
-                    your
-                    courses.</h1>
-                {% if data.canvas_minutes_percentile %}
-                    <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the <span
-                            class="happygradtext">top {{ data.canvas_minutes_percentile }}</span>!</h2>
-                {% else %}
-                    <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
-                            class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
-                {% endif %}
-            {% endif %}
-
-            <p class="text-center fs-1 downarrow">&downarrow;</p>
-        </section>
-
-    {% endif %}
-
+  {% if data.num_assignments %}
     <section class="panel panel-light">
-        <h1 class="bigtext text-center linearound mt-0"><span class="happygradtext">Wow.</span></h1>
-        <h2 class="smalltext text-center">This was one crazy year.</h2>
-        <h2 class="smallertext text-center">And now it's over.</h2>
+      <h1 class="text-center mediumtext mt-0">Your Students</h1>
+      <h1 class="text-center mediumtext happygradtext linearound">Did Things!</h1>
 
-        <p class="text-center fs-1 downarrow">&downarrow;</p>
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
 
     <section class="panel panel-dark">
-        <h1 class="smalltext mt-0">A quick note:</h1>
-        <div class="handwritten smallertext">
-            <p class="fw-light" style="">
-                {{ data.fname }}, I can't believe the school year is already over!
-            </p>
-        
-            <p class="fw-light mt-4">
-                {% if data.new_to_ccc %}I hope you had a great first year at the CCC.{% endif %}
-                I genuinely couldn't ask for better coworkers... You all make the bad days easier
-                and the good days even better.
-            </p>
+      <h1 class="smalltext">You assigned <span class="happygradtext">{{ data.num_assignments }}</span>
+        assignments in Canvas.</h1>
+      <h2 class="smallertext ms-lg-5">&rightarrow; Though if you ask a student, it was <i>at least</i> double that
+      </h2>
 
-            {% if data.personal_note %}
-                <p class="fw-light mt-4">{{ data.personal_note }}</p>
-            {% endif %}
+      <h1 class="smalltext">You graded <span class="happygradtext">{{ data.num_graded }}</span> submissions</h1>
 
-            <p class="fw-light mt-4">
-                <span class="fw-bold">Have an amazing summer!</span>
-            </p>
-            <p class="mt-5 fw-light">All the best,<br>
-                <span class="happygradtext smalltext fw-bold">-Dominic<span
-                        style="writing-mode: vertical-lr">:)</span></span>
-            </p>
-        </div>
+      {% if data.num_late != None %}
+        <h2 class="smallertext ms-lg-5">&rightarrow; Of those, <span
+                class="happygradtext">{{ data.num_late }}</span> were late</h2>
+      {% endif %}
+
+      {% if data.num_zeros != None %}
+        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="happygradtext">{{ data.num_zeros }}</span>
+          went in as a zero</h2>
+      {% endif %}
+
+      <h2 class="smallertext ms-lg-5">&rightarrow; <i>Sigh...</i></h2>
+
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
+
     </section>
+  {% endif %}
+
+  {% if data.num_canvas_clicks %}
+    <section class="panel panel-light">
+      <h1 class="text-center mediumtext mt-0">Speaking of</h1>
+      <h1 class="text-center mediumtext happygradtext linearound">Canvas...</h1>
+
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
+    </section>
+
+    <section class="panel panel-dark">
+      <h1 class="smalltext">You visited <span
+              class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
+        pages in Canvas.</h1>
+      <h2 class="smallertext ms-lg-5">&rightarrow; That's a huge number.</h2>
+
+      {% if data.num_canvas_minutes %}
+        <h1 class="smalltext">You spent around <span
+                class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span> minutes clicking around in
+          your
+          courses.</h1>
+        {% if data.canvas_minutes_percentile %}
+          <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the <span
+                  class="happygradtext">top {{ data.canvas_minutes_percentile }}</span>!</h2>
+        {% else %}
+          <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
+                  class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
+        {% endif %}
+      {% endif %}
+
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
+    </section>
+
+  {% endif %}
+
+  <section class="panel panel-light">
+    <h1 class="bigtext text-center linearound mt-0"><span class="happygradtext">Wow.</span></h1>
+    <h2 class="smalltext text-center">This was one crazy year.</h2>
+    <h2 class="smallertext text-center">And now it's over.</h2>
+
+    <p class="text-center fs-1 downarrow">&downarrow;</p>
+  </section>
+
+  <section class="panel panel-dark">
+    <h1 class="smalltext mt-0">A quick note:</h1>
+    <div class="handwritten smallertext">
+      <p class="fw-light" style="">
+        {{ data.fname }}, I can't believe the school year is already over!
+        {% if data.new_to_ccc %}I hope you had a great first year at the CCC.{% endif %}
+      </p>
+
+      <p class="fw-light mt-4">
+        I genuinely couldn't ask for better coworkers... You all make the bad days easier
+        and the good days even better.
+      </p>
+
+      {% if data.personal_note %}
+        <p class="fw-light mt-4">{{ data.personal_note }}</p>
+      {% endif %}
+
+      <p class="fw-light mt-4">
+        <span class="fw-bold">Have an amazing summer!</span>
+      </p>
+      <p class="mt-5 fw-light">All the best,<br>
+        <span class="happygradtext smalltext fw-bold">-Dominic<span
+                style="writing-mode: vertical-lr">:)</span></span>
+      </p>
+    </div>
+  </section>
 {% endblock %}
