@@ -97,6 +97,7 @@ class TeacherWrapped(models.Model):
     key = models.CharField(max_length=50, null=False, blank=False, unique=True, default=generate_wrapped_key)
     email = models.EmailField(unique=True)
     name = models.TextField(null=False, blank=False)
+    display_name = models.TextField(null=False, blank=False)
     num_announcements = models.IntegerField(null=True, blank=True)
     num_assignments = models.IntegerField(null=True, blank=True)
     num_graded = models.IntegerField(null=True, blank=True)

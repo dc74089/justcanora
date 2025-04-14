@@ -65,6 +65,7 @@ def get_user_info(teacher_id):
     tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
     tw.email = u.email
     tw.name = u.name
+    tw.display_name = u.short_name
 
     tw.save()
 
