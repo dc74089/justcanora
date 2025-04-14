@@ -18,7 +18,7 @@ def get_dev_courses():
 def import_course(dj_course: Course):
     canvas = get_canvas()
     course = canvas.get_course(dj_course.course_id)
-    sec = course.get_section(dj_course.section_id, include='students')
+    sec = course.get_section(dj_course.section_id, include=['students', 'enrollments'])
 
     dj_course.students.clear()
     dj_course.save()
@@ -28,6 +28,12 @@ def import_course(dj_course: Course):
             s, created = Student.objects.get_or_create(
                 id=student['id']
             )
+
+            try:
+                if student['enrollments'][0]['enrollment_state'] != "active":
+                    continue
+            except KeyError:
+                pass
 
             if created or not (s.email and s.fname and s.lname):
                 s.lname = student['sortable_name'].split(',')[0].strip()
