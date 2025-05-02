@@ -2,15 +2,14 @@
 
 {% block content %}
   <div class="row">
-    {% for cat, val in data %}
+    {% for cat, val in data.items %}
       <div class="col-12 col-md-6">
         <h1>{{ cat }}</h1>
 
         <table class="table table-striped table-hover">
-          {% for student, score in val %}
+          {% for w in val %}
             <tr>
-              <td>{{ student }}</td>
-              <td>{{ score }}</td>
+              <td>{{ w.student }}</td>
             </tr>
           {% endfor %}
         </table>

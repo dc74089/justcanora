@@ -23,14 +23,12 @@ def ranks(request):
     all = Wrapped.objects.all()
 
     out = {
-        "Songs": sorted((x.rank_songs, x.num_songs) for x in all if x.rank_songs),
-        "Assignments": sorted((x.rank_assignments, x.num_assignments) for x in all if x.rank_assignments),
-        "Late": sorted((x.rank_late, x.num_late) for x in all if x.rank_late),
-        "Clicks": sorted((x.rank_canvas_clicks, x.num_canvas_clicks) for x in all if x.rank_canvas_clicks),
-        "Minutes": sorted((x.rank_canvas_minutes, x.num_canvas_minutes) for x in all if x.rank_canvas_minutes),
+        "Songs": Wrapped.objects.all().order_by('rank_songs'),
+        "Assignments": Wrapped.objects.all().order_by('rank_assignments'),
+        "Late": Wrapped.objects.all().order_by('rank_late'),
+        "Minutes": Wrapped.objects.all().order_by('rank_canvas_minutes'),
+        "Clicks": Wrapped.objects.all().order_by('rank_canvas_clicks'),
     }
-
-    print(out)
 
     return render(request, "wrapped/ranks.html", {
         "data": out
