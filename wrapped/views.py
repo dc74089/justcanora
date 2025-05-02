@@ -1,3 +1,4 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import render
 
@@ -14,6 +15,23 @@ def wrapped(request):
 
     return render(request, 'wrapped/wrapped2025.html', {
         'data': Wrapped.objects.get(student=request.user.student)
+    })
+
+
+@staff_member_required
+def ranks(request):
+    all = Wrapped.objects.all()
+
+    out = {
+        "Songs": sorted((x.rank_songs, x.num_songs for x in all)),
+        "Assignments": sorted((x.rank_assignments, x.num_assignments for x in all)),
+        "Late": sorted((x.rank_late, x.num_late for x in all)),
+        "Clicks": sorted((x.rank_clicks, x.num_clicks for x in all)),
+        "Minutes": sorted((x.rank_minutes, x.num_minutes for x in all)),
+    }
+
+    return render(request, "wrapped/ranks.html", {
+        "data": out
     })
 
 
