@@ -30,6 +30,8 @@ def ranks(request):
         "Minutes": sorted((x.rank_canvas_minutes, x.num_canvas_minutes) for x in all if x.rank_canvas_minutes),
     }
 
+    print(out)
+
     return render(request, "wrapped/ranks.html", {
         "data": out
     })
