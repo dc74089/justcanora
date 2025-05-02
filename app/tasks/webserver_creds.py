@@ -12,12 +12,12 @@ def generate_creds(year, semester):
 
 
 def generate_shark_tank_creds():
-    for pd in [3, 4, 5, 6]:
+    for pd in [2, 5, 7]:
         for group in [1, 2, 3, 4, 5]:
             wc = WebserverCredential(
                 directory=f"sharkspring25/{pd}-{group}",
                 password=WebserverCredential.gen_password(),
-                uid=int(f"99{pd}{group}"),
+                uid=int(f"88{pd}{group}"),
                 shark=True
             )
 
