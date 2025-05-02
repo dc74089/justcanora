@@ -15,7 +15,7 @@ def generate_shark_tank_creds():
     for pd in [3, 4, 5, 6]:
         for group in [1, 2, 3, 4, 5]:
             wc = WebserverCredential(
-                directory=f"sharkfall24/{pd}-{group}",
+                directory=f"sharkspring25/{pd}-{group}",
                 password=WebserverCredential.gen_password(),
                 uid=int(f"99{pd}{group}"),
                 shark=True
