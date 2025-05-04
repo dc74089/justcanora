@@ -10,7 +10,7 @@ from wrapped.models import Wrapped
 
 
 def get_all():
-    for student in tqdm(Student.objects.all().exclude(id__in=[2224])):
+    for student in tqdm(Student.objects.all().exclude(id__in=[2224, 102798])):
         if not student.is_active(): continue
 
         get_all_for_student(student)

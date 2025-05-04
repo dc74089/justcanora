@@ -25,14 +25,26 @@ class Wrapped(models.Model):
     def percentile_string(self, pct):
         if pct < 0.01:
             return "1%"
+        elif pct < 0.02:
+            return "2%"
+        elif pct < 0.03:
+            return "3%"
+        elif pct < 0.04:
+            return "4%"
         elif pct < 0.05:
             return "5%"
         elif pct < 0.1:
             return "10%"
+        elif pct < 0.15:
+            return "15%"
         elif pct < 0.2:
             return "20%"
         elif pct < 0.25:
             return "25%"
+        elif pct < 0.30:
+            return "30%"
+        elif pct < 0.4:
+            return "40%"
 
         return None
 
