@@ -20,6 +20,7 @@ class Wrapped(models.Model):
     rank_canvas_minutes = models.IntegerField(null=True, blank=True)
     num_canvas_clicks = models.IntegerField(null=True, blank=True)
     rank_canvas_clicks = models.IntegerField(null=True, blank=True)
+    robotics = models.BooleanField(default=False)
     personal_note = models.TextField(null=True, blank=True)
 
     def percentile_string(self, pct):

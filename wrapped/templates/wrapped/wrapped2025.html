@@ -103,7 +103,7 @@
       year, but you didn't spend it all in class.<br/>You and your classmates also spent your time:</p>
     <ul class="smallertext ms-lg-5">
       <li>At a Middle School <span class="happygradtext">Retreat</span></li>
-      <li>Hunkering down during <span class="happygradtext">Hurricane Helene</span> </li>
+      <li>Hunkering down during <span class="happygradtext">Hurricane Helene</span></li>
       <li>At assemblies with
         <span class="happygradtext">Derreck Kayongo</span>
         and <span class="happygradtext">The Yale Whiffenpoofs</span>
@@ -213,13 +213,34 @@
           <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
                   class="happygradtext">{{ data.canvas_minutes_percentile }}</span>!</h2>
         {% endif %}
-          <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
-                  class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
+        <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
+                class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
       {% endif %}
 
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
 
+  {% endif %}
+
+  {% if data.robotics %}
+    <section class="panel panel-light">
+      <h2 class="smalltext text-center">Oh yeah...</h2>
+      <h1 class="bigtext text-center linearound mt-0"><span class="happygradtext">Robotics</span></h1>
+      <h2 class="smallertext text-center">was a thing.</h2>
+
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
+    </section>
+
+    <section class="panel panel-dark">
+      <h1 class="smalltext">This was Cyberhazards' <span class="happygradtext">2nd</span> season.</h1>
+      <h2 class="smallertext ms-lg-5">&rightarrow; Thank you for helping us build our team!</h2>
+      <h1 class="smalltext">We played <span class="happygradtext">24</span> official matches.</h1>
+      <h2 class="smallertext ms-lg-5">&rightarrow; That's <span class="happygradtext">10</span> wins, <span class="happygradtext">14</span> losses, and <span class="happygradtext">0</span> ties.</h2>
+      <h1 class="smalltext">We spent <span class="happygradtext">$694.89</span> on food.</h1>
+      <h2 class="smallertext ms-lg-5">&rightarrow; I'm honestly kind of impressed.</h2>
+
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
+    </section>
   {% endif %}
 
   <section class="panel panel-light">
