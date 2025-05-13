@@ -27,7 +27,7 @@ all_ms_teachers = [
     1552, # Hujik
     1553, # R. Lee
     13153, # Mercado
-    1653, # Pazmino
+    1635, # Pazmino
     4220, # Rassa
     1705, # Robelo
     1687, # Schaeffer
