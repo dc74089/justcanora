@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from tqdm import tqdm
+
 from app.canvas.canvas import get_canvas
 
 from dateutil import parser
@@ -41,7 +43,7 @@ all_ms_teachers = [
 
 
 def do_all():
-    for teacher_id in all_ms_teachers:
+    for teacher_id in tqdm(all_ms_teachers):
         try:
             get_all_for_teacher(teacher_id)
         except:
