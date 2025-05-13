@@ -70,7 +70,6 @@ class Wrapped(models.Model):
         adv = False
 
         for course in self.student.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR):
-            print(course.type)
             if course.type == "CS1" or course.type == "CS2":
                 cs = True
 
