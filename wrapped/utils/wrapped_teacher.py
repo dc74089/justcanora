@@ -9,36 +9,36 @@ from dateutil import parser
 from wrapped.models import TeacherWrapped
 
 all_ms_teachers = [
-    1544, # Bartz
-    1549, # Brewer
-    8035, # Capers
-    1592, # Cortelyou
-    8045, # Darden
-    1723, # Daugherty
-    1546, # Denard
-    11858, # Fitz
-    11862, # Funston
-    14543, # Gaudreault
-    4542, # Glascock
-    8000, # Goodman
-    4219, # Gower
-    2618, # Harris
-    9881, # Higgs
-    1552, # Hujik
-    1553, # R. Lee
-    13153, # Mercado
-    1635, # Pazmino
-    4220, # Rassa
-    1705, # Robelo
-    1687, # Schaeffer
-    8015, # Shaffer
-    9880, # Stein
-    1557, # Sweet
-    1558, # Vander Meulen
-    11859, # Walsh
-    4644, # Wang
-    1690, # Young
-    14546, # Ziegler
+    1544,  # Bartz
+    1549,  # Brewer
+    8035,  # Capers
+    1592,  # Cortelyou
+    8045,  # Darden
+    1723,  # Daugherty
+    1546,  # Denard
+    11858,  # Fitz
+    11862,  # Funston
+    14543,  # Gaudreault
+    4542,  # Glascock
+    8000,  # Goodman
+    4219,  # Gower
+    2618,  # Harris
+    9881,  # Higgs
+    1552,  # Hujik
+    1553,  # R. Lee
+    13153,  # Mercado
+    1635,  # Pazmino
+    4220,  # Rassa
+    1705,  # Robelo
+    1687,  # Schaeffer
+    8015,  # Shaffer
+    9880,  # Stein
+    1557,  # Sweet
+    1558,  # Vander Meulen
+    11859,  # Walsh
+    4644,  # Wang
+    1690,  # Young
+    14546,  # Ziegler
 ]
 
 
@@ -76,8 +76,7 @@ def get_course_stats(teacher_id):
     canvas = get_canvas()
     ct = canvas.get_user(teacher_id)
 
-    assignments = set()
-
+    assignments = 0
     graded = 0
     late = 0
     zero = 0
@@ -86,6 +85,10 @@ def get_course_stats(teacher_id):
 
     for course in ct.get_courses(enrollment_type="teacher"):
         cc = canvas.get_course(course.id)
+
+        if "2025" not in str(cc.sis_course_id):
+            print(f"Skipping {cc.name} ({cc.sis_course_id})")
+            continue
 
         for ann in canvas.get_announcements(
                 context_codes=[
@@ -96,15 +99,13 @@ def get_course_stats(teacher_id):
             if ann.author.get("id", 0) == teacher_id:
                 announcements += 1
 
-        for sub in cc.get_multiple_submissions(
-                student_ids=["all"],
-                submitted_since="2024-08-01T00:00:00Z",
-                include=["total_scores"]
-        ):
-            if sub.workflow_state == "graded" and sub.grader_id == teacher_id:
-                graded += 1
+        for a in cc.get_assignments():
+            assignments += 1
 
-                assignments.add(sub.assignment_id)
+        for sub in cc.get_gradebook_history_feed():
+            if sub.grade_matches_current_submission:
+                if sub.workflow_state == "graded":
+                    graded += 1
 
                 if sub.late:
                     late += 1
@@ -115,7 +116,7 @@ def get_course_stats(teacher_id):
     tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
 
     tw.num_announcements = announcements
-    tw.num_assignments = len(assignments)
+    tw.num_assignments = assignments
     tw.num_graded = graded
     tw.num_late = late
     tw.num_zeros = zero
