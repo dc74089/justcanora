@@ -89,6 +89,8 @@ def get_course_stats(teacher_id):
         if "2025" not in str(cc.sis_course_id):
             print(f"Skipping {cc.name} ({cc.sis_course_id})")
             continue
+        else:
+            print(f"Keeping {cc.name} ({cc.sis_course_id})")
 
         for ann in canvas.get_announcements(
                 context_codes=[
@@ -102,16 +104,21 @@ def get_course_stats(teacher_id):
         for a in cc.get_assignments():
             assignments += 1
 
-        for sub in cc.get_gradebook_history_feed():
-            if sub.grade_matches_current_submission:
-                if sub.workflow_state == "graded":
-                    graded += 1
+        seen = []
 
-                if sub.late:
-                    late += 1
+        for sub in cc.get_gradebook_history_feed():
+            if sub.grade_matches_current_submission \
+                    and sub.workflow_state == "graded" \
+                    and sub.grader_id == teacher_id \
+                    and (sub.assignment_id, sub.user_id) not in seen:
+                seen.append((sub.assignment_id, sub.user_id))
+                graded += 1
 
                 if sub.score == 0:
                     zero += 1
+
+            if sub.late:
+                late += 1
 
     tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
 
