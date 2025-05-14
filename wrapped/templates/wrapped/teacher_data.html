@@ -1,0 +1,26 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <table class="table table-hover table-striped">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>URL</th>
+      <th>Key</th>
+      <th>Kulaqua</th>
+      <th>NC</th>
+      <th>New</th>
+    </tr>
+    {% for tw in data %}
+      <tr>
+        <td>{{ tw.display_name }}</td>
+        <td>{{ tw.email }}</td>
+        <td><a href="{{ tw.url }}">{{ tw.url }}</a></td>
+        <td>{{ tw.key }}</td>
+        <td>{{ tw.kulaqua }}</td>
+        <td>{{ tw.nc }}</td>
+        <td>{{ tw.new_to_ccc }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

@@ -2,6 +2,7 @@ import random
 import string
 
 from django.db import models
+from django.urls import reverse
 
 from app.models import Student
 from justcanora import settings
@@ -22,6 +23,9 @@ class Wrapped(models.Model):
     rank_canvas_clicks = models.IntegerField(null=True, blank=True)
     robotics = models.BooleanField(default=False)
     personal_note = models.TextField(null=True, blank=True)
+
+    def demo_url(self):
+        return f"{settings.BASE_URL}{reverse('wrapped_demo')}?student={self.student.id}"
 
     def percentile_string(self, pct):
         if pct < 0.01:
@@ -127,6 +131,9 @@ class TeacherWrapped(models.Model):
 
     def fname(self):
         return self.name.split()[0]
+
+    def url(self):
+        return f"https://tr.canora.us/wrapped/teacher/{self.key}"
 
     def __str__(self):
         return f"{self.name}'s 2025 SY Wrapped"

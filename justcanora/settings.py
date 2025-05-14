@@ -60,6 +60,8 @@ if DEBUG:
         "*",
     ])
 
+BASE_URL = "http://localhost:8000" if DEBUG else "https://tr.canora.us"
+
 # Application definition
 
 INSTALLED_APPS = [

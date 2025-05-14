@@ -35,6 +35,20 @@ def ranks(request):
     })
 
 
+@staff_member_required
+def student_data(request):
+    return render(request, "wrapped/student_data.html", {
+        "data": Wrapped.objects.all().order_by('student__fname')
+    })
+
+
+@staff_member_required
+def teacher_data(request):
+    return render(request, "wrapped/teacher_data.html", {
+        "data": TeacherWrapped.objects.all().order_by('name')
+    })
+
+
 def wrapped_teacher(request, key):
     tw = TeacherWrapped.objects.get(key=key)
 

@@ -1,0 +1,22 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <table class="table table-hover table-striped">
+    <tr>
+      <th>Name</th>
+      <th>URL</th>
+      <th>Canvas ID</th>
+      <th>Robotics</th>
+      <th>Note</th>
+    </tr>
+    {% for w in data %}
+      <tr>
+        <td>{{ w.student.full_name }}</td>
+        <td><a href="{{ w.demo_url }}">{{ w.demo_url }}</a></td>
+        <td>{{ w.student.id }}</td>
+        <td>{{ w.robotics }}</td>
+        <td>{{ w.personal_note }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
