@@ -6,6 +6,8 @@
       <th>Name</th>
       <th>URL</th>
       <th>Canvas ID</th>
+      <th>Num Songs</th>
+      <th>Num Late</th>
       <th>Robotics</th>
       <th>Note</th>
     </tr>
@@ -14,6 +16,8 @@
         <td>{{ w.student.full_name }}</td>
         <td><a href="{{ w.demo_url }}">{{ w.demo_url }}</a></td>
         <td>{{ w.student.id }}</td>
+        <td>{{ w.num_songs }}</td>
+        <td>{{ w.num_late }}</td>
         <td>{{ w.robotics }}</td>
         <td>{{ w.personal_note }}</td>
       </tr>
