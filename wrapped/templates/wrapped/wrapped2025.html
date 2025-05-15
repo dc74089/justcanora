@@ -166,16 +166,17 @@
         assignments this year.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; But it didn't feel like that many, right?</h2>
 
-      {% if data.num_late != None and data.num_late < 40 %}
+      {% if data.num_late != None %}
         <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_late }}</span> were late</h1>
 
         {% if data.num_late == 0 %}
           <h2 class="smallertext ms-lg-5">&rightarrow; Congrats on the perfect streak!</h2>
-        {% elif data.num_late < 20 %}
-          <h2 class="smallertext ms-lg-5">&rightarrow; None of us are perfect, that's still an impressive
-            number!</h2>
-        {% else %}
+        {% elif data.num_late < 15 %}
+          <h2 class="smallertext ms-lg-5">&rightarrow; None of us are perfect, that's still an impressive number!</h2>
+        {% elif data.num_late < 40 %}
           <h2 class="smallertext ms-lg-5">&rightarrow; Not too shabby!</h2>
+        {% else %}
+          <h2 class="smallertext ms-lg-5">&rightarrow; But you'll lock in next year, right?</h2>
         {% endif %}
 
       {% endif %}
@@ -235,7 +236,8 @@
       <h1 class="smalltext">This was Cyberhazards' <span class="happygradtext">2nd</span> season.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; Thank you for helping us build our team!</h2>
       <h1 class="smalltext">We played <span class="happygradtext">24</span> official matches.</h1>
-      <h2 class="smallertext ms-lg-5">&rightarrow; That's <span class="happygradtext">10</span> wins, <span class="happygradtext">14</span> losses, and <span class="happygradtext">0</span> ties.</h2>
+      <h2 class="smallertext ms-lg-5">&rightarrow; That's <span class="happygradtext">10</span> wins, <span
+              class="happygradtext">14</span> losses, and <span class="happygradtext">0</span> ties.</h2>
       <h1 class="smalltext">We spent <span class="happygradtext">$694.89</span> on food.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; I'm honestly kind of impressed.</h2>
 
