@@ -71,6 +71,8 @@ def get_user_info(teacher_id):
 
     tw.save()
 
+    print(tw.name)
+
 
 def get_course_stats(teacher_id):
     canvas = get_canvas()
@@ -146,6 +148,8 @@ def get_pageview_stats(teacher_id):
     session_start = None
     last_req = None
 
+    print("Getting Pageviews")
+
     for req in cs.get_page_views(start_time="2024-08-01T00:00:00Z"):
         # Starts at now, goes backwards
         pageviews += 1
@@ -163,10 +167,11 @@ def get_pageview_stats(teacher_id):
             session_len = (session_start - last_time).seconds
 
             if session_len // 60 // 60 < 8:
-                print("Finishing Session")
+                # print("Finishing Session")
                 seconds += session_len
             else:
-                print("DISCARDING LONG SESSION")
+                # print("DISCARDING LONG SESSION")
+                pass
 
             session_start = None
 
