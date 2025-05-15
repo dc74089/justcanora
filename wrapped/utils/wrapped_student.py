@@ -13,6 +13,7 @@ def get_all():
     for student in tqdm(Student.objects.all().exclude(id__in=[2224, 102798])):
         if not student.is_active(): continue
 
+        print(student.name())
         get_all_for_student(student)
 
 
@@ -102,10 +103,11 @@ def get_pageview_stats(student: Student):
             session_len = (session_start - last_time).seconds
 
             if session_len // 60 // 60 < 8:
-                print("Finishing Session")
+                # print("Finishing Session")
                 seconds += session_len
             else:
-                print("DISCARDING LONG SESSION")
+                # print("DISCARDING LONG SESSION")
+                pass
 
             session_start = None
 
