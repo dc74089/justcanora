@@ -123,8 +123,8 @@ def get_course_stats(teacher_id):
                 if sub.score == 0:
                     zero += 1
 
-            if sub.late:
-                late += 1
+                if sub.late:
+                    late += 1
 
         assignments += len(set(assgn_ids))
 
