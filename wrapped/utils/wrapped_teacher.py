@@ -76,6 +76,8 @@ def get_course_stats(teacher_id):
     canvas = get_canvas()
     ct = canvas.get_user(teacher_id)
 
+    tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
+
     assignments = 0
     graded = 0
     late = 0
@@ -87,7 +89,10 @@ def get_course_stats(teacher_id):
         cc = canvas.get_course(course.id)
 
         if "2025" not in str(cc.sis_course_id):
-            print(f"Skipping {cc.name} ({cc.sis_course_id})")
+            print(f"Skipping {cc.name} ({cc.sis_course_id}) due to SIS ID")
+            continue
+        elif cc.name.split("-")[-1] not in tw.name:
+            print(f"Skipping {cc.name} ({cc.sis_course_id}) due to name")
             continue
         else:
             print(f"Keeping {cc.name} ({cc.sis_course_id})")
@@ -101,10 +106,8 @@ def get_course_stats(teacher_id):
             if ann.author.get("id", 0) == teacher_id:
                 announcements += 1
 
-        for a in cc.get_assignments():
-            assignments += 1
-
         seen = []
+        assgn_ids = []
 
         for sub in cc.get_gradebook_history_feed():
             if sub.grade_matches_current_submission \
@@ -112,6 +115,7 @@ def get_course_stats(teacher_id):
                     and sub.grader_id == teacher_id \
                     and (sub.assignment_id, sub.user_id) not in seen:
                 seen.append((sub.assignment_id, sub.user_id))
+                assgn_ids.append(sub.assignment_id)
                 graded += 1
 
                 if sub.score == 0:
@@ -120,7 +124,7 @@ def get_course_stats(teacher_id):
             if sub.late:
                 late += 1
 
-    tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
+        assignments += len(set(assgn_ids))
 
     tw.num_announcements = announcements
     tw.num_assignments = assignments
