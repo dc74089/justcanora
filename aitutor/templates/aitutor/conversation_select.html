@@ -1,0 +1,17 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12 col-md-4 offset-md-4">
+      <div class="card">
+        <div class="card-body">
+          {% for conv in conversations %}
+            <p>
+              <a href="{% url 'conversation' conv.id %}">{{ conv }}</a>
+            </p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

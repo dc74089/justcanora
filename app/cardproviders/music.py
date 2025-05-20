@@ -11,6 +11,8 @@ def allcards(request):
         return [x for x in [suggestion(request), login(request), expiring_soon(request)] if x is not None]
     except SpotifyOauthError:
         return []
+    except OSError:
+        return []
 
 
 def suggestion(request):

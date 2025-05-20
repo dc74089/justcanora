@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'scavenger',
     'slides',
     'wrapped',
+    'aitutor'
 ]
 
 AUTHENTICATION_BACKENDS = [
