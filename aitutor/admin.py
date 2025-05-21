@@ -4,8 +4,7 @@ from .models import Agent, Conversation, Message, AgentMessage, UserMessage
 
 @admin.register(Agent)
 class AgentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'dev_message')
-    search_fields = ('name',)
+    list_display = ('name', 'language', 'description')
     readonly_fields = ('id',)
 
 

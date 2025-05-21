@@ -80,7 +80,7 @@
 {% block content %}
   <div class="row">
     <div class="col-12 d-flex flex-column-reverse mb-3">
-    <div class="buffer"></div>
+      <div class="buffer"></div>
       {% for msg in messages %}
         {% if msg.is_user %}
           <div class="d-flex">
@@ -96,7 +96,9 @@
           </div>
         {% else %}
           <div class="d-flex">
-            <img src="{{ conversation.agent.photo.url }}" class="rounded-circle me-2 mt-2" width="50" height="50">
+            {% if conversation.agent.photo %}
+              <img src="{{ conversation.agent.photo.url }}" class="rounded-circle me-2 mt-2" width="50" height="50">
+            {% endif %}
             <div class="card bg-light flex-grow-1">
               <div class="card-body">
                 <h5>{{ msg.author }}:</h5>

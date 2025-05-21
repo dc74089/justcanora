@@ -6,13 +6,14 @@ from django.utils import timezone
 
 
 class Agent(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
+    language = models.CharField(max_length=100, choices=(("python", "Python"), ("java", "Java")))
     description = models.TextField()
     dev_message = models.TextField()
     photo = models.ImageField(upload_to="agent_photos", null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.get_language_display()})"
 
 
 class Conversation(models.Model):
@@ -64,7 +65,7 @@ class Conversation(models.Model):
         out = f"Talking with <b>{self.agent.name}</b>"
 
         if self.summary:
-            out += f" about<br><b>{self.summary}</b>"
+            out += f"<br>about <b>{self.summary}</b>"
 
         return out
     
