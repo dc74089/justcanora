@@ -4,12 +4,22 @@
 {% block script %}
   <script>
       function send_message() {
+          console.log("Sending message...");
+          var message = $("#message").val();
+
+          if (message.trim() == "") {
+              return
+          }
+
+          $("#send_btn").prop("disabled", true).html('<div class="spinner-border" role="status"></div>');
+          $("#message").prop("disabled", true);
+
           $.ajax({
               url: "{% url 'conversation_send_message' conversation.id %}",
               type: "POST",
               data: {
                   conversation: "{{ conversation.id }}",
-                  message: $("#message").val()
+                  message: message
               },
               success: function (data) {
                   $("#message").val("");
@@ -21,19 +31,31 @@
               }
           });
       }
+
+      $(function () {
+          $('#message').on('keydown', function (event) {
+              if (event.key === 'Enter') {
+                  send_message()
+              }
+          });
+
+          window.scrollTo({
+              top: document.body.scrollHeight
+          });
+      });
   </script>
 {% endblock %}
 
 {% block style %}
   <style>
-    .gpt p {
-        margin: 0 !important;
-    }
+      .gpt p {
+          margin: 0 !important;
+      }
 
-    .gpt pre {
-        margin: 0 !important;
-        margin-left: 12px !important;
-    }
+      .gpt pre {
+          margin: 0 !important;
+          margin-left: 12px !important;
+      }
   </style>
 {% endblock %}
 
@@ -71,7 +93,7 @@
 
     <div class="position-fixed bg-white border-top bottom-0 end-0 p-3 d-flex gap-3" style="z-index: 5">
       <input class="form-control p-3 border" type="text" id="message" placeholder="Message...">
-      <button class="btn btn-info px-4" onclick="send_message()">Send</button>
+      <button class="btn btn-info px-4" onclick="send_message()" id="send_btn">Send</button>
     </div>
   </div>
 {% endblock %}
