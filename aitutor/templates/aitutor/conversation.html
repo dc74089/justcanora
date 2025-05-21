@@ -48,13 +48,26 @@
 
 {% block style %}
   <style>
-      .gpt p {
-          margin: 0 !important;
-      }
-
       .gpt pre {
           margin: 0 !important;
           margin-left: 12px !important;
+          background-color: #e3e4e6;
+          padding: 12px;
+          border-radius: 12px;
+          width: fit-content;
+      }
+
+      .stu-msg pre {
+          background-color: #e3e4e6;
+          padding: 12px;
+          border-radius: 12px;
+          width: fit-content;
+          margin-left: auto;
+          text-align: start;
+      }
+
+      .buffer {
+          height: 50px;
       }
   </style>
 {% endblock %}
@@ -62,13 +75,14 @@
 {% block content %}
   <div class="row">
     <div class="col-12 d-flex flex-column-reverse mb-3">
+    <div class="buffer"></div>
       {% for msg in messages %}
         {% if msg.is_user %}
           <div class="d-flex">
             <div class="card bg-light flex-grow-1">
               <div class="card-body text-end">
                 <h5>{{ msg.author }}:</h5>
-                <p>{{ msg.message }}</p>
+                <div class="stu-msg">{{ msg.message | auto_code_highlight }}</div>
               </div>
             </div>
             {% if conversation.student.picture %}
@@ -92,7 +106,7 @@
     </div>
 
     <div class="position-fixed bg-white border-top bottom-0 end-0 p-3 d-flex gap-3" style="z-index: 5">
-      <input class="form-control p-3 border" type="text" id="message" placeholder="Message...">
+      <textarea class="form-control p-3 border" type="text" id="message" placeholder="Message..."></textarea>
       <button class="btn btn-info px-4" onclick="send_message()" id="send_btn">Send</button>
     </div>
   </div>
