@@ -133,6 +133,34 @@ CRONJOBS = [
     ('0 0 * * 0', 'app.tasks.cleanup.clear_tokens'),
 ]
 
+MARKDOWNIFY = {
+    "default": {
+        "MARKDOWN_EXTENSIONS": [
+            "markdown.extensions.extra",
+            "markdown.extensions.codehilite",
+        ],
+        "WHITELIST_TAGS": [
+            "pre",
+            "code",
+            "span",
+            "ul",
+            "ol",
+            "li",
+            "p",
+            "strong",
+            "em",
+            "hr",
+            "h1", "h2", "h3", "h4", "h5", "h6",
+            "br",
+        ],
+        "WHITELIST_ATTRS": [
+            "class",
+        ],
+        "STRIP": False,
+        "TAB_LENGTH": 2,
+    }
+}
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

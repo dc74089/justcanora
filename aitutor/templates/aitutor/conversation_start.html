@@ -1,0 +1,46 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <script>
+      function startConversation(agent_id) {
+          $.ajax({
+              url: "{% url 'conversation_start' %}",
+              type: "POST",
+              data: {
+                  agent_id: agent_id
+              },
+              success: function (data) {
+                  window.location.href = data.redirect_url;
+              },
+              error: function (xhr, status, error) {
+                  console.error("Error starting conversation:", error);
+              }
+          });
+      }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12 text-center">
+      <h1>Choose a Conversation Partner</h1>
+    </div>
+    <div class="col-12 col-md-4 offset-md-4">
+      {% for agent in agents %}
+        <a href="#" class="text-decoration-none" onclick="startConversation({{ agent.id }})">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <img src="{{ agent.photo.url }}" class="rounded-circle" width="100" height="100" alt="">
+                <div class="flex-grow-1">
+                  <h2 class="text-end">{{ agent.name }}</h2>
+                  <p class="text-end">{{ agent.description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'app/base.html' %}
+{% load djmark2 %}
+
+{% block script %}
+  <script>
+      function send_message() {
+          $.ajax({
+              url: "{% url 'conversation_send_message' conversation.id %}",
+              type: "POST",
+              data: {
+                  conversation: "{{ conversation.id }}",
+                  message: $("#message").val()
+              },
+              success: function (data) {
+                  $("#message").val("");
+
+                  location.reload();
+              },
+              error: function (xhr, status, error) {
+                  console.error("Error sending message:", error);
+              }
+          });
+      }
+  </script>
+{% endblock %}
+
+{% block style %}
+  <style>
+    .gpt p {
+        margin: 0 !important;
+    }
+
+    .gpt pre {
+        margin: 0 !important;
+        margin-left: 12px !important;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12 d-flex flex-column-reverse mb-3">
+      {% for msg in messages %}
+        {% if msg.is_user %}
+          <div class="d-flex">
+            <div class="card bg-light flex-grow-1">
+              <div class="card-body text-end">
+                <h5>{{ msg.author }}:</h5>
+                <p>{{ msg.message }}</p>
+              </div>
+            </div>
+            {% if conversation.student.picture %}
+              <img src="{{ conversation.student.picture.url }}" class="rounded-circle ms-2 mt-2" width="50" height="50">
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="d-flex">
+            <img src="{{ conversation.agent.photo.url }}" class="rounded-circle me-2 mt-2" width="50" height="50">
+            <div class="card bg-light flex-grow-1">
+              <div class="card-body">
+                <h5>{{ msg.author }}:</h5>
+                <div class="gpt">
+                  <p>{{ msg.message | markdown }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="position-fixed bg-white border-top bottom-0 end-0 p-3 d-flex gap-3" style="z-index: 5">
+      <input class="form-control p-3 border" type="text" id="message" placeholder="Message...">
+      <button class="btn btn-info px-4" onclick="send_message()">Send</button>
+    </div>
+  </div>
+{% endblock %}

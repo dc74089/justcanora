@@ -10,6 +10,9 @@ class Agent(models.Model):
     dev_message = models.TextField()
     photo = models.ImageField(upload_to="agent_photos", null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Conversation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -36,7 +39,20 @@ class Conversation(models.Model):
                 "content": message.message
             })
 
-        return json.dumps(out)
+        return out
+
+
+    def messages(self):
+        return self.message_set.all()
+
+
+    def __str__(self):
+        out = f"{self.student.name()} talking with {self.agent.name}"
+
+        if self.course_id or self.assignment_id:
+            out +=  f" about {self.course_id}::{self.assignment_id}"
+
+        return out
 
 
 class Message(models.Model):
@@ -52,8 +68,17 @@ class Message(models.Model):
     def is_user(self):
         return self.role == "user"
 
+    def author(self):
+        if self.is_agent():
+            return self.conversation.agent.name
+        else:
+            return self.conversation.student.name()
+
     class Meta:
         ordering = ['-time']
+
+    def __str__(self):
+        return f"{str(self.conversation)}::{self.message}"
 
 
 class AgentMessage(Message):

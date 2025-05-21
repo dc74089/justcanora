@@ -8,7 +8,7 @@ def get_client():
     return OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 
-def send_message(message, conversation_id):
+def send_message(conversation_id, message):
     client = get_client()
     conversation = Conversation.objects.get(id=conversation_id)
 
@@ -28,7 +28,8 @@ def send_message(message, conversation_id):
         conversation=conversation,
         message=response.output_text,
         agent=conversation.agent,
-        role="assistant"
+        role="agent",
+        message_id=response.id
     )
 
     return agent_msg
