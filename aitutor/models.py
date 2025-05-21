@@ -61,10 +61,10 @@ class Conversation(models.Model):
 
 
     def user_facing_str(self):
-        out = f"<b>Talking with {self.agent.name}</b>"
+        out = f"Talking with <b>{self.agent.name}</b>"
 
         if self.summary:
-            out += f" about<br>{self.summary}"
+            out += f" about<br><b>{self.summary}</b>"
 
         return out
     

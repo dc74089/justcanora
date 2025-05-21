@@ -41,7 +41,8 @@
   {% block script %}{% endblock %}
   {% block style %}{% endblock %}
 
-  <script defer data-domain="tr.canora.us" src="https://a.canora.us/js/script.outbound-links.pageview-props.tagged-events.js"></script>
+  <script defer data-domain="tr.canora.us"
+          src="https://a.canora.us/js/script.outbound-links.pageview-props.tagged-events.js"></script>
 
 </head>
 <body>
@@ -54,14 +55,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav me-auto">
-        {% if tutor_available %}
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'conversation_select' %}">Tutor</a>
-          </li>
-        {% endif %}
       </ul>
       <ul class="navbar-nav ms-auto">
         {% if request.user.is_authenticated %}
+          {% if tutor_available %}
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'conversation_select' %}">Tutor</a>
+            </li>
+          {% endif %}
           {% if request.user.is_staff %}
             <li class="nav-item active">
               <a class="nav-link" href="{% url 'admin' %}">Admin</a>
