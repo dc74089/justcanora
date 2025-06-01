@@ -180,6 +180,24 @@ class MusicSuggestion(models.Model):
             return f"{str(self.student)} suggested {self.song}{'*' if not self.investigated else ''}"
 
 
+class ApprovedSong(models.Model):
+    spotify_uri = models.CharField(max_length=100, unique=True)
+    data = models.TextField(null=True, blank=True)
+
+    def get_spotify_data(self, request):
+        if self.data:
+            return json.loads(self.data)
+        else:
+            from app.spotify import search
+
+            data = search.get_by_uri(request, self.spotify_uri)
+
+            self.data = json.dumps(data)
+            self.save()
+
+            return data
+
+
 class SpeechRubric(models.Model):
     speech = models.TextField(null=False, blank=False)
     rating_fields = models.TextField(default="[]")

@@ -1,0 +1,41 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <script>
+      function removeSong(uri) {
+          $.post("{% url 'music_approved' %}", {
+              "action": "remove_approved_song",
+              "uri": uri
+          }, function(data) {
+              location.reload();
+          })
+      }
+
+      function listen(uri) {
+          $.post("{% url 'spotify_queue' %}", {
+              "uri": uri
+          })
+      }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <table class="table table-striped table-hover">
+    <tr>
+      <th>Song</th>
+      <th>Artist</th>
+      <th>Actions</th>
+    </tr>
+
+    {% for song in songs %}
+      <tr>
+        <td>{{ song.data.name }}</td>
+        <td>{{ song.data.artists.0.name }}</td>
+        <td>
+          <a class="btn btn-grad-positive" onclick="listen('{{ song.spotify_uri }}')">Listen</a>
+          <a class="btn btn-grad-negative ms-2" onclick="removeSong('{{ song.spotify_uri }}')">Remove</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

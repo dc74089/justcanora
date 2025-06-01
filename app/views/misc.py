@@ -1,7 +1,7 @@
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 
-from app.models import MusicSuggestion, Course, Student, SpeechRating, SpeechRubric
+from app.models import MusicSuggestion, Course, Student, SpeechRating, SpeechRubric, ApprovedSong
 from app.spotify.search import search
 from app.views.music import add_song_helper
 
@@ -30,14 +30,11 @@ def misc_action(request):
             )
             ms.save()
 
-            other_sug = MusicSuggestion.objects.filter(
-                spotify_uri=ms.spotify_uri,
-                investigated=True,
-                is_rejected=False,
-                for_playlist=True
+            approved_song = ApprovedSong.objects.filter(
+                spotify_uri=ms.spotify_uri
             )
 
-            if other_sug.exists():
+            if approved_song.exists():
                 add_song_helper(request, ms.id)
 
         elif data['action'] == 'music_rescue':
@@ -101,6 +98,7 @@ def misc_action(request):
                 return JsonResponse(results["tracks"]["items"][0])
 
         return redirect('index')
+    return HttpResponseBadRequest()
 
 
 def back_to_work(request):

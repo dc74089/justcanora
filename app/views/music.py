@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from app.models import MusicSuggestion, Course
+from app.models import MusicSuggestion, Course, ApprovedSong
 from app.spotify import spotify, playlists, nowplaying
 from app.spotify.search import search
 
@@ -72,6 +72,8 @@ def do_play_pause(request):
 
         return HttpResponse(status=200)
 
+    return HttpResponseBadRequest()
+
 
 @csrf_exempt
 def do_skip(request):
@@ -79,6 +81,8 @@ def do_skip(request):
         nowplaying.next_track(request)
 
         return HttpResponse(status=200)
+
+    return HttpResponseBadRequest()
 
 
 @staff_member_required
@@ -102,6 +106,29 @@ def music_queue(request):
 
 
 @staff_member_required
+@csrf_exempt
+def all_approved_songs(request):
+    if request.method == "GET":
+        songs = list(ApprovedSong.objects.all())
+
+        for song in songs:
+            song.data = song.get_spotify_data(request)
+
+        songs.sort(key=lambda x: x.data['artists'][0]['name'].lower() + " - " + x.data['name'].lower())
+
+        return render(request, "app/admin/music_approved.html", {
+            "songs": songs
+        })
+    elif request.method == "POST":
+        if request.POST.get("action", "") == "remove_approved_song" and 'uri' in request.POST:
+            song = ApprovedSong.objects.get(spotify_uri=request.POST['uri'])
+            song.delete()
+
+            return HttpResponse(status=200)
+    return HttpResponseBadRequest()
+
+
+@staff_member_required
 def search_table(request):
     q = request.GET.get('q')
 
@@ -120,6 +147,8 @@ def queue_song(request):
     if 'id' in request.POST:
         sug = MusicSuggestion.objects.get(id=request.POST['id'])
         nowplaying.queue_by_uri(request, sug.spotify_uri)
+    if 'uri' in request.POST:
+        nowplaying.queue_by_uri(request, request.POST['uri'])
 
     return HttpResponse(status=200)
 
@@ -167,6 +196,9 @@ def add_song(request):
     if 'id' not in data: return HttpResponseBadRequest()
 
     add_song_helper(request, int(data['id']))
+
+    sug = MusicSuggestion.objects.get(id=data['id'])
+    ApprovedSong.objects.get_or_create(spotify_uri=sug.spotify_uri)
 
     return HttpResponse(status=200)
 
