@@ -2,12 +2,12 @@
 
 {% block script %}
   <script>
-      function removeSong(uri) {
+      function removeSong(uri, id) {
           $.post("{% url 'music_approved' %}", {
               "action": "remove_approved_song",
               "uri": uri
           }, function(data) {
-              location.reload();
+              $("#tr-" + id).remove();
           })
       }
 
@@ -28,12 +28,12 @@
     </tr>
 
     {% for song in songs %}
-      <tr>
+      <tr id="tr-{{ song.id }}">
         <td>{{ song.data.name }}</td>
         <td>{{ song.data.artists.0.name }}</td>
         <td>
           <a class="btn btn-grad-positive" onclick="listen('{{ song.spotify_uri }}')">Listen</a>
-          <a class="btn btn-grad-negative ms-2" onclick="removeSong('{{ song.spotify_uri }}')">Remove</a>
+          <a class="btn btn-grad-negative ms-2" onclick="removeSong('{{ song.spotify_uri }}', '{{ song.id }}')">Remove</a>
         </td>
       </tr>
     {% endfor %}
