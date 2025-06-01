@@ -79,6 +79,7 @@ def get_team_state(request):
                 t.acknowledge_popup()
 
                 return HttpResponse(status=200)
+    return HttpResponseBadRequest()
 
 
 @csrf_exempt
@@ -128,6 +129,8 @@ def answer_question(request):
                 "result": False
             })
 
+    return HttpResponseBadRequest()
+
 
 def kiosk(request):
     if request.method == "POST":
@@ -147,6 +150,8 @@ def kiosk(request):
             request.session.save()
 
             return redirect('scavenger-kiosk')
+        else:
+            return HttpResponseBadRequest()
     else:
         if 'kiosk' in request.session:
             try:
@@ -194,3 +199,5 @@ def kiosk_state(request):
                 return JsonResponse({
                     "error": f"You're in the wrong place! Go to the {team.destination.location}"
                 })
+
+    return HttpResponseBadRequest()
