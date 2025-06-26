@@ -28,7 +28,7 @@ def get_client():
     return OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 
-def send_message(conversation_id, message):
+def send_message(conversation_id, message, student=None):
     client = get_client()
     conversation = Conversation.objects.get(id=conversation_id)
 
@@ -42,7 +42,7 @@ def send_message(conversation_id, message):
     try:
         response = client.responses.parse(
             model="o4-mini",
-            input=conversation.to_openai_json(),
+            input=conversation.to_openai_json(student=student),
             text_format=AgentResponse
         )
 

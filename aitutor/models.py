@@ -35,13 +35,19 @@ class Conversation(models.Model):
     def get_last_message_id(self):
         return self.message_set.filter(role="agent").last().message_id
 
-    def to_openai_json(self):
+    def to_openai_json(self, student=None):
         out = []
 
         out.append({
             "role": "developer",
             "content": self.agent.dev_message
         })
+
+        if student:
+            out.append({
+                "role": "developer",
+                "content": f"You are speaking with a student named {student.fname}."
+            })
 
         for message in self.message_set.all().order_by('time'):
             out.append({

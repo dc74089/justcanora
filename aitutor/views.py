@@ -88,7 +88,7 @@ def chat_send_message(request):
     if conv.student != request.user.student:
         return HttpResponseForbidden()
 
-    resp: AgentMessage = openai.send_message(conv.id, data["message"])
+    resp: AgentMessage = openai.send_message(conv.id, data["message"], student=request.user.student)
 
     return HttpResponse(status=200)
 
