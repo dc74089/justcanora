@@ -54,7 +54,7 @@ def send_message(conversation_id, message, student=None):
             message_id=response.id
         )
 
-        if not conversation.summary:
+        if not conversation.summary or conversation.messages().count() in (4, 5):
             generate_summary(conversation_id)
 
         if response.output_parsed.end_convo_for_abuse:

@@ -30,7 +30,7 @@ def chat_home(request):
 
     return render(request, "aitutor/chat.html", {
         "conversations_bar": conversations,
-        "agents": Agent.objects.all().order_by('name')
+        "agents": Agent.objects.all().exclude(id=Agent.get_assessment_agent().id).order_by('name')
     })
 
 
