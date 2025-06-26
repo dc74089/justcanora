@@ -15,6 +15,18 @@ def chat_home(request):
     empty_convs = Conversation.objects.filter(student=request.user.student).filter(message__isnull=True)
     empty_convs.delete()
 
+    agents = Agent.objects.all().exclude(id=Agent.get_assessment_agent().id).order_by('name')
+    languages = []
+
+    if 'APCSA' in request.user.student.courses.values_list('type', flat=True):
+        languages.append("java")
+    if 'CS2' in request.user.student.courses.values_list('type', flat=True):
+        languages.append("python")
+
+    print(languages)
+
+    agents = agents.filter(language__in=languages)
+
     convs = (Conversation.objects
     .filter(student=request.user.student)
     .exclude(agent=Agent.get_assessment_agent())
@@ -30,7 +42,8 @@ def chat_home(request):
 
     return render(request, "aitutor/chat.html", {
         "conversations_bar": conversations,
-        "agents": Agent.objects.all().exclude(id=Agent.get_assessment_agent().id).order_by('name')
+        "agents": agents,
+        "show_lang": len(languages) > 1,
     })
 
 
