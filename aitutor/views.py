@@ -11,6 +11,9 @@ from aitutor.utils import openai
 
 @login_required
 def chat_home(request):
+    empty_convs = Conversation.objects.filter(student=request.user.student).filter(message__isnull=True)
+    empty_convs.delete()
+
     convs = (Conversation.objects
     .filter(student=request.user.student)
     .annotate(last_activity=models.Max('message__time'))
@@ -34,6 +37,9 @@ def chat_home(request):
 def chat_new_conversation(request):
     data = request.POST
     agent = Agent.objects.get(id=data['agent_id'])
+
+    empty_convs = Conversation.objects.filter(student=request.user.student).filter(message__isnull=True)
+    empty_convs.delete()
 
     conv = Conversation.objects.create(student=request.user.student, agent=agent)
 
