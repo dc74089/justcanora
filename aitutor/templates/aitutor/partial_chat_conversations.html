@@ -5,7 +5,7 @@
 {% for conv in conversations %}
   <div class="conversation" id="conv-{{ conv.id }}" onclick="select_conversation('{{ conv.id }}')">
     {% if conv.agent.photo %}
-      <img src="{{ conv.agent.photo.url }}" class="rounded-circle" width="75" height="75" alt="">
+      <img src="{{ conv.agent.photo.url }}" class="rounded-circle flex-shrink-0" alt="" style="width: 75px; height: 75px;">
     {% endif %}
     <div class="flex-grow-1">
       <p class="m-0 flex-grow-1 text-end">
