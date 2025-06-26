@@ -105,7 +105,6 @@ td, th {
 
 /* Buttons */
 .btn-circle {
-    padding: 18px 18px !important;
     border-radius: 60px !important;
     font-size: 1.5em !important;
     text-align: center !important;
