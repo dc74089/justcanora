@@ -23,8 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = not os.getenv("PROD", False)
 DOCKER = os.getenv("DOCKER", False)
 
-CURRENT_ACADEMIC_YEAR = "24/25"
-CURRENT_SEMESTER = 2
+CURRENT_ACADEMIC_YEAR = "25/26"
+CURRENT_SEMESTER = 1
 NEWS_DAYS = [2, 3]
 
 PERSONAL_SPOTIFY_PLAYLIST = "spotify:playlist:07kBXGSHyNVWmOtLV3j8B6"

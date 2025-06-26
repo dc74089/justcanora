@@ -97,6 +97,7 @@ class Course(models.Model):
         ("advisory", "Advisory"),
         ("CS1", "Web Dev"),
         ("CS2", "Python"),
+        ("APCSA", "AP Computer Science A"),
         ("speech", "Public Speaking"),
         ("team", "Robotics Team"),
         ("other", "Other")
@@ -104,7 +105,8 @@ class Course(models.Model):
 
     academic_years = (
         ("23/24", "2023-24"),
-        ("24/25", "2023-24"),
+        ("24/25", "2024-25"),
+        ("25/26", "2025-26"),
     )
 
     course_id = models.IntegerField(null=False, blank=False)
