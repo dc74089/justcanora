@@ -54,6 +54,7 @@ def chat_new_conversation(request):
 def chat_load_conversation(request):
     convs = (Conversation.objects
     .filter(student=request.user.student)
+    .exclude(agent=Agent.get_assessment_agent())
     .annotate(last_activity=models.Max('message__time'))
     .order_by(models.Case(
         models.When(last_activity__isnull=True, then=0),
