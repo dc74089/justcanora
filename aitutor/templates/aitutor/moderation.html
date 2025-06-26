@@ -1,0 +1,66 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/bootstrap-table.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/bootstrap-table.min.js"></script>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/extensions/filter-control/bootstrap-table-filter-control.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+
+  <script>
+      function load_conversation(conv_id) {
+          $.get('{% url 'chat_moderate_get_conversation' %}', {
+              conv_id: conv_id
+          }, function (data) {
+              $('#conv_body').html("Loading...");
+              $('#conversation-modal').modal('show');
+              $('#conv_body').html(data);
+          })
+      }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <table data-toggle="table" data-filter-control="true">
+    <thead>
+    <tr>
+      <th data-field="student" data-filter-control="input">Student</th>
+      <th data-field="agent" data-filter-control="input">Agent</th>
+      <th data-field="topic" data-filter-control="input">Topic</th>
+      <th data-field="locked" data-filter-control="select">Locked</th>
+      <th data-field="lock_reason" data-filter-control="input">Lock Reason</th>
+      <th data-field="action">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for conv in conversations %}
+      <tr>
+        <td>{{ conv.student.full_name }}</td>
+        <td>{{ conv.agent }}</td>
+        <td>{{ conv.summary }}</td>
+        <td>{{ conv.locked }}</td>
+        <td>{{ conv.lock_reason | default_if_none:'' }}</td>
+        <td>
+          <button class="btn btn-grad" onclick="load_conversation('{{ conv.id }}')">View</button>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block modals %}
+  <div class="modal" tabindex="-1" id="conversation-modal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="conv_title">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="conv_body">
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

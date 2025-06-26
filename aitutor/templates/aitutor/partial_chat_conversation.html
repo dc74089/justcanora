@@ -33,8 +33,14 @@
     {% endfor %}
   </div>
 
-  <div class="position-sticky bg-white border-top bottom-0 end-0 p-3 d-flex gap-3" style="z-index: 5">
-    <textarea class="form-control p-3 border" type="text" id="message" placeholder="Message..."></textarea>
-    <button class="btn btn-send px-4" onclick="send_message()" id="send_btn">Send</button>
-  </div>
+  {% if not hide_bar %}
+    <div class="position-sticky bg-white border-top bottom-0 end-0 p-3 d-flex gap-3" style="z-index: 5">
+      {% if not conversation.locked %}
+        <textarea class="form-control p-3 border" type="text" id="message" placeholder="Message..."></textarea>
+        <button class="btn btn-send px-4" onclick="send_message()" id="send_btn">Send</button>
+      {% else %}
+        <h4 class="w-100 text-center">This conversation has been locked and reported.</h4>
+      {% endif %}
+    </div>
+  {% endif %}
 </div>

@@ -24,6 +24,7 @@ class Conversation(models.Model):
     course_id = models.IntegerField(null=True, blank=True)
     assignment_id = models.IntegerField(null=True, blank=True)
     locked = models.BooleanField(default=False)
+    lock_reason = models.TextField(null=True, blank=True)
 
     def get_last_message_id(self):
         return self.message_set.filter(role="agent").last().message_id
