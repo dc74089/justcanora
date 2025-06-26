@@ -3,8 +3,8 @@ from django.urls import path
 from aitutor import views
 
 urlpatterns = [
-    path('', views.conversation_select, name='conversation_select'),
-    path('new', views.conversation_start, name='conversation_start'),
-    path('conversation/<str:conv_id>', views.conversation, name='conversation'),
-    path('conversation/<str:conv_id>/send', views.send_message, name='conversation_send_message'),
+    path('', views.chat_home, name='chat_home'),
+    path('new', views.chat_new_conversation, name='chat_new'),
+    path('conversation', views.chat_load_conversation, name='chat_conversation'),
+    path('send', views.chat_send_message, name='chat_send'),
 ]

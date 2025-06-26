@@ -1,0 +1,40 @@
+{% load djmark2 %}
+
+<div class="row">
+  <div class="col-12 d-flex flex-column-reverse mb-3 messages">
+    {% for msg in messages %}
+      {% if msg.is_user %}
+        <div class="d-flex">
+          <div class="card bg-light flex-grow-1">
+            <div class="card-body text-end">
+              <h5>{{ msg.author }}:</h5>
+              <div class="stu-msg">{{ msg.message | auto_code_highlight }}</div>
+            </div>
+          </div>
+          {% if conversation.student.picture %}
+            <img src="{{ conversation.student.picture.url }}" class="rounded-circle ms-2 mt-2" width="50" height="50">
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="d-flex">
+          {% if conversation.agent.photo %}
+            <img src="{{ conversation.agent.photo.url }}" class="rounded-circle me-2 mt-2" width="50" height="50">
+          {% endif %}
+          <div class="card bg-light flex-grow-1">
+            <div class="card-body">
+              <h5>{{ msg.author }}:</h5>
+              <div class="gpt">
+                <p>{{ msg.message | markdown }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="position-sticky bg-white border-top bottom-0 end-0 p-3 d-flex gap-3" style="z-index: 5">
+    <textarea class="form-control p-3 border" type="text" id="message" placeholder="Message..."></textarea>
+    <button class="btn btn-info px-4" onclick="send_message()" id="send_btn">Send</button>
+  </div>
+</div>

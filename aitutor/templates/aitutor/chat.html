@@ -1,0 +1,201 @@
+{% extends 'app/base.html' %}
+
+{% comment %}
+	TODO: Make this responsive
+{% endcomment %}
+
+{% block style %}
+  <style>
+      .main {
+          display: flex;
+          height: 100vh;
+          overflow: hidden;
+      }
+
+      .conversation-container {
+          height: 100vh;
+          width: 400px;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+
+          padding-top: 68px;
+          border-right: 1px solid black;
+
+      }
+
+      .conversation {
+          display: flex;
+          align-items: center;
+          padding: 12px 6px;
+
+          cursor: hand;
+      }
+
+      hr {
+          margin: 0;
+      }
+
+      .active-conv {
+          background-color: #c8d9ff;
+      }
+
+      .chat-container {
+          height: 100vh;
+          flex: 1;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+
+          padding-top: 68px;
+          padding-left: 24px;
+          padding-right: 24px;
+      }
+
+      .messages {
+          min-height: calc(100vh - 128px);
+      }
+
+      pre {
+          overflow-x: scroll;
+          max-width: calc(100vw - 125px);
+      }
+
+      .gpt pre {
+          margin: 0 !important;
+          margin-left: 12px !important;
+          background-color: #e3e4e6;
+          padding: 12px;
+          border-radius: 12px;
+          width: fit-content;
+      }
+
+      .stu-msg pre {
+          background-color: #e3e4e6;
+          padding: 12px;
+          border-radius: 12px;
+          width: fit-content;
+          margin-left: auto;
+          text-align: start;
+      }
+
+      .newconv-agent {
+          cursor: pointer;
+      }
+  </style>
+{% endblock %}
+
+{% block script %}
+  <script>
+      let current_conv = null;
+
+      function startConversation(agent_id) {
+        $.post("{% url 'chat_new' %}", {
+            agent_id: agent_id
+        }, function (data) {
+            $("#newconv-modal").modal("hide");
+            select_conversation(data.conv_id);
+        })
+      }
+
+      function select_conversation(conv_id) {
+          current_conv = conv_id;
+
+          $.get("{% url 'chat_conversation' %}", {
+              conv_id: conv_id
+          }, function (data) {
+              $(".conversation-container").html(data.conversations);
+
+              let cont = $(".chat-container");
+              cont.html(data.content).scrollTop(cont[0].scrollHeight);
+
+              $(".conversation").removeClass("active-conv");
+              $("#conv-" + conv_id).addClass("active-conv");
+          })
+      }
+
+      function send_message() {
+          console.log("Sending message...");
+          var message = $("#message").val();
+
+          if (message.trim() == "") {
+              return
+          }
+
+          $("#send_btn").prop("disabled", true).html('<div class="spinner-border" role="status"></div>');
+          $("#message").prop("disabled", true);
+
+          $.ajax({
+              url: "{% url 'chat_send' %}",
+              type: "POST",
+              data: {
+                  conv_id: current_conv,
+                  message: message
+              },
+              success: function (data) {
+                  select_conversation(current_conv);
+              },
+              error: function (xhr, status, error) {
+                  console.error("Error sending message:", error);
+              }
+          });
+      }
+
+      $(function () {
+          $('#message').on('keydown', function (event) {
+              if (event.key === 'Enter') {
+                  send_message()
+              }
+          });
+
+          $(".chat-container").scrollTop($(".chat-container")[0].scrollHeight);
+      });
+  </script>
+{% endblock %}
+
+{% block content-full %}
+  <div class="main px-2">
+    <div class="conversation-container pe-2">
+      {{ conversations_bar }}
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-placeholder text-center mx-auto">
+        <h1>Select a Chat to Get Started</h1>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block modals %}
+  <div class="modal" tabindex="-1" id="newconv-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">New Conversation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="agents">
+            {% for agent in agents %}
+              <div class="card newconv-agent" onclick="startConversation('{{ agent.id }}')">
+                <div class="card-body">
+                  <div class="d-flex align-items-center">
+                    {% if agent.photo %}
+                      <img src="{{ agent.photo.url }}" class="rounded-circle me-5" width="100" height="100" alt="">
+                    {% endif %}
+                    <div class="flex-grow-1">
+                      <h2 class="text-end">{{ agent.name }} ({{ agent.get_language_display }})</h2>
+                      <p class="text-end">{{ agent.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block remove-main %}
+{% endblock %}

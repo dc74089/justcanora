@@ -1,0 +1,18 @@
+<p class="text-center">
+  <button class="btn btn-grad" data-bs-toggle="modal" data-bs-target="#newconv-modal">New Chat</button>
+</p>
+<hr>
+{% for conv in conversations %}
+  <div class="conversation" id="conv-{{ conv.id }}" onclick="select_conversation('{{ conv.id }}')">
+    {% if conv.agent.photo %}
+      <img src="{{ conv.agent.photo.url }}" class="rounded-circle" width="75" height="75" alt="">
+    {% endif %}
+    <div class="flex-grow-1">
+      <p class="m-0 flex-grow-1 text-end">
+        {{ conv.user_facing_str | safe }}
+      </p>
+      <p class="m-0 text-end small text-muted">{{ conv.last_message_ago }}</p>
+    </div>
+  </div>
+  <hr>
+{% endfor %}
