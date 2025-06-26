@@ -35,7 +35,7 @@
       <div class="card">
         <div class="card-body">
           <h2 class="card-title">Teachers</h2>
-          <form method="post" action="{% url 'login' %}">
+          <form method="post" action="{% url 'login' %}?next={{ next }}">
             {% csrf_token %}
             <div class="mb-2">
               <label for="username">Username</label>

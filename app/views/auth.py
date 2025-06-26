@@ -14,7 +14,9 @@ from app.spotify import spotify
 
 def login(request):
     if request.method == 'GET':
-        return render(request, 'app/login.html')
+        return render(request, 'app/login.html', {
+            'next': request.GET.get('next', ''),
+        })
     else:
         data = request.POST
         if 'username' in data and 'password' in data:
@@ -22,13 +24,13 @@ def login(request):
 
             if user is not None:
                 do_login(request, user)
-                if data.get('next', ""):
-                    return redirect(data['next'])
+                if request.GET.get('next', ""):
+                    return redirect(request.GET['next'])
 
                 return redirect('index')
             else:
                 return render(request, 'app/login.html', {
-                    'next': data.get('next', ''),
+                    'next': request.GET.get('next', ''),
                     'error': "Incorrect username or password."
                 })
 

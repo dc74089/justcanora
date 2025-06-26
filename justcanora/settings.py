@@ -88,6 +88,8 @@ AUTHENTICATION_BACKENDS = [
     'oauth2_provider.backends.OAuth2Backend',
 ]
 
+LOGIN_URL = "/login/"
+
 OAUTH2_PROVIDER = {
     "PKCE_REQUIRED": False
 }
