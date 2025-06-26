@@ -148,7 +148,10 @@ def assessment_send_message(request):
 
 @staff_member_required
 def moderate(request):
-    convs = Conversation.objects.annotate(last_activity=models.Max('message__time')).order_by('-last_activity')
+    convs = (Conversation.objects
+             .filter(assessmentconversation__isnull=True)
+             .annotate(last_activity=models.Max('message__time'))
+             .order_by('-last_activity'))
 
     return render(request, "aitutor/moderation.html", {
         "conversations": convs
