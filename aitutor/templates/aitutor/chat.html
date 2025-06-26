@@ -88,12 +88,12 @@
       let current_conv = null;
 
       function startConversation(agent_id) {
-        $.post("{% url 'chat_new' %}", {
-            agent_id: agent_id
-        }, function (data) {
-            $("#newconv-modal").modal("hide");
-            select_conversation(data.conv_id);
-        })
+          $.post("{% url 'chat_new' %}", {
+              agent_id: agent_id
+          }, function (data) {
+              $("#newconv-modal").modal("hide");
+              select_conversation(data.conv_id);
+          })
       }
 
       function select_conversation(conv_id) {
@@ -109,6 +109,8 @@
 
               $(".conversation").removeClass("active-conv");
               $("#conv-" + conv_id).addClass("active-conv");
+
+              $(".btn-grad").css("animation-delay", `-${Date.now()}ms`);
           })
       }
 
@@ -147,6 +149,7 @@
           });
 
           $(".chat-container").scrollTop($(".chat-container")[0].scrollHeight);
+          $(".btn-grad").css("animation-delay", `-${Date.now()}ms`);
       });
   </script>
 {% endblock %}
