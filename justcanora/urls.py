@@ -29,7 +29,7 @@ urlpatterns = [
     path('hunt/', include('scavenger.urls')),
     path('slides/', include('slides.urls')),
     path('wrapped/', include('wrapped.urls')),
-    path('tutor/', include('aitutor.urls')),
+    path('ai/', include('aitutor.urls')),
 ]
 
 if settings.DEBUG:
