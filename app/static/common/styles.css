@@ -108,6 +108,8 @@ td, th {
     border-radius: 60px !important;
     font-size: 1.5em !important;
     text-align: center !important;
+    height: 64px !important;
+    width: 64px !important;
 }
 
 .img-circle {
