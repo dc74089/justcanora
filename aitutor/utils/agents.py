@@ -28,3 +28,9 @@ def construct_agents():
                 python_agent.dev_message = flavor.replace("-----", base_py)
                 python_agent.save()
 
+    with open(dir / "assessment" / "base.txt", "r") as f:
+        base_assessment = f.read()
+
+        assessment_agent = Agent.get_assessment_agent()
+        assessment_agent.dev_message = base_assessment
+        assessment_agent.save()

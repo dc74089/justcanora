@@ -1,19 +1,25 @@
 import json
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
 
 class Agent(models.Model):
     name = models.CharField(max_length=100)
-    language = models.CharField(max_length=100, choices=(("python", "Python"), ("java", "Java")))
+    language = models.CharField(max_length=100, choices=(("python", "Python"), ("java", "Java"), ("na", "N/A" )))
     description = models.TextField()
     dev_message = models.TextField()
     photo = models.ImageField(upload_to="agent_photos", null=True, blank=True)
+    hidden = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name} ({self.get_language_display()})"
+
+    @classmethod
+    def get_assessment_agent(cls):
+        return cls.objects.get_or_create(name="Quick Check", language="na")[0]
 
 
 class Conversation(models.Model):
@@ -97,6 +103,42 @@ class Conversation(models.Model):
 
         if self.course_id or self.assignment_id:
             out +=  f" about {self.course_id}::{self.assignment_id}"
+
+        return out
+
+
+class Assessment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    course = models.ForeignKey("app.Course", on_delete=models.CASCADE, null=False, blank=False)
+    canvas_assignment_id = models.IntegerField(null=False, blank=False)
+    prompt = models.TextField(null=False, blank=False)
+
+
+class AssessmentConversation(Conversation):
+    assessment = models.ForeignKey("Assessment", on_delete=models.CASCADE, null=False, blank=False)
+    credit_awarded = models.BooleanField(default=False)
+    understanding_score = models.IntegerField(null=True, blank=True)
+    feedback = models.TextField(null=True, blank=True)
+
+    def to_openai_json(self):
+        out = []
+
+        dir = settings.BASE_DIR / "aitutor/agents/assessment"
+        with open(dir / 'base.txt', 'r') as f:
+            dev_msg = f.read()
+
+        dev_msg = dev_msg.replace("-----", self.assessment.prompt)
+
+        out.append({
+            "role": "developer",
+            "content": dev_msg
+        })
+
+        for message in self.message_set.all().order_by('time'):
+            out.append({
+                "role": "user" if message.is_user() else "assistant",
+                "content": message.message
+            })
 
         return out
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Agent, Conversation, Message, AgentMessage, UserMessage
+from .models import Agent, Conversation, Message, AgentMessage, UserMessage, Assessment, AssessmentConversation
 
 
 @admin.register(Agent)
@@ -52,3 +52,18 @@ class UserMessageAdmin(admin.ModelAdmin):
     search_fields = ('message',)
     list_filter = ('time',)
     readonly_fields = ('id', 'time', 'role')
+
+
+@admin.register(Assessment)
+class AssessmentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'course', 'canvas_assignment_id')
+    readonly_fields = ('id',)
+
+
+@admin.register(AssessmentConversation)
+class AssessmentConversationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'student', 'agent', 'assessment', 'credit_awarded', 'understanding_score')
+    search_fields = ('id', 'feedback')
+    list_filter = ('credit_awarded', 'agent', 'assessment')
+    readonly_fields = ('id',)
+    inlines = [MessageInline]

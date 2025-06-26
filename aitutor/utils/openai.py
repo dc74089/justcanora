@@ -4,13 +4,23 @@ import uuid
 
 from pydantic import BaseModel, ValidationError
 
-from aitutor.models import Conversation, UserMessage, AgentMessage
+from aitutor.models import Conversation, UserMessage, AgentMessage, AssessmentConversation
 
 
 class AgentResponse(BaseModel):
     output_text: str
     end_convo_for_abuse: bool
     abuse_description: str
+
+
+class AssessmentAgentResponse(BaseModel):
+    output_text: str
+    end_convo_for_abuse: bool
+    abuse_description: str
+    convo_finished: bool
+    credit_awarded: bool
+    understanding_score: int
+    feedback: str
 
 
 def get_client():
@@ -63,6 +73,63 @@ def send_message(conversation_id, message):
         )
 
         conversation.locked = True
+        conversation.lock_reason = "OpenAI Safety"
+        conversation.save()
+
+        return agent_msg
+
+
+def send_message_for_assessment(conversation_id, message):
+    client = get_client()
+    conversation = AssessmentConversation.objects.get(id=conversation_id)
+
+    UserMessage.objects.create(
+        conversation=conversation,
+        message=message,
+        student=conversation.student,
+        role="user"
+    )
+
+    try:
+        response = client.responses.parse(
+            model="o3",
+            input=conversation.to_openai_json(),
+            text_format=AssessmentAgentResponse
+        )
+
+        agent_msg = AgentMessage.objects.create(
+            conversation=conversation,
+            message=response.output_parsed.output_text,
+            agent=conversation.agent,
+            role="agent",
+            message_id=response.id
+        )
+
+        if response.output_parsed.end_convo_for_abuse:
+            conversation.locked = True
+            conversation.credit_awarded = False
+            conversation.lock_reason = response.output_parsed.abuse_description
+            conversation.save()
+        elif response.output_parsed.convo_finished:
+            conversation.locked = True
+            conversation.lock_reason = "Assessment Finished"
+            conversation.credit_awarded = response.output_parsed.credit_awarded
+            conversation.understanding_score = response.output_parsed.understanding_score
+            conversation.feedback = response.output_parsed.feedback
+            conversation.save()
+
+        return agent_msg
+    except ValidationError as e:
+        agent_msg = AgentMessage.objects.create(
+            conversation=conversation,
+            message="There was en error. Please contact Tr. Canora.",
+            agent=conversation.agent,
+            role="agent",
+            message_id=f"safety-{uuid.uuid4()}"
+        )
+
+        conversation.locked = True
+        conversation.credit_awarded = False
         conversation.lock_reason = "OpenAI Safety"
         conversation.save()
 

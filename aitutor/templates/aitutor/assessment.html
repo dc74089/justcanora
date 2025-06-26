@@ -1,0 +1,139 @@
+{% extends 'app/base.html' %}
+
+{% comment %}
+	TODO: Make this responsive
+{% endcomment %}
+
+{% block style %}
+  <style>
+      .main {
+          display: flex;
+          height: 100vh;
+          overflow: hidden;
+      }
+
+      .conversation-container {
+          height: 100vh;
+          width: 400px;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+
+          padding-top: 68px;
+          border-right: 1px solid black;
+
+      }
+
+      .conversation {
+          display: flex;
+          align-items: center;
+          padding: 12px 6px;
+
+          cursor: hand;
+      }
+
+      hr {
+          margin: 0;
+      }
+
+      .active-conv, .stu-card, .btn-send {
+          background-color: #ffc5ca !important;
+      }
+
+      .chat-container {
+          height: 100vh;
+          flex: 1;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+
+          padding-top: 68px;
+          padding-left: 24px;
+          padding-right: 24px;
+      }
+
+      .messages {
+          min-height: calc(100vh - 128px);
+      }
+
+      pre {
+          overflow-x: scroll;
+          max-width: calc(100vw - 125px);
+      }
+
+      .gpt pre {
+          margin: 0 !important;
+          margin-left: 12px !important;
+          background-color: #e3e4e6;
+          padding: 12px;
+          border-radius: 12px;
+          width: fit-content;
+      }
+
+      .stu-msg pre {
+          background-color: #e3e4e6;
+          padding: 12px;
+          border-radius: 12px;
+          width: fit-content;
+          margin-left: auto;
+          text-align: start;
+      }
+
+      .newconv-agent {
+          cursor: pointer;
+      }
+  </style>
+{% endblock %}
+
+{% block script %}
+  <script>
+      function refresh_conversation() {
+          $.get("{% url 'chat_assessment_conversation' conversation.id %}", {}, function (data) {
+              let cont = $(".chat-container");
+              cont.html(data).scrollTop(cont[0].scrollHeight);
+          })
+      }
+
+      function send_message() {
+          console.log("Sending message...");
+          var message = $("#message").val();
+
+          if (message.trim() == "") {
+              return
+          }
+
+          $("#send_btn").prop("disabled", true).html('<div class="spinner-border" role="status"></div>');
+          $("#message").prop("disabled", true);
+
+          $.ajax({
+              url: "{% url 'chat_assessment_send' %}",
+              type: "POST",
+              data: {
+                  conv_id: "{{ conversation.id }}",
+                  message: message
+              },
+              success: function (data) {
+                  refresh_conversation();
+              },
+              error: function (xhr, status, error) {
+                  console.error("Error sending message:", error);
+              }
+          });
+      }
+
+      $(function () {
+          refresh_conversation();
+      });
+  </script>
+{% endblock %}
+
+{% block content-full %}
+  <div class="main">
+    <div class="chat-container">
+      <div class="chat-placeholder text-center mx-auto">
+        <h1>Placeholder</h1>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block remove-main %}
+{% endblock %}
