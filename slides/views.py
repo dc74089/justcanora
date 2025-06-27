@@ -9,8 +9,8 @@ from slides.templatetags.slides_filename import format_filename
 
 
 def index(request):
-    current_dir = os.path.dirname(__file__)
-    slides_dir = os.path.join(current_dir, 'slides')
+    dir = settings.BASE_DIR / "slides"
+    slides_dir = os.path.join(dir, 'slides')
 
     cq = request.user.student.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER)
 
