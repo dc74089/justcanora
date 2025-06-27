@@ -60,7 +60,7 @@
         {% if request.user.is_authenticated %}
           {% if tutor_available %}
             <li class="nav-item active">
-              <a class="nav-link" href="{% url 'chat_home' %}">Tutor</a>
+              <a class="nav-link" href="{% url 'chat_home' %}">AI Tutor</a>
             </li>
           {% endif %}
           {% if request.user.is_staff %}
