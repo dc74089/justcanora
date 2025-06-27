@@ -95,10 +95,16 @@ class Conversation(models.Model):
         hours = minutes / 60
         days = hours / 24
 
-        if days >= 1:
+        if days == 1:
+            return "1 day ago"
+        elif days >= 1:
             return f"{int(days)} days ago"
+        elif hours == 1:
+            return "1 hour ago"
         elif hours >= 1:
             return f"{int(hours)} hours ago"
+        elif minutes == 1:
+            return "1 minute ago"
         elif minutes >= 1:
             return f"{int(minutes)} minutes ago"
         else:
