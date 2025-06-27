@@ -30,7 +30,8 @@
       <th data-field="topic" data-filter-control="input">Topic</th>
       <th data-field="locked" data-filter-control="select">Locked</th>
       <th data-field="lock_reason" data-filter-control="input">Lock Reason</th>
-      <th data-field="action">Action</th>
+      <th data-field="view-action">View</th>
+      <th data-field="edit-action">Edit</th>
     </tr>
     </thead>
     <tbody>
@@ -42,7 +43,10 @@
         <td>{{ conv.locked }}</td>
         <td>{{ conv.lock_reason | default_if_none:'' }}</td>
         <td>
-          <button class="btn btn-grad" onclick="load_conversation('{{ conv.id }}')">View</button>
+          <p><a class="btn btn-grad" onclick="load_conversation('{{ conv.id }}')">View</a></p>
+        </td>
+        <td>
+          <p><a class="btn btn-grad-positive" href="{% url 'admin:aitutor_conversation_change' conv.id %}">Edit</a></p>
         </td>
       </tr>
     {% endfor %}
