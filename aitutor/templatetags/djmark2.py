@@ -1,12 +1,8 @@
+import markdown2
 from bs4 import BeautifulSoup
 from django import template
 from django.utils.safestring import mark_safe
-import markdown2
-from pygments import highlight
-from pygments.formatters import HtmlFormatter
-from pygments.lexers import guess_lexer
 from pygments.lexers.special import TextLexer
-from pygments.util import ClassNotFound
 
 register = template.Library()
 
@@ -36,7 +32,7 @@ def auto_code_highlight(text):
         looks_like_code = (
             cleaned.startswith('    ') or
             cleaned.startswith('\t') or
-            any(sym in cleaned for sym in ['{', '}', 'void ', 'class ', 'System.out', 'if (', 'while (', 'for ('])
+            any(sym in cleaned for sym in ['{', '}', 'void ', 'class ', 'System.out', 'if (', 'while (', 'for (', ':\n  '])
         )
 
         if looks_like_code:
