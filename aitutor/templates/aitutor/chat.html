@@ -6,21 +6,87 @@
 
 {% block style %}
   <style>
+      /* Base styles for the main container */
       .main {
           display: flex;
           height: 100vh;
           overflow: hidden;
       }
 
+      /* Conversation container/sidebar styles */
       .conversation-container {
           height: 100vh;
-          width: 400px;
+          width: min(400px, 40vw);
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
-
-          padding-top: 68px;
           border-right: 1px solid black;
+          background-color: #fff; /* Ensure background is solid */
+      }
 
+      /* Chat container styles */
+      .chat-container {
+          height: 100vh;
+          flex: 1;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          padding: 24px;
+          padding-bottom: 0;
+      }
+
+      /* Mobile styles (below medium breakpoint) */
+      @media (max-width: 767px) {
+          .conversation-container {
+              width: 300px; /* Slightly narrower on mobile */
+              position: fixed;
+              top: 0;
+              left: 0;
+              z-index: 1045; /* Match Bootstrap's offcanvas z-index */
+              padding-top: 0 !important;
+          }
+
+          .chat-container {
+              width: 100%;
+              padding: 16px; /* Slightly smaller padding on mobile */
+              padding-bottom: 0;
+          }
+
+          /* Floating button styles */
+          .convo-toggler {
+              position: fixed;
+              top: 20vh;
+              left: 0;
+              z-index: 1044;
+              border-radius: 8px 0 0 8px;
+              padding: 12px;
+              box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+              writing-mode: vertical-rl;
+              text-orientation: mixed;
+              transform: rotate(180deg);
+          }
+
+          /* Style the offcanvas header */
+          .offcanvas-header {
+              padding: 1rem;
+              border-bottom: 1px solid rgba(0, 0, 0, .1);
+              margin-bottom: 1rem;
+          }
+      }
+
+      /* Prevent scroll on body when offcanvas is open on mobile */
+      .offcanvas-backdrop {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+      }
+
+      .conversation-container {
+          padding-top: 68px;
+      }
+
+      .chat-container {
+          padding-top: 68px;
       }
 
       .conversation {
@@ -37,17 +103,6 @@
 
       .active-conv, .stu-card, .btn-send {
           background-color: #ffc5ca !important;
-      }
-
-      .chat-container {
-          height: 100vh;
-          flex: 1;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
-
-          padding-top: 68px;
-          padding-left: 24px;
-          padding-right: 24px;
       }
 
       .messages {
@@ -102,7 +157,7 @@
           $.get("{% url 'chat_conversation' %}", {
               conv_id: conv_id
           }, function (data) {
-              $(".conversation-container").html(data.conversations);
+              $("#conversations").html(data.conversations);
 
               let cont = $(".chat-container");
               cont.html(data.content).scrollTop(cont[0].scrollHeight);
@@ -111,6 +166,13 @@
               $("#conv-" + conv_id).addClass("active-conv");
 
               $(".btn-grad").css("animation-delay", `-${Date.now()}ms`);
+
+              // Close the offcanvas on mobile after selection
+              const offcanvasElement = document.querySelector('.conversation-container');
+              const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+              if (bsOffcanvas && window.innerWidth < 768) {
+                  bsOffcanvas.hide();
+              }
           })
       }
 
@@ -150,15 +212,35 @@
 
           $(".chat-container").scrollTop($(".chat-container")[0].scrollHeight);
           $(".btn-grad").css("animation-delay", `-${Date.now()}ms`);
+
+          const offcanvasElements = document.querySelectorAll('.offcanvas');
+          offcanvasElements.forEach(element => {
+              new bootstrap.Offcanvas(element);
+          });
+
       });
   </script>
 {% endblock %}
 
 {% block content-full %}
+  <button class="convo-toggler bg-gradient d-md-none" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#conversation-sidebar">
+    <i class="fas fa-comments"></i>
+    Conversations
+  </button>
+
   <div class="main">
-    <div class="conversation-container">
-      {{ conversations_bar }}
+    <div class="conversation-container offcanvas-md offcanvas-start" id="conversation-sidebar" tabindex="-1">
+      <div class="offcanvas-header d-md-none">
+        <h5 class="offcanvas-title">Conversations</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#conversation-sidebar"
+                aria-label="Close"></button>
+      </div>
+      <div id="conversations">
+        {{ conversations_bar }}
+      </div>
     </div>
+
 
     <div class="chat-container">
       <div class="chat-placeholder text-center mx-auto">
