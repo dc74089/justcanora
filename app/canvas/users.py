@@ -8,7 +8,7 @@ from app.models import Course, Student
 
 
 def get_dev_courses():
-    for id in [14857, 14810, 14861, 14867, 14961, 14963, 14970]:
+    for id in [15822, 15827, 15875, 16239, 15839, 15685, 15699, 15739]:
         try:
             get_all_sections_from_course(id)
         except:
@@ -83,6 +83,7 @@ def get_all_sections_from_course(course_id):
         elif "CS I" in c.name: c.type = "CS1"
         elif "Speaking" in c.name: c.type = "speech"
         elif "Advisory" in c.name: c.type = "advisory"
+        elif "AP" in c.name: c.type = "APCSA"
 
         try:
             match = re.search("(\d+)\(A\)", c.name)
