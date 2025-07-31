@@ -1,6 +1,7 @@
 import json
 import os
 import uuid
+from pprint import pprint
 
 from pydantic import BaseModel, ValidationError
 
@@ -40,10 +41,18 @@ def send_message(conversation_id, message, student=None):
     )
 
     try:
+        mod_response = client.moderations.create(
+            model="omni-moderation-latest",
+            input=conversation.info_for_moderation(),
+        )
+
+        pprint(dict(mod_response.results[0]))
+
         response = client.responses.parse(
             model="o4-mini",
             input=conversation.to_openai_json(student=student),
-            text_format=AgentResponse
+            text_format=AgentResponse,
+            user=str(conversation.student.id)
         )
 
         agent_msg = AgentMessage.objects.create(
@@ -94,7 +103,8 @@ def send_message_for_assessment(conversation_id, message):
         response = client.responses.parse(
             model="o3",
             input=conversation.to_openai_json(),
-            text_format=AssessmentAgentResponse
+            text_format=AssessmentAgentResponse,
+            user=str(conversation.student.id)
         )
 
         agent_msg = AgentMessage.objects.create(
@@ -150,7 +160,8 @@ def generate_summary(conversation_id):
 
     response = client.responses.create(
         model="o4-mini",
-        input=prompt
+        input=prompt,
+        user=str(conversation.student.id)
     )
 
     conversation.summary = response.output_text

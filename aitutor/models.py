@@ -70,6 +70,15 @@ class Conversation(models.Model):
         return out
 
 
+    def info_for_moderation(self):
+        out = ""
+
+        for message in self.message_set.all().order_by('time'):
+            out += ("User" if message.is_user() else "Assistant" + ": " + message.message + "\n")
+
+        return out
+
+
     def messages(self):
         return self.message_set.all()
 
