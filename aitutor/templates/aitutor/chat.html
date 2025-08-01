@@ -199,6 +199,7 @@
               },
               error: function (xhr, status, error) {
                   console.error("Error sending message:", error);
+                  location.reload();
               }
           });
       }

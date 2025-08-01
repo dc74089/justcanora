@@ -28,7 +28,7 @@
       <th data-field="student" data-filter-control="input">Student</th>
       <th data-field="agent" data-filter-control="input">Agent</th>
       <th data-field="topic" data-filter-control="input">Topic</th>
-      <th data-field="locked" data-filter-control="select">Locked</th>
+      <th data-field="locked" data-filter-control="select">Strike</th>
       <th data-field="lock_reason" data-filter-control="input">Lock Reason</th>
       <th data-field="view-action">View</th>
       <th data-field="edit-action">Edit</th>
@@ -40,7 +40,7 @@
         <td>{{ conv.student.full_name }}</td>
         <td>{{ conv.agent }}</td>
         <td>{{ conv.summary }}</td>
-        <td>{{ conv.locked }}</td>
+        <td>{{ conv.has_strike }}</td>
         <td>{{ conv.lock_reason | default_if_none:'' }}</td>
         <td>
           <p><a class="btn btn-grad" onclick="load_conversation('{{ conv.id }}')">View</a></p>

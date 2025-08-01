@@ -5,7 +5,7 @@ from pprint import pprint
 
 from pydantic import BaseModel, ValidationError
 
-from aitutor.models import Conversation, UserMessage, AgentMessage, AssessmentConversation
+from aitutor.models import Conversation, UserMessage, AgentMessage, AssessmentConversation, Strike
 
 
 class AgentResponse(BaseModel):
@@ -29,6 +29,30 @@ def get_client():
     return OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 
+def helper_lock_with_strike(conversation, reason):
+    agent_msg = AgentMessage.objects.create(
+        conversation=conversation,
+        message="I'm sorry, I can't help with that.",
+        agent=conversation.agent,
+        role="agent",
+        message_id=f"safety-{uuid.uuid4()}"
+    )
+
+    conversation.locked = True
+    conversation.lock_reason = reason
+    conversation.save()
+
+    strike = Strike(
+        student=conversation.student,
+        conversation=conversation,
+        reason=reason
+    )
+
+    strike.save()
+
+    return agent_msg
+
+
 def send_message(conversation_id, message, student=None):
     client = get_client()
     conversation = Conversation.objects.get(id=conversation_id)
@@ -46,7 +70,14 @@ def send_message(conversation_id, message, student=None):
             input=conversation.info_for_moderation(),
         )
 
-        pprint(dict(mod_response.results[0]))
+        # pprint(conversation.info_for_moderation())
+        # pprint(dict(mod_response.results[0]))
+
+        if mod_response.results[0].flagged:
+            cats = dict(mod_response.results[0].categories)
+            flagged_cats = [k for k, v in cats.items() if v]
+
+            return helper_lock_with_strike(conversation, f"OpenAI Moderation: {', '.join(flagged_cats)}")
 
         response = client.responses.parse(
             model="o4-mini",
@@ -67,25 +98,11 @@ def send_message(conversation_id, message, student=None):
             generate_summary(conversation_id)
 
         if response.output_parsed.end_convo_for_abuse:
-            conversation.locked = True
-            conversation.lock_reason = response.output_parsed.abuse_description
-            conversation.save()
+            return helper_lock_with_strike(conversation, response.output_parsed.abuse_description)
 
         return agent_msg
     except ValidationError as e:
-        agent_msg = AgentMessage.objects.create(
-            conversation=conversation,
-            message="I'm sorry, I can't help with that.",
-            agent=conversation.agent,
-            role="agent",
-            message_id=f"safety-{uuid.uuid4()}"
-        )
-
-        conversation.locked = True
-        conversation.lock_reason = "OpenAI Safety"
-        conversation.save()
-
-        return agent_msg
+        return helper_lock_with_strike(conversation, "OpenAI Safety")
 
 
 def send_message_for_assessment(conversation_id, message):

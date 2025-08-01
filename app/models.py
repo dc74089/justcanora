@@ -91,6 +91,9 @@ class Student(models.Model):
     def __bool__(self):
         return self.courses.exists()
 
+    class Meta:
+        ordering = ['fname', 'lname']
+
 
 class Course(models.Model):
     course_types = (

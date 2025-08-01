@@ -6,12 +6,15 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 
-from aitutor.models import Conversation, Agent, AgentMessage, Assessment, AssessmentConversation
+from aitutor.models import Conversation, Agent, AgentMessage, Assessment, AssessmentConversation, Strike
 from aitutor.utils import openai
 
 
 @login_required
 def chat_home(request):
+    if Strike.is_banned(request.user.student):
+        return render(request, 'aitutor/ban.html')
+
     empty_convs = Conversation.objects.filter(student=request.user.student).filter(message__isnull=True)
     empty_convs.delete()
 
@@ -102,6 +105,9 @@ def chat_send_message(request):
         return HttpResponseForbidden()
 
     resp: AgentMessage = openai.send_message(conv.id, data["message"], student=request.user.student)
+
+    if resp.conversation.has_strike():
+        return HttpResponseForbidden()
 
     return HttpResponse(status=200)
 

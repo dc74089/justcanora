@@ -1,3 +1,4 @@
+import datetime
 import json
 import uuid
 
@@ -74,13 +75,17 @@ class Conversation(models.Model):
         out = ""
 
         for message in self.message_set.all().order_by('time'):
-            out += ("User" if message.is_user() else "Assistant" + ": " + message.message + "\n")
+            out += (("User" if message.is_user() else "Assistant") + ": " + message.message + "\n")
 
         return out
 
 
     def messages(self):
         return self.message_set.all()
+
+
+    def has_strike(self):
+        return Strike.objects.filter(conversation=self).exists()
 
 
     def user_facing_str(self):
@@ -126,6 +131,26 @@ class Conversation(models.Model):
             out +=  f" about {self.course_id}::{self.assignment_id}"
 
         return out
+
+
+class Strike(models.Model):
+    student = models.ForeignKey("app.Student", on_delete=models.CASCADE, null=False, blank=False)
+    conversation = models.ForeignKey("Conversation", on_delete=models.SET_NULL, null=True, blank=True)
+    reason = models.TextField(null=False, blank=False)
+    time = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def is_banned(cls, student):
+        week_ago = timezone.now() - datetime.timedelta(days=7)
+        if Strike.objects.filter(student=student, time__gt=week_ago).count() >= 3:
+            return True
+        if Strike.objects.filter(student=student).count() >= 5:
+            return True
+
+        return False
+
+    def __str__(self):
+        return f"{self.student.name()} has been striked for {self.reason}"
 
 
 class Assessment(models.Model):

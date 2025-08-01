@@ -41,8 +41,10 @@
       {% else %}
         {% if is_assessment %}
           <h4 class="w-100 text-center">This conversation is finished.</h4>
-        {% else %}
+        {% elif conversation.has_strike %}
           <h4 class="w-100 text-center">This conversation has been locked and reported.</h4>
+        {% else %}
+          <h4 class="w-100 text-center">This conversation has been locked.</h4>
         {% endif %}
       {% endif %}
     </div>

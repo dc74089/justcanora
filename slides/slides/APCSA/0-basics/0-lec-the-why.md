@@ -24,7 +24,6 @@ STARTMEONLY
 <img src="STATICPREFIX/common/1-intro/wonderlab.jpg" style="max-height: 70vh;">
 </div>
 
-
 ----
 
 ENDMEONLY

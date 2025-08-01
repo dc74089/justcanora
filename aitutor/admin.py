@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Agent, Conversation, Message, AgentMessage, UserMessage, Assessment, AssessmentConversation
+from .models import Agent, Conversation, Message, AgentMessage, UserMessage, Assessment, AssessmentConversation, Strike
 
 
 @admin.register(Agent)
@@ -17,13 +17,22 @@ class MessageInline(admin.TabularInline):
     show_change_link = True
 
 
+class StrikeInline(admin.TabularInline):
+    model = Strike
+    fields = ('student', 'reason', 'time')
+    readonly_fields = ('student', 'reason', 'time')
+    extra = 0
+    can_delete = False
+    show_change_link = True
+
+
 @admin.register(Conversation)
 class ConversationAdmin(admin.ModelAdmin):
     list_display = ('id', 'student', 'agent', 'course_id', 'assignment_id', 'locked')
     search_fields = ('id',)
     list_filter = ('locked', 'agent')
     readonly_fields = ('id',)
-    inlines = [MessageInline]
+    inlines = [MessageInline, StrikeInline]
 
 
 @admin.register(Message)
@@ -67,3 +76,11 @@ class AssessmentConversationAdmin(admin.ModelAdmin):
     list_filter = ('credit_awarded', 'agent', 'assessment')
     readonly_fields = ('id',)
     inlines = [MessageInline]
+
+
+@admin.register(Strike)
+class StrikeAdmin(admin.ModelAdmin):
+    list_display = ('student', 'conversation', 'reason', 'time')
+    search_fields = ('reason', 'student__user__username')
+    list_filter = ('time',)
+    readonly_fields = ('id', 'time')
