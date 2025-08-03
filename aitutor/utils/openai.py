@@ -3,6 +3,7 @@ import os
 import uuid
 from pprint import pprint
 
+from django.conf import settings
 from pydantic import BaseModel, ValidationError
 
 from aitutor.models import Conversation, UserMessage, AgentMessage, AssessmentConversation, Strike
@@ -80,7 +81,7 @@ def send_message(conversation_id, message, student=None):
             return helper_lock_with_strike(conversation, f"OpenAI Moderation: {', '.join(flagged_cats)}")
 
         response = client.responses.parse(
-            model="o4-mini",
+            model=settings.OPENAI_MODEL_FOR_CHAT,
             input=conversation.to_openai_json(student=student),
             text_format=AgentResponse,
             user=str(conversation.student.id)
@@ -118,7 +119,7 @@ def send_message_for_assessment(conversation_id, message):
 
     try:
         response = client.responses.parse(
-            model="o3",
+            model=settings.OPENAI_MODEL_FOR_ASSESSMENT,
             input=conversation.to_openai_json(),
             text_format=AssessmentAgentResponse,
             user=str(conversation.student.id)

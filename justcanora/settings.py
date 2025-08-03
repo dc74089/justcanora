@@ -29,6 +29,9 @@ NEWS_DAYS = [2, 3]
 
 PERSONAL_SPOTIFY_PLAYLIST = "spotify:playlist:07kBXGSHyNVWmOtLV3j8B6"
 
+OPENAI_MODEL_FOR_CHAT = "o4-mini"
+OPENAI_MODEL_FOR_ASSESSMENT = "gpt-4o"
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
