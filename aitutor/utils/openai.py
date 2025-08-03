@@ -177,7 +177,7 @@ def generate_summary(conversation_id):
     ]
 
     response = client.responses.create(
-        model="o4-mini",
+        model=settings.OPENAI_MODEL_FOR_SUMMARY,
         input=prompt,
         user=str(conversation.student.id)
     )
