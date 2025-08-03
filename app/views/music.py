@@ -1,9 +1,12 @@
+import logging
+
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from spotipy import SpotifyException
 
 from app.models import MusicSuggestion, Course, ApprovedSong
 from app.spotify import spotify, playlists, nowplaying
@@ -176,9 +179,15 @@ def add_song_helper(request, sug_id):
                 c.playlist_id = plid
                 c.save()
 
-            playlists.add_song_to_playlist(request, c.playlist_id, sug.spotify_uri)
+            try:
+                playlists.add_song_to_playlist(request, c.playlist_id, sug.spotify_uri)
+            except SpotifyException:
+                logging.error(f"Failed to add song to playlist {c.name}")
     else:
-        playlists.add_song_to_playlist(request, settings.PERSONAL_SPOTIFY_PLAYLIST, sug.spotify_uri)
+        try:
+            playlists.add_song_to_playlist(request, settings.PERSONAL_SPOTIFY_PLAYLIST, sug.spotify_uri)
+        except SpotifyException:
+            logging.error(f"Failed to add song to personal playlist")
 
     sug.investigated = True
     sug.is_rejected = False
