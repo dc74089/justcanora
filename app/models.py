@@ -139,6 +139,9 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['year', 'semester', 'period']
+
 
 class MusicSuggestion(models.Model):
     song = models.TextField(null=False, blank=False)
