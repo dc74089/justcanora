@@ -155,9 +155,13 @@ class Strike(models.Model):
 
 class Assessment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    short_name = models.CharField(max_length=100, unique=True)
     course = models.ForeignKey("app.Course", on_delete=models.CASCADE, null=False, blank=False)
     canvas_assignment_id = models.IntegerField(null=False, blank=False)
     prompt = models.TextField(null=False, blank=False)
+
+    def __str__(self):
+        return f"{self.short_name} ({self.course.name})"
 
 
 class AssessmentConversation(Conversation):
@@ -165,6 +169,12 @@ class AssessmentConversation(Conversation):
     credit_awarded = models.BooleanField(default=False)
     understanding_score = models.IntegerField(null=True, blank=True)
     feedback = models.TextField(null=True, blank=True)
+
+    def score_as_percent(self):
+        if self.understanding_score is None:
+            return 0
+        else:
+            return self.understanding_score * 100 / 5
 
     def to_openai_json(self):
         out = []

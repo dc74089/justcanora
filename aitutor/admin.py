@@ -65,7 +65,7 @@ class UserMessageAdmin(admin.ModelAdmin):
 
 @admin.register(Assessment)
 class AssessmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'course', 'canvas_assignment_id')
+    list_display = ('short_name', 'course', 'canvas_assignment_id')
     readonly_fields = ('id',)
 
 
