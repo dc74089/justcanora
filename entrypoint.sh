@@ -3,6 +3,7 @@
 pip3 install -r /app/code/requirements.txt;
 python3 /app/code/manage.py migrate;
 python3 /app/code/manage.py collectstatic --no-input;
+python3 /app/code/manage.py importagents;
 
 printenv >> /etc/environment
 python3 /app/code/manage.py crontab add
