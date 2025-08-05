@@ -9,7 +9,7 @@ from django.utils import timezone
 
 class Agent(models.Model):
     name = models.CharField(max_length=100)
-    language = models.CharField(max_length=100, choices=(("python", "Python"), ("java", "Java"), ("na", "N/A" )))
+    language = models.CharField(max_length=100, choices=(("python", "Python"), ("java", "Java"), ("html", "HTML/CSS"), ("na", "N/A" )))
     description = models.TextField()
     dev_message = models.TextField()
     photo = models.ImageField(upload_to="agent_photos", null=True, blank=True)

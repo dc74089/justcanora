@@ -18,17 +18,20 @@ def chat_home(request):
     empty_convs = Conversation.objects.filter(student=request.user.student).filter(message__isnull=True)
     empty_convs.delete()
 
-    agents = Agent.objects.all().exclude(id=Agent.get_assessment_agent().id).order_by('name')
+    agents = Agent.objects.all().exclude(id=Agent.get_assessment_agent().id)
     languages = []
 
     if 'APCSA' in request.user.student.courses.values_list('type', flat=True):
         languages.append("java")
     if 'CS2' in request.user.student.courses.values_list('type', flat=True):
         languages.append("python")
+    if 'CS1' in request.user.student.courses.values_list('type', flat=True):
+        languages.append("html")
 
     print(languages)
 
     agents = agents.filter(language__in=languages)
+    agents = agents.order_by('name', 'language')
 
     convs = (Conversation.objects
     .filter(student=request.user.student)

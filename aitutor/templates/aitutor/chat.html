@@ -260,6 +260,9 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <div class="alert alert-warning text-center">
+            You have access to multiple languages! Check the bottom right of each character's card.
+          </div>
           <div class="agents">
             {% for agent in agents %}
               <div class="card newconv-agent" onclick="startConversation('{{ agent.id }}')">

@@ -15,6 +15,9 @@ def construct_agents():
     with open(dir / "base-python.txt", "r") as f:
         base_py = f.read()
 
+    with open(dir / "base-html.txt", "r") as f:
+        base_html = f.read()
+
     for file in dir.glob("*"):
         if file.is_file() and not file.name.startswith("base-"):
             with open(file, "r") as f:
@@ -27,6 +30,10 @@ def construct_agents():
                 python_agent, _ = Agent.objects.get_or_create(name=file.name.removesuffix(".txt"), language="python")
                 python_agent.dev_message = flavor.replace("-----", base_py)
                 python_agent.save()
+
+                html_agent, _ = Agent.objects.get_or_create(name=file.name.removesuffix(".txt"), language="html")
+                html_agent.dev_message = flavor.replace("-----", base_html)
+                html_agent.save()
 
     with open(dir / "assessment" / "base.txt", "r") as f:
         base_assessment = f.read()
