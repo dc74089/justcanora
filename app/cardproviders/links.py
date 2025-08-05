@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.template.loader import render_to_string
 
+from aitutor.models import AssessmentConversation
 from app.models import WebserverCredential, Student, SpeechRubric, FeatureFlag
 
 
@@ -29,10 +30,13 @@ def links(request):
             ctx['creds'] = WebserverCredential.objects.filter(student=request.user.student).first()
 
         if s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER, type="CS1").exists():
-            ctx['htmlref'] = True
+            ctx['cs1'] = True
 
         if s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER, type="CS2").exists():
             ctx['pycharm'] = True
+
+        if AssessmentConversation.objects.filter(student=s).exists():
+            ctx['qcresults'] = True
 
         if ctx:
             return render_to_string("app/cards/links.html", ctx, request)

@@ -8,16 +8,17 @@
       <div class="d-flex flex-wrap justify-content-center row-gap-2">
 
         {% if slides %}
-          <a class="btn btn-grad-positive mx-5" style="flex-basis: 100%;" href="{% url 'slides_index' %}">View
-            Slides</a>
+          <a class="btn btn-grad-positive mx-5" style="flex-basis: 100%;" href="{% url 'slides_index' %}">View Slides</a>
         {% endif %}
 
         {% if creds %}
           <a class="btn btn-grad mx-2" href="{% url 'webserver_guide' %}">View HTML Publishing Instructions</a>
-          <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/{{ creds.directory }}">View My CS1 Site</a>
+          {% comment %}
+            <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/{{ creds.directory }}">View My CS1 Site</a>
+          {% endcomment %}
         {% endif %}
-      
-        {% if htmlref %}
+
+        {% if cs1 %}
           <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/dcanora/">Tr. Canora's CS1 Site</a>
         {% endif %}
 
@@ -27,6 +28,10 @@
 
         {% if evals %}
           <a class="btn btn-grad" href="{% url 'speech_view_evals' %}">View Speech Evals</a>
+        {% endif %}
+
+        {% if qcresults %}
+          <a class="btn btn-grad" href="{% url 'chat_assessment_results' %}">View Quick Check Results</a>
         {% endif %}
       </div>
 
