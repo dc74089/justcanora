@@ -21,7 +21,7 @@
         {% for ac in convos %}
           <div class="accordion-item">
             <h2 class="accordion-header">
-              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ac-{{ ac.id }}"
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ac-{{ ac.id }}"
                       aria-expanded="false" aria-controls="ac-{{ ac.id }}">
                 {{ ac.assessment.short_name }}
               </button>
