@@ -22,10 +22,13 @@ def suggestion(request):
     if not enabled: return None
     if spotify.needs_login(request): return None
 
+    if request.user.student.grade > 8:
+        return None
+
     msq = MusicSuggestion.objects.filter(student=request.user.student).order_by('-added')
 
     if (free_for_all
-            or request.user.student.id == 102798
+            or request.user.is_staff
             or not msq.exists()
             or timezone.now() - msq.first().added > timezone.timedelta(days=0, hours=12)):
         return render_to_string('app/cards/music.html', request=request)
