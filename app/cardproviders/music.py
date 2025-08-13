@@ -22,7 +22,7 @@ def suggestion(request):
     if not enabled: return None
     if spotify.needs_login(request): return None
 
-    if request.user.student.grade > 8:
+    if not request.user.student.grade or request.user.student.grade > 8:
         return None
 
     msq = MusicSuggestion.objects.filter(student=request.user.student).order_by('-added')
