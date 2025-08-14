@@ -19,9 +19,9 @@ STARTMEONLY
 
 ## Things I Did Last Summer
 <div style="display: flex; flex-direction: row; justify-content: center; gap: 12px">
-<img src="STATICPREFIX/common/1-intro/baconsummer.jpg" style="max-height: 70vh;">
 <img src="STATICPREFIX/common/1-intro/BT.jpg" style="max-height: 70vh;">
 <img src="STATICPREFIX/common/1-intro/wonderlab.jpg" style="max-height: 70vh;">
+<img src="STATICPREFIX/common/1-intro/kesha.jpg" style="max-height: 70vh;">
 </div>
 
 
