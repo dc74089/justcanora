@@ -123,7 +123,7 @@ class Course(models.Model):
     playlist_id = models.CharField(max_length=100, null=True, blank=True)
 
     def students_sorted(self):
-        return self.students.all().exclude(grade__gt=8).order_by('fname')
+        return self.students.all().exclude(grade__gt=12).order_by('fname')
 
     def short_name(self):
         return f"S{self.semester}P{self.period}"
