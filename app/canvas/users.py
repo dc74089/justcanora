@@ -25,7 +25,7 @@ def import_course(dj_course: Course):
 
     if sec.students:
         for student in sec.students:
-            print(student)
+            # print(student)
             if student['id'] == 2224: continue  # ZTutor ZZ
 
             s, created = Student.objects.get_or_create(
@@ -34,7 +34,7 @@ def import_course(dj_course: Course):
 
             try:
                 if student['enrollments'][0]['enrollment_state'] != "active":
-                    print("-> Enrollment not active")
+                    continue
             except KeyError:
                 pass
 
