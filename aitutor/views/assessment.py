@@ -62,7 +62,10 @@ def assessment_send_message(request):
 
 @login_required
 def assessment_results(request):
-    assessments = AssessmentConversation.objects.filter(student=request.user.student, locked=True)
+    if request.user.is_staff:
+        assessments = AssessmentConversation.objects.all().order_by('assessment__name')
+    else:
+        assessments = AssessmentConversation.objects.filter(student=request.user.student, locked=True)
 
     return (render(request, "aitutor/assessment_results.html", {
         'convos': assessments
