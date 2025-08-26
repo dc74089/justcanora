@@ -106,4 +106,4 @@ def back_to_work(request):
 
 
 def redirect_robotics(request):
-    return redirect('https://docs.google.com/forms/d/e/1FAIpQLSd5rXYIFaysv2E4qnHkr0-0tdg35cLJU-u72qNp2EjqFjBIKA/viewform?usp=sf_link')
+    return redirect('https://docs.google.com/forms/d/e/1FAIpQLScaDYUwjIJpa4PDNz1vGCDFNpdPRNliCLqUAJIHZUTGFvi9tw/viewform?usp=header')
