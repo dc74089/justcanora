@@ -63,7 +63,7 @@ def assessment_send_message(request):
 @login_required
 def assessment_results(request):
     if request.user.is_staff:
-        assessments = AssessmentConversation.objects.all().order_by('assessment__name')
+        assessments = AssessmentConversation.objects.all().order_by('assessment__short_name')
     else:
         assessments = AssessmentConversation.objects.filter(student=request.user.student, locked=True)
 
