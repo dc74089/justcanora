@@ -1,10 +1,12 @@
 import random
 import string
 
+from django.conf import settings
+
 from app.models import Course, WebserverCredential, Student
 
 
-def generate_creds(year, semester):
+def generate_creds(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER):
     s: Student
     for c in Course.objects.filter(year=year, semester=semester, type="CS1"):
         for s in c.students.all():
