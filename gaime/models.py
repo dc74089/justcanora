@@ -26,7 +26,7 @@ media_types = (
 
 
 class Question(models.Model):
-    id = models.UUIDField(default=uuid.uuid4)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     media_type=models.CharField(max_length=30, choices=media_types)
     image = models.ImageField()
     video = models.FileField()
