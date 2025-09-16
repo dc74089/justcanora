@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 import os
 
 import socketio
+from django.conf import settings
+from django.contrib.staticfiles.handlers import ASGIStaticFilesHandler
 
 from django.core.asgi import get_asgi_application
 
@@ -18,3 +20,6 @@ from justcanora.sio import sio
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'justcanora.settings')
 
 application = socketio.ASGIApp(sio, get_asgi_application())
+
+if settings.DEBUG:
+    application = ASGIStaticFilesHandler(application)
