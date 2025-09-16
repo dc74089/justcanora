@@ -116,8 +116,7 @@ ROOT_URLCONF = 'justcanora.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -131,6 +130,14 @@ TEMPLATES = [
         },
     },
 ]
+
+if DEBUG:
+    TEMPLATES[0]['APP_DIRS'] = False
+    TEMPLATES[0]['OPTIONS']['debug'] = True
+    TEMPLATES[0]['OPTIONS']['loaders'] = [
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    ]
 
 WSGI_APPLICATION = 'justcanora.wsgi.application'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
