@@ -16,6 +16,7 @@ from django.contrib.staticfiles.handlers import ASGIStaticFilesHandler
 from django.core.asgi import get_asgi_application
 
 from justcanora.sio import sio
+from gaime import handlers; handlers  # Needed to register handlers
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'justcanora.settings')
 
