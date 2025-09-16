@@ -1,3 +1,5 @@
 FROM dc74089/django-base
 
+RUN pip3 install uvicorn[standard]
+
 COPY . /app/code

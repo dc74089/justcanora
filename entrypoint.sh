@@ -9,4 +9,4 @@ printenv >> /etc/environment
 python3 /app/code/manage.py crontab add
 cron
 
-exec gunicorn -b unix:/app/bind/gunicorn.sock -w ${WORKERS} ${WSGI_NAME}.wsgi;
+exec gunicorn -b unix:/app/bind/gunicorn.sock -w ${WORKERS} -k uvicorn.workers.UvicornWorker ${WSGI_NAME}.asgi:application;
