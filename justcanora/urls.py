@@ -30,6 +30,7 @@ urlpatterns = [
     path('slides/', include('slides.urls')),
     path('wrapped/', include('wrapped.urls')),
     path('ai/', include('aitutor.urls')),
+    path('gaime/', include('gaime.urls')),
 ]
 
 if settings.DEBUG:
