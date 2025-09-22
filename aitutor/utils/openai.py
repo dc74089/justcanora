@@ -30,6 +30,11 @@ def get_client():
     return OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
 
 
+def get_async_client():
+    from openai import AsyncOpenAI
+    return AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
+
+
 def helper_lock_with_strike(conversation, reason):
     agent_msg = AgentMessage.objects.create(
         conversation=conversation,

@@ -5,10 +5,11 @@ from django.db import models
 # Create your models here.
 
 states = (
-    ("welcome", "Welcome Screen"),
-    ("intro", "Instructions"),
-    ("tf", "True/False"),
-    ("review", "Question Review"),
+    ("title", "Welcome Screen"),
+    ("instructions", "Instructions"),
+    ("question", "Question"),
+    ("review", "Answer"),
+    ("scores", "Leaderboard"),
     ("results", "Final Results")
 )
 
@@ -16,6 +17,7 @@ states = (
 class Game(models.Model):
     state = models.CharField(max_length=30, choices=states)
     question = models.ForeignKey("Question", null=True, blank=True, on_delete=models.SET_NULL)
+    teams = models.BooleanField(default=True)
 
 
 media_types = (
@@ -32,6 +34,7 @@ class Question(models.Model):
     video = models.FileField()
     text = models.TextField()
     prompt = models.TextField()
+    is_ai = models.BooleanField()
 
 
 groups = (
@@ -45,4 +48,10 @@ groups = (
 class Player(models.Model):
     name = models.TextField()
     group = models.CharField(max_length=10, choices=groups)
-    points = models.IntegerField()
+    points = models.IntegerField(default=0)
+
+    def first_name(self):
+        return self.name.split(" ")[0]
+
+    def __str__(self):
+        return f"{self.name}"

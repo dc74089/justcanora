@@ -1,0 +1,89 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"
+          integrity="sha512-8ExARjWWkIllMlNzVg7JKq9RKWPlJABQUNq6YvAjE/HobctjH/NA+bSiDMDvouBVjp4Wwnf1VP1OEv7Zgjtuxw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+      $(document).ready(function() {
+          $(".section").hide();
+          $("#title").show();
+      });
+
+      const socket = io();  // defaults to same host + port as page
+
+      socket.on("connect", () => {
+          console.log("Connected to server:", socket.id);
+      });
+
+      socket.on("screen", (data) => {
+          $(".section").hide();
+          $("#" + data.section).show();
+      })
+  </script>
+
+  <style>
+      body {
+          background-color: #222;
+          color: white;
+      }
+
+      .container {
+          display: none;
+      }
+
+      .titletext {
+          font-size: 120pt;
+          font-family: 'Roboto', sans-serif;
+      }
+
+      .tvtext {
+          font-size: 75pt;
+      }
+
+      .section {
+          height: 100vh;
+          width: 100vw;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+      }
+  </style>
+{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content-full %}
+  <audio id="audioPlayer"></audio>
+
+  <div id="title" class="section">
+    <h1 class="titletext">It's time for a</h1>
+    <h1 class="titletext">G<span class="happygradtext">(ai)</span>me Show!</h1>
+  </div>
+
+  <div id="instructions" class="section">
+    <h1 class="tvtext">Instructions</h1>
+    <h2 class="tvtext">1. Look, listen, or read.</h2>
+    <h2 class="tvtext">2. Discuss with your team.</h2>
+    <h2 class="tvtext">3. Answer on your device.</h2>
+  </div>
+
+  <div id="question" class="section">
+
+  </div>
+
+  <div id="review" class="section">
+
+  </div>
+
+  <div id="scores" class="section">
+
+  </div>
+
+  <div id="results" class="section">
+
+  </div>
+{% endblock %}

@@ -1,0 +1,1 @@
+./env/bin/gunicorn -k uvicorn.workers.UvicornWorker --reload justcanora.asgi:application;
