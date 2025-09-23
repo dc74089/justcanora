@@ -3,7 +3,7 @@
     <tr>
       <th style="font-size: 40pt;">{{ forloop.counter }}</th>
       <td style="font-size: 40pt;">{{ row.0 }}</td>
-      <td style="font-size: 40pt;">{{ row.1 }}</td>
+      <td style="font-size: 40pt;">{{ row.1 | floatformat:2}}</td>
     </tr>
   {% endfor %}
 </table>

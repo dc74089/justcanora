@@ -28,9 +28,13 @@ async def send_speech(script):
 async def summarize_leaderboard(leaderboard):
     client = get_async_client()
 
-    response = client.responses.create(
+    response = await client.responses.create(
         model="gpt-5-nano",
-        input="Summarize the following leaderboard: " + leaderboard
+        input="Summarize this game leaderboard in 1–2 upbeat sentences, highlighting the top 3 players and any big score gaps. Keep it fun and energetic, like a game show host." + leaderboard
     )
 
     return response.output_text
+
+
+async def speak_summarize_leaderboard(leaderboard):
+    await send_speech(await summarize_leaderboard(leaderboard))

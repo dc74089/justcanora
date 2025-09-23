@@ -164,3 +164,8 @@ async def scores(sid):
 
     await _set_game_state("scores")
     await tv.scores()
+
+
+@sio.event
+async def shatter_groups(sid):
+    await _set_groups(False)

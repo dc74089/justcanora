@@ -39,7 +39,7 @@ def _get_leaderboard():
         })
     else:
         return render_to_string('gaime/partial_tv_leaderboard.html', {
-            "rows": ((x.first_name(), x.points) for x in Player.objects.all().order_by('-score')[:10])
+            "rows": ((x.first_name(), x.points) for x in Player.objects.all().order_by('-points')[:5])
         })
 
 
@@ -131,9 +131,14 @@ async def answer():
 
 
 async def scores():
+    from gaime.tools import ai
+
+    board = await _get_leaderboard()
+    await ai.speak_summarize_leaderboard(board)
+
     await sio.emit("screen", {
         "section": "scores",
-        "board": await _get_leaderboard()
+        "board": board
     })
 
 
