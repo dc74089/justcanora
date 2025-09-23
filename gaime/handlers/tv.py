@@ -1,4 +1,5 @@
 from asgiref.sync import sync_to_async
+from django.db.models import Avg
 from django.template.loader import render_to_string
 
 from justcanora import sio
@@ -26,9 +27,10 @@ def _get_leaderboard():
         for team in teams:
             team_players = Player.objects.filter(group=team)
 
-            score_avg = team_players.aggregate(avg=groups.Avg('score'))['avg']
+            score_avg = team_players.aggregate(avg=Avg('points'))['avg']
+            disp = team_players.first().get_group_display()
 
-            out.append((team, score_avg))
+            out.append((disp, score_avg))
 
         out.sort(key=lambda x: x[1], reverse=True)
 
@@ -41,6 +43,19 @@ def _get_leaderboard():
         })
 
 
+def _question_html(q):
+    if q.media_type == "image":
+        return render_to_string('gaime/partial_tv_question_image.html', {
+            "question": q
+        })
+    elif q.media_type == "text":
+        return render_to_string('gaime/partial_tv_question_text.html', {
+            "question": q
+        })
+    else:
+        return "There was an error loading the question."
+
+
 @sio.event
 async def init_tv(sid):
     print(f"Init tv: {sid}")
@@ -48,23 +63,20 @@ async def init_tv(sid):
 
     g = await _get_game()
 
-    if g.state == "question":
+    if g.state == "question" or g.state == "review":
         q = g.question
-        if q.media_type == "image":
-            qhtml = render_to_string('gaime/partial_tv_question_image.html', {
-                "question": q
-            })
-        elif q.media_type == "text":
-            qhtml = render_to_string('gaime/partial_tv_question_text.html', {
-                "question": q
-            })
-        else:
-            qhtml = "There was an error loading the question."
+
+        qhtml = _question_html(q)
 
         await sio.emit("screen", {
-            "section": "question",
+            "section": g.state,
             "question": qhtml
         }, to=sid)
+    elif g.state == "scores":
+        await sio.emit("screen", {
+            "section": g.state,
+            "board": await _get_leaderboard()
+        })
     else:
         await sio.emit("screen", {
             "section": g.state
@@ -96,17 +108,7 @@ async def start_instructions():
 async def question(q):
     from gaime.tools import ai, scripts
 
-    if q.media_type == "image":
-        qhtml = render_to_string('gaime/partial_tv_question_image.html', {
-            "question": q
-        })
-    elif q.media_type == "text":
-        qhtml = render_to_string('gaime/partial_tv_question_text.html', {
-            "question": q
-        })
-    else:
-        qhtml = "There was an error loading the question."
-
+    qhtml = _question_html(q)
 
     await sio.emit("screen", {
         "section": "question",
@@ -117,7 +119,15 @@ async def question(q):
 
 
 async def answer():
-    pass
+    g = await _get_game()
+    q = g.question
+
+    qhtml = _question_html(q)
+
+    await sio.emit("screen", {
+        "section": "answer",
+        "question": qhtml
+    })
 
 
 async def scores():

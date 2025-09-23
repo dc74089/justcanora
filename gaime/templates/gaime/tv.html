@@ -33,6 +33,12 @@
       socket.on("screen", (data) => {
           console.log("Received screen update:", data);
 
+          if (data.section == "review") {
+              data.section = "question"
+          }
+
+          console.log("Section:", data.section);
+
           $(".section").hide();
           $("#" + data.section).show();
 
@@ -98,11 +104,8 @@
 
   </div>
 
-  <div id="review" class="section">
-
-  </div>
-
   <div id="scores" class="section">
+
   </div>
 
   <div id="results" class="section">

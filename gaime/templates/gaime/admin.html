@@ -55,7 +55,9 @@
           <div id="question-select-container">
 
           </div>
-          <a class="btn btn-grad w-100 mt-2" onclick="question()">Question</a>
+          <a class="btn btn-success w-100 mt-2" onclick="question()">Question</a>
+          <a class="btn btn-danger w-100 mt-2" onclick="socket.emit('review')">Answer</a>
+          <a class="btn btn-info w-100 mt-2" onclick="socket.emit('scores')">Scoreboard</a>
         </div>
       </div>
     </div>

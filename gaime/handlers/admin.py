@@ -7,6 +7,12 @@ sio = sio.sio
 
 
 @sync_to_async(thread_sensitive=True)
+def _get_game():
+    from gaime.models import Game
+    return Game.objects.prefetch_related('question').first()
+
+
+@sync_to_async(thread_sensitive=True)
 def _set_game_state(state, q=None):
     from gaime.models import Game
     game = Game.objects.first()
@@ -138,3 +144,23 @@ async def question(sid, data):
     await _set_game_state("question", q)
     await tv.question(q)
     await send_questions_list()
+
+
+@sio.event
+async def review(sid):
+    from gaime.tools import ai, scripts
+
+    g = await _get_game()
+
+    script = scripts.yes() if g.question.is_ai else scripts.no()
+
+    await _set_game_state("review")
+    await ai.send_speech(script)
+
+
+@sio.event
+async def scores(sid):
+    from gaime.handlers import tv
+
+    await _set_game_state("scores")
+    await tv.scores()

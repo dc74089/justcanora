@@ -24,4 +24,35 @@ def question_intro():
         "Here's our next question: is this AI generated?",
         "Our next question is on the screen.",
         "Here's the next one.",
+        "Take a look at the screen: is this AI or human?",
+        "Eyes up! What do you think: AI or not?",
+        "Your call: human-crafted or AI-generated?",
+    ])
+
+
+def yes():
+    return random.choice([
+        "Yes! It's AI.",
+        "Yes — AI-generated.",
+        "Correct: made by AI.",
+        "Affirmative, this one's AI.",
+        "Yep, AI did this.",
+        "That's an AI creation.",
+        "It's AI, not human.",
+        "Indeed, AI produced it.",
+        "Sure is—AI made this.",
+        "Absolutely: AI made it.",
+    ])
+
+def no():
+    return random.choice([
+        "No — it's human.",
+        "Nope, this one's human-made.",
+        "Not AI — crafted by a human.",
+        "That's human work, not AI.",
+        "Negative: human-created.",
+        "It's human, not AI.",
+        "No, this was made by a person.",
+        "This isn't AI — it's human-made.",
+        "Actually human-generated, not AI.",
     ])

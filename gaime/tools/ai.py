@@ -23,3 +23,14 @@ async def generate_speech(script):
 async def send_speech(script):
     resp = await generate_speech(script)
     await sio.emit("tts_audio", {"audio": resp.hex()}, to='tv')  # send as hex to avoid binary socket issues
+
+
+async def summarize_leaderboard(leaderboard):
+    client = get_async_client()
+
+    response = client.responses.create(
+        model="gpt-5-nano",
+        input="Summarize the following leaderboard: " + leaderboard
+    )
+
+    return response.output_text
