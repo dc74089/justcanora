@@ -7,12 +7,46 @@ sio = sio.sio
 
 
 @sync_to_async(thread_sensitive=True)
+def _set_game_state(state, q=None):
+    from gaime.models import Game
+    game = Game.objects.first()
+    game.state = state
+
+    if q:
+        game.question = q
+
+    game.save()
+
+
+@sync_to_async(thread_sensitive=True)
 def _get_players_table():
     from gaime.models import Player
 
     return render_to_string('gaime/partial_admin_players_table.html', {
         'players': Player.objects.all().order_by('group')
     })
+
+
+@sync_to_async(thread_sensitive=True)
+def _get_questions():
+    from gaime.models import Question
+
+    return list(Question.objects.order_by('used', 'prompt'))
+
+
+@sync_to_async(thread_sensitive=True)
+def _get_question_by_id(qid):
+    from gaime.models import Question
+    return Question.objects.get(id=qid)
+
+
+@sync_to_async(thread_sensitive=True)
+def _mark_question_used(qid):
+    from gaime.models import Question
+
+    q = Question.objects.get(id=qid)
+    q.used = True
+    q.save()
 
 
 @sync_to_async(thread_sensitive=True)
@@ -40,9 +74,26 @@ async def init_admin(sid):
     await send_player_table(to=sid)
 
 
+@sio.event
+async def request_questions(sid):
+    await send_questions_list(to=sid)
+
+
 async def send_player_table(to='admin'):
     await sio.emit("players_list", {
         "html": await _get_players_table()
+    }, room=to)
+
+
+async def send_questions_list(to='admin'):
+    qs = await _get_questions()
+
+    html = render_to_string('gaime/partial_admin_question_select.html', {
+        "questions": qs
+    })
+
+    await sio.emit("questions_list", {
+        "questions": html
     }, room=to)
 
 
@@ -57,6 +108,7 @@ async def change_score(sid, data):
 async def title(sid):
     from gaime.handlers import tv
 
+    await _set_game_state("title")
     await tv.title_card()
 
 
@@ -72,5 +124,17 @@ async def intro(sid):
 async def instructions(sid):
     from gaime.handlers import tv
 
+    await _set_game_state("instructions")
     await _set_groups(True)
     await tv.start_instructions()
+
+
+@sio.event
+async def question(sid, data):
+    from gaime.handlers import tv
+
+    q = await _get_question_by_id(data['qid'])
+    await _mark_question_used(data['qid'])
+    await _set_game_state("question", q)
+    await tv.question(q)
+    await send_questions_list()

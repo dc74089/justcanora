@@ -30,11 +30,16 @@ media_types = (
 class Question(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     media_type=models.CharField(max_length=30, choices=media_types)
-    image = models.ImageField()
-    video = models.FileField()
-    text = models.TextField()
-    prompt = models.TextField()
+    image = models.ImageField(null=True, blank=True)
+    video = models.FileField(null=True, blank=True)
+    text = models.TextField(null=True, blank=True)
+    prompt = models.TextField(null=True, blank=True)
     is_ai = models.BooleanField()
+    used = models.BooleanField(default=False)
+
+
+    def __str__(self):
+        return f"{self.prompt}" if self.prompt else f"{self.id}"
 
 
 groups = (

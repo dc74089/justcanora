@@ -1,15 +1,20 @@
 from asgiref.sync import sync_to_async
 from django.template.loader import render_to_string
 
-from gaime.models import groups
 from justcanora import sio
 
 sio = sio.sio
 
 
 @sync_to_async(thread_sensitive=True)
+def _get_game():
+    from gaime.models import Game
+    return Game.objects.prefetch_related('question').first()
+
+
+@sync_to_async(thread_sensitive=True)
 def _get_leaderboard():
-    from gaime.models import Player, Game
+    from gaime.models import Player, Game, groups
 
     g = Game.objects.first()
 
@@ -32,7 +37,7 @@ def _get_leaderboard():
         })
     else:
         return render_to_string('gaime/partial_tv_leaderboard.html', {
-            "rows": (x.first_name(), x.points for x in Player.objects.all().order_by('-score')[:10])
+            "rows": ((x.first_name(), x.points) for x in Player.objects.all().order_by('-score')[:10])
         })
 
 
@@ -40,6 +45,30 @@ def _get_leaderboard():
 async def init_tv(sid):
     print(f"Init tv: {sid}")
     await sio.enter_room(sid, "tv")
+
+    g = await _get_game()
+
+    if g.state == "question":
+        q = g.question
+        if q.media_type == "image":
+            qhtml = render_to_string('gaime/partial_tv_question_image.html', {
+                "question": q
+            })
+        elif q.media_type == "text":
+            qhtml = render_to_string('gaime/partial_tv_question_text.html', {
+                "question": q
+            })
+        else:
+            qhtml = "There was an error loading the question."
+
+        await sio.emit("screen", {
+            "section": "question",
+            "question": qhtml
+        }, to=sid)
+    else:
+        await sio.emit("screen", {
+            "section": g.state
+        }, to=sid)
 
 
 async def title_card():
@@ -64,8 +93,27 @@ async def start_instructions():
     await ai.send_speech(scripts.instructions)
 
 
-async def question():
-    pass
+async def question(q):
+    from gaime.tools import ai, scripts
+
+    if q.media_type == "image":
+        qhtml = render_to_string('gaime/partial_tv_question_image.html', {
+            "question": q
+        })
+    elif q.media_type == "text":
+        qhtml = render_to_string('gaime/partial_tv_question_text.html', {
+            "question": q
+        })
+    else:
+        qhtml = "There was an error loading the question."
+
+
+    await sio.emit("screen", {
+        "section": "question",
+        "question": qhtml
+    })
+
+    await ai.send_speech(scripts.question_intro())
 
 
 async def answer():

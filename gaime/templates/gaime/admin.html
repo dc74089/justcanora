@@ -11,14 +11,25 @@
       socket.on("connect", () => {
           console.log("Connected to server:", socket.id);
           socket.emit("init_admin");
+          socket.emit("request_questions");
       });
 
       socket.on("players_list", (data) => {
-        $("#players-table").html(data.html)
+          $("#players-table").html(data.html)
+      });
+
+      socket.on("questions_list", (data) => {
+          console.log(data)
+          $("#question-select-container").html(data.questions)
       });
 
       function change_score(pid, delta) {
           socket.emit("change_score", {pid: pid, amount: delta});
+      }
+
+      function question() {
+          let qid = $("#question-select").val();
+          socket.emit("question", {qid: qid});
       }
   </script>
 {% endblock %}
@@ -35,6 +46,16 @@
           <a class="btn btn-info w-100 mt-2" onclick="socket.emit('intro')">Group Instructions</a>
           <a class="btn btn-danger w-100 mt-2" onclick="socket.emit('instructions')">Instructions</a>
           <a class="btn btn-grad w-100 mt-2" onclick="socket.emit('dev')">Dev</a>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <h2>Question</h2>
+          <div id="question-select-container">
+
+          </div>
+          <a class="btn btn-grad w-100 mt-2" onclick="question()">Question</a>
         </div>
       </div>
     </div>
