@@ -34,22 +34,22 @@ def _get_leaderboard():
 
         out.sort(key=lambda x: x[1], reverse=True)
 
-        return render_to_string('gaime/partial_tv_leaderboard.html', {
+        return render_to_string('gaime/screen_tv_leaderboard.html', {
             "rows": out
         })
     else:
-        return render_to_string('gaime/partial_tv_leaderboard.html', {
+        return render_to_string('gaime/screen_tv_leaderboard.html', {
             "rows": ((x.first_name(), x.points) for x in Player.objects.all().order_by('-points')[:5])
         })
 
 
 def _question_html(q):
     if q.media_type == "image":
-        return render_to_string('gaime/partial_tv_question_image.html', {
+        return render_to_string('gaime/screen_tv_question_image.html', {
             "question": q
         })
     elif q.media_type == "text":
-        return render_to_string('gaime/partial_tv_question_text.html', {
+        return render_to_string('gaime/screen_tv_question_text.html', {
             "question": q
         })
     else:
@@ -63,29 +63,30 @@ async def init_tv(sid):
 
     g = await _get_game()
 
-    if g.state == "question" or g.state == "review":
+    if g.state == "title":
+        html = render_to_string('gaime/screen_tv_title.html')
+    elif g.state == "instructions":
+        html = render_to_string('gaime/screen_tv_instructions.html')
+    elif g.state == "question" or g.state == "review":
         q = g.question
 
-        qhtml = _question_html(q)
-
-        await sio.emit("screen", {
-            "section": g.state,
-            "question": qhtml
-        }, to=sid)
+        html = _question_html(q)
     elif g.state == "scores":
-        await sio.emit("screen", {
-            "section": g.state,
-            "board": await _get_leaderboard()
-        })
+        html = await _get_leaderboard()
     else:
-        await sio.emit("screen", {
-            "section": g.state
-        }, to=sid)
+        html = "Illegal State"
+
+
+    await sio.emit("screen", {
+        "section": g.state,
+        "html": html
+    }, to=sid)
 
 
 async def title_card():
     await sio.emit("screen", {
-        "section": "title"
+        "section": "title",
+        "html": render_to_string('gaime/screen_tv_title.html')
     })
 
 
@@ -98,11 +99,12 @@ async def intro():
 async def start_instructions():
     from gaime.tools import ai, scripts
 
-    await sio.emit("screen", {
-        "section": "instructions"
-    })
-
     await ai.send_speech(scripts.instructions)
+
+    await sio.emit("screen", {
+        "section": "instructions",
+        "html": render_to_string('gaime/screen_tv_instructions.html')
+    })
 
 
 async def question(q):
@@ -110,12 +112,12 @@ async def question(q):
 
     qhtml = _question_html(q)
 
+    await ai.send_speech(scripts.question_intro())
+
     await sio.emit("screen", {
         "section": "question",
-        "question": qhtml
+        "html": qhtml
     })
-
-    await ai.send_speech(scripts.question_intro())
 
 
 async def answer():
@@ -126,7 +128,7 @@ async def answer():
 
     await sio.emit("screen", {
         "section": "answer",
-        "question": qhtml
+        "html": qhtml
     })
 
 
@@ -138,7 +140,7 @@ async def scores():
 
     await sio.emit("screen", {
         "section": "scores",
-        "board": board
+        "html": board
     })
 
 

@@ -6,7 +6,7 @@ from gaime.models import Player
 
 # Create your views here.
 def index(request):
-    return render(request, 'gaime/player.html')
+    return render(request, 'gaime/client.html')
 
 
 def tv(request):

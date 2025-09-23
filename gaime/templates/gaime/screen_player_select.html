@@ -1,0 +1,10 @@
+<div class="d-flex flex-column align-items-center w-50">
+  <select id="player-select" class="form-control w-100" required>
+    <option value="">Select Player</option>
+    {% for player in players %}
+      <option value="{{ player.id }}">{{ player.name }}</option>
+    {% endfor %}
+  </select>
+
+  <a onclick="selectPlayer()" class="btn btn-grad mt-3">Start Game</a>
+</div>

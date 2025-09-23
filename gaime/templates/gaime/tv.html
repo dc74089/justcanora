@@ -6,10 +6,6 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
-      $(document).ready(function() {
-          $(".section").hide();
-      });
-
       const socket = io();  // defaults to same host + port as page
 
       socket.on("connect", () => {
@@ -33,21 +29,8 @@
       socket.on("screen", (data) => {
           console.log("Received screen update:", data);
 
-          if (data.section == "review") {
-              data.section = "question"
-          }
-
-          console.log("Section:", data.section);
-
-          $(".section").hide();
-          $("#" + data.section).show();
-
-          if (data.board) {
-              $("#scores").html(data.board);
-          }
-
-          if (data.question) {
-              $("#question").html(data.question);
+          if (data.html) {
+              $("#content").html(data.html);
           }
       })
   </script>
@@ -88,27 +71,5 @@
 {% block content-full %}
   <audio id="audioPlayer"></audio>
 
-  <div id="title" class="section">
-    <h1 class="titletext">It's time for a</h1>
-    <h1 class="titletext">G<span class="happygradtext">(ai)</span>me Show!</h1>
-  </div>
-
-  <div id="instructions" class="section">
-    <h1 class="tvtext">Instructions</h1>
-    <h2 class="tvtext">1. Look, listen, or read.</h2>
-    <h2 class="tvtext">2. Discuss with your team.</h2>
-    <h2 class="tvtext">3. Answer on your device.</h2>
-  </div>
-
-  <div id="question" class="section">
-
-  </div>
-
-  <div id="scores" class="section">
-
-  </div>
-
-  <div id="results" class="section">
-
-  </div>
+  <div id="content" class="section"></div>
 {% endblock %}
