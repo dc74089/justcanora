@@ -7,10 +7,14 @@
 
   <script>
       const socket = io();  // defaults to same host + port as page
+      var pid;
 
       socket.on("connect", () => {
           console.log("Connected to server:", socket.id);
-          socket.emit("init_player");
+
+          socket.emit("init_player", {
+              player_id: pid
+          });
       });
 
       socket.on("client", (data) => {
@@ -21,10 +25,20 @@
           }
       })
 
+      socket.on("teamtrigger", (data) => {
+          console.log("Received team trigger:", data);
+
+          socket.emit("get_team", {
+              player_id: pid
+          })
+      })
+
       function selectPlayer() {
-          console.log("Selecting player");
+          pid = $("#player-select").val();
+
+          console.log("Selecting player " + pid);
           socket.emit("select_player", {
-              player_id: $("#player_select").val()
+              player_id: pid
           });
       }
   </script>

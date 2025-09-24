@@ -1,3 +1,5 @@
+import asyncio
+
 from asgiref.sync import sync_to_async
 from django.template.loader import render_to_string
 
@@ -120,18 +122,24 @@ async def title(sid):
 
 @sio.event
 async def intro(sid):
-    from gaime.handlers import tv
+    from gaime.handlers import tv, client
 
     await _set_groups(True)
     await tv.intro()
 
+    print("Intro delay")
+    await asyncio.sleep(10)
+    print("Intro delay done")
+
+    await client.team_name()
 
 @sio.event
 async def instructions(sid):
-    from gaime.handlers import tv
+    from gaime.handlers import tv, client
 
     await _set_game_state("instructions")
     await _set_groups(True)
+    await client.wait()
     await tv.start_instructions()
 
 
@@ -143,29 +151,38 @@ async def question(sid, data):
     await _mark_question_used(data['qid'])
     await _set_game_state("question", q)
     await tv.question(q)
+    await client.question()
     await send_questions_list()
 
 
 @sio.event
 async def review(sid):
     from gaime.tools import ai, scripts
+    from gaime.handlers import client
 
     g = await _get_game()
 
     script = scripts.yes() if g.question.is_ai else scripts.no()
 
     await _set_game_state("review")
+    await client.wait()
     await ai.send_speech(script)
 
 
 @sio.event
 async def scores(sid):
-    from gaime.handlers import tv
+    from gaime.handlers import tv, client
 
     await _set_game_state("scores")
+    await client.wait()
     await tv.scores()
 
 
 @sio.event
 async def shatter_groups(sid):
+    from gaime.handlers import tv, client
+
     await _set_groups(False)
+    await client.wait()
+    await tv.twist()
+    await tv.scores()

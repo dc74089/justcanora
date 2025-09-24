@@ -19,6 +19,15 @@ how many people got the answer correct. Not sure? Feel free to split your vote, 
 """
 
 
+twist = """
+I think it's time to shake things up. For our last few rounds, you'll be playing individually. 
+
+Your personal score is the number of questions that were answered correctly on YOUR OWN device.
+
+Let's take a look at the individual standings...
+"""
+
+
 def question_intro():
     return random.choice([
         "Here's our next question: is this AI generated?",

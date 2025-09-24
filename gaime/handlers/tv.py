@@ -146,3 +146,14 @@ async def scores():
 
 async def results():
     pass
+
+
+async def twist():
+    from gaime.tools import ai, scripts
+
+    await sio.emit("screen", {
+        "section": "twist",
+        "html": render_to_string('gaime/screen_tv_twist.html')
+    })
+
+    await ai.send_speech(scripts.twist)
