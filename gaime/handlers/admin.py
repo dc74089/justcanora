@@ -58,6 +58,12 @@ def _mark_question_used(qid):
 
 
 @sync_to_async(thread_sensitive=True)
+def _mark_all_unused():
+    from gaime.models import Question
+    Question.objects.update(used=False)
+
+
+@sync_to_async(thread_sensitive=True)
 def _add_to_score(pid, amount):
     from gaime.models import Player
 
@@ -117,6 +123,7 @@ async def title(sid):
     from gaime.handlers import tv
 
     await _set_game_state("title")
+    await _mark_all_unused()
     await tv.title_card()
 
 
