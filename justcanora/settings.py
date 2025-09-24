@@ -126,6 +126,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'app.spotify.nowplaying.context_processor',
                 'aitutor.utils.context.context_processor',
+                'gaime.tools.context.context_processor',
             ],
         },
     },

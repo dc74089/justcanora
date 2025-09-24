@@ -1,5 +1,7 @@
-<div class="d-flex flex-column align-items-center w-50">
-  <select id="player-select" class="form-control w-100" required>
+<div class="d-flex flex-column align-items-center w-75">
+  <h1 style="font-size: 100pt">G<span class="happygradtext">(ai)</span>me Show</h1>
+  <h1 style="font-size: 40pt">Pick your name below:</h1>
+  <select id="player-select" class="form-control w-75 mt-5" required>
     <option value="">Select Player</option>
     {% for player in players %}
       <option value="{{ player.id }}">{{ player.name }}</option>

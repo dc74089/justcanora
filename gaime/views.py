@@ -1,3 +1,4 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render
 
@@ -9,14 +10,17 @@ def index(request):
     return render(request, 'gaime/client.html')
 
 
+@staff_member_required
 def tv(request):
     return render(request, 'gaime/tv.html')
 
 
+@staff_member_required
 def admin(request):
     return render(request, 'gaime/admin.html')
 
 
+@staff_member_required
 def players(request):
     if request.method == "POST":
         if 'names' not in request.POST: return HttpResponseBadRequest()
