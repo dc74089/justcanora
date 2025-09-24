@@ -41,6 +41,13 @@
               player_id: pid
           });
       }
+
+      function submit(ans) {
+          socket.emit("answer", {
+              player_id: pid,
+              answer: ans
+          })
+      }
   </script>
 
   <style>

@@ -30,6 +30,15 @@ def _build_team_reveal(pid):
     })
 
 
+@sync_to_async(thread_sensitive=True)
+def _add_to_score(pid, amount):
+    from gaime.models import Player
+
+    player = Player.objects.get(id=pid)
+    player.points += amount
+    player.save()
+
+
 @sio.event
 async def init_player(sid, data={}):
     print(f"Init Player: {sid}", data)
@@ -78,3 +87,24 @@ async def get_team(sid, data):
         "section": "team",
         "html": await _build_team_reveal(data.get('player_id'))
     }, to=sid)
+
+
+async def question():
+    await sio.emit("client", {
+        "section": "question",
+        "html": render_to_string('gaime/screen_player_question.html')
+    })
+
+
+@sio.event
+async def answer(sid, data):
+    from gaime.handlers import admin
+    print(f"Answer: {sid}, {data}")
+
+    g = await _get_game()
+    await wait(sid)
+
+    if bool(data.get('answer')) == g.question.is_ai:
+        await _add_to_score(data.get('player_id'), 1)
+
+    await admin.send_player_table()

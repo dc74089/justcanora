@@ -145,7 +145,7 @@ async def instructions(sid):
 
 @sio.event
 async def question(sid, data):
-    from gaime.handlers import tv
+    from gaime.handlers import tv, client
 
     q = await _get_question_by_id(data['qid'])
     await _mark_question_used(data['qid'])
