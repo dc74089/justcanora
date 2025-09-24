@@ -14,7 +14,7 @@ On the screen, you'll see some text, an image, or a video. Pay close attention t
 
 Next, you'll discuss with your team to see if you think it's AI-generated or human-created.
 
-Every person will answer the question on their own device, but there's a twist. Your team will get points based on
+Every person will answer the question on their own device, but there's a catch. Your team will get points based on
 how many people got the answer correct. Not sure? Feel free to split your vote, just know you'll be receiving fewer points. 
 """
 

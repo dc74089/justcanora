@@ -8,6 +8,7 @@
   <script>
       const socket = io();  // defaults to same host + port as page
       var pid;
+      var lock = false;
 
       socket.on("connect", () => {
           console.log("Connected to server:", socket.id);
@@ -19,6 +20,7 @@
 
       socket.on("client", (data) => {
           console.log("Received screen update:", data);
+          lock = false;
 
           if (data.html) {
               $("#content").html(data.html);
@@ -43,6 +45,9 @@
       }
 
       function submit(ans) {
+          if (lock) return;
+          lock = true;
+
           socket.emit("answer", {
               player_id: pid,
               answer: ans

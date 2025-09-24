@@ -185,4 +185,5 @@ async def shatter_groups(sid):
     await _set_groups(False)
     await client.wait()
     await tv.twist()
+    await asyncio.sleep(12)
     await tv.scores()
