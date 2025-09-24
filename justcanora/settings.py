@@ -142,6 +142,8 @@ if DEBUG:
 
 WSGI_APPLICATION = 'justcanora.wsgi.application'
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 
 CRONJOBS = [
     ('30 23 * * *', 'app.tasks.cleanup.cleanup_null'),
