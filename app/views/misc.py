@@ -106,4 +106,9 @@ def back_to_work(request):
 
 
 def redirect_robotics(request):
-    return redirect('https://docs.google.com/forms/d/e/1FAIpQLScaDYUwjIJpa4PDNz1vGCDFNpdPRNliCLqUAJIHZUTGFvi9tw/viewform?usp=header')
+    return redirect(
+        'https://docs.google.com/forms/d/e/1FAIpQLScaDYUwjIJpa4PDNz1vGCDFNpdPRNliCLqUAJIHZUTGFvi9tw/viewform?usp=header')
+
+
+def aipd(request):
+    return render(request, 'app/aipd.html')

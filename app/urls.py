@@ -45,6 +45,7 @@ urlpatterns = [
 
     path('robotics', misc.redirect_robotics),
     path('8ba10e6f-748f-4599-929c-a83585ef8869', misc.back_to_work),
+    path('aipd', misc.aipd),
 
     path('do/', misc.misc_action, name='misc_action'),
     path('dev/', index.dev, name='dev'),
