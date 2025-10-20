@@ -4,6 +4,7 @@ from .links import allcards as all_links
 from .lunch import allcards as all_lunch
 from .music import allcards as all_music
 from .speech import allcards as all_speech
+from .help import allcards as all_help
 
 
 def allcards(request):
@@ -12,6 +13,7 @@ def allcards(request):
     ret.extend(all_links(request))
     ret.extend(all_lunch(request))
     ret.extend(all_acct(request))
+    ret.extend(all_help(request))
     ret.extend(all_speech(request))
     ret.extend(all_music(request))
     return ret

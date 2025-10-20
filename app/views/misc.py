@@ -1,7 +1,7 @@
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 
-from app.models import MusicSuggestion, Course, Student, SpeechRating, SpeechRubric, ApprovedSong
+from app.models import MusicSuggestion, Course, Student, SpeechRating, SpeechRubric, ApprovedSong, HelpRequest
 from app.spotify.search import search
 from app.views.music import add_song_helper
 
@@ -9,6 +9,7 @@ from app.views.music import add_song_helper
 def misc_action(request):
     if request.method == 'POST':
         data = request.POST
+        print(data)
 
         if 'action' not in data: return HttpResponseBadRequest()
 
@@ -68,6 +69,24 @@ def misc_action(request):
 
             sr.set_data(ratings)
             sr.save()
+        elif data['action'] == 'help':
+            s = request.user.student
+
+            for hr in HelpRequest.objects.filter(student=s):
+                hr.satisfied = True
+                hr.save()
+
+            hr = HelpRequest(
+                student=s,
+                reason=request.POST.get('help_reason'),
+            )
+
+            hr.save()
+        elif data['action'] == 'help_cancel':
+            s = request.user.student
+            for hr in HelpRequest.objects.filter(student=s):
+                hr.satisfied = True
+                hr.save()
 
         return redirect('index')
     elif request.method == 'GET':

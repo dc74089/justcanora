@@ -1,0 +1,14 @@
+<div class="col-12 col-md-6">
+  <div class="card mb-2">
+    <div class="card-body">
+      <h2 class="card-title">Help Requested</h2>
+      <p>Check the TV to see where you are in line.</p>
+
+      <form action="{% url 'misc_action' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" value="help_cancel" name="action">
+        <button type="submit" class="btn btn-grad-negative mt-2">Cancel Request</button>
+      </form>
+    </div>
+  </div>
+</div>

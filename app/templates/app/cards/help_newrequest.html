@@ -1,0 +1,16 @@
+<div class="col-12 col-md-6">
+  <div class="card mb-2">
+    <div class="card-body">
+      <h2 class="card-title">Help</h2>
+
+      <form action="{% url 'misc_action' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" value="help" name="action">
+
+        <p><label for="help_reason">Type a few words about what you need help with:</label></p>
+        <input class="form-control" name="help_reason" id="help_reason" type="text">
+        <button type="submit" class="btn btn-grad-positive mt-2">Submit Request</button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -279,6 +279,13 @@ class WebserverCredential(models.Model):
             return f"Webserver Creds for (/{self.directory}; {self.uid})"
 
 
+class HelpRequest(models.Model):
+    student = models.ForeignKey("Student", on_delete=models.CASCADE)
+    reason = models.TextField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    satisfied = models.BooleanField(default=False, null=False)
+
+
 class DanceRequestCategory(models.Model):
     name = models.TextField()
 
