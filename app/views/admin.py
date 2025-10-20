@@ -4,7 +4,7 @@ from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from app.models import Course, FeatureFlag
+from app.models import Course, FeatureFlag, HelpRequest
 
 
 @staff_member_required
@@ -48,3 +48,11 @@ def rosters(request):
     return render(request, "app/admin/rosters.html", {
         "semesters": (s1, s2)
     })
+
+
+@staff_member_required
+def help_admin(request):
+    return render(request, 'app/admin/help_admin.html', {
+        "helprequests": HelpRequest.objects.filter(satisfied=False).order_by('timestamp'),
+    })
+

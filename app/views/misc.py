@@ -87,6 +87,13 @@ def misc_action(request):
             for hr in HelpRequest.objects.filter(student=s):
                 hr.satisfied = True
                 hr.save()
+        elif data['action'] == 'help_dismiss':
+            hrid = data.get('hrid')
+            hr = HelpRequest.objects.get(id=hrid)
+            hr.satisfied = True
+            hr.save()
+
+            return redirect('help_admin')
 
         return redirect('index')
     elif request.method == 'GET':

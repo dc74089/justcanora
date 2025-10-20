@@ -1,0 +1,22 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  {% for hr in helprequests %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <h3 class="card-title">{{ hr.student.full_name }}</h3>
+
+        <p>{{ hr.reason }}</p>
+
+        <form action="{% url 'misc_action' %}" method="post">
+          {% csrf_token %}
+          <p>
+            <input type="hidden" name="action" value="help_dismiss">
+            <input type="hidden" name="hrid" value="{{ hr.id }}">
+            <button type="submit" class="btn btn-grad">Dismiss</button>
+          </p>
+        </form>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}

@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('admin/', admin.admin, name='admin'),
     path('admin/setflag/', admin.set_flag, name='set_flag'),
+    path('admin/help/', admin.help_admin, name='help_admin'),
     path('admin/rosters/', admin.rosters, name='rosters'),
     path('admin/music/queue/', music.music_queue, name='music_queue'),
     path('admin/music/approved/', music.all_approved_songs, name='music_approved'),
