@@ -1,5 +1,15 @@
 {% extends 'app/base.html' %}
 
+{% block script %}
+	<script>
+  $(function () {
+      setTimeout(function () {
+          location.reload();
+      }, 5000)
+  })
+  </script>
+{% endblock %}
+
 {% block style %}
 	<style>
   td {
