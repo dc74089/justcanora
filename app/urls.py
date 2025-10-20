@@ -4,6 +4,7 @@ from .views import index, auth, misc, admin, music, speech, curriculum, webserve
 
 urlpatterns = [
     path('', index.index, name='index'),
+    path('tv', index.tv, name='tv'),
 
     path('login/', auth.login, name='login'),
     path('logout/', auth.logout, name='logout'),

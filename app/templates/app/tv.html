@@ -1,0 +1,23 @@
+{% extends 'app/base.html' %}
+
+{% block style %}
+	<style>
+  td {
+      font-size: 2rem;
+  }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <table class="table table-striped">
+    <tbody>
+    {% for hr in helprequests %}
+      <tr>
+        <td><b>{{ forloop.counter }}.</b></td>
+        <td>{{ hr.student.name }}</td>
+        <td>{{ hr.reason }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
