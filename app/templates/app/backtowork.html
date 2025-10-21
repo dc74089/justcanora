@@ -4,6 +4,12 @@
 <head>
   <title>Back to Work</title>
 
+  <script>
+      window.addEventListener("DOMContentLoaded", () => {
+          window.history.replaceState({}, document.title, "/secret");
+      });
+  </script>
+
   <style>
       .masked-text {
           background: url('{% static 'app/skin2.jpg' %}') no-repeat center;
