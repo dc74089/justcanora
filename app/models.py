@@ -285,6 +285,9 @@ class HelpRequest(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     satisfied = models.BooleanField(default=False, null=False)
 
+    def __str__(self):
+        return f"{self.student.full_name()} needs help with {self.reason} ({self.timestamp})"
+
 
 class DanceRequestCategory(models.Model):
     name = models.TextField()
