@@ -76,8 +76,11 @@ def expiring_soon(request):
                     keep = False
 
             if keep:
-                req.data = req.get_spotify_data(request)
-                reqs_out.append(req)
+                try:
+                    req.data = req.get_spotify_data(request)
+                    reqs_out.append(req)
+                except:
+                    continue
 
     if len(reqs_out) > 0:
         return render_to_string('app/cards/music_expiring_soon.html', request=request, context={
