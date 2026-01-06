@@ -85,7 +85,7 @@ def google(request):
             if sq.exists():
                 stu: Student = sq.first()
 
-                if not stu.is_active():
+                if not stu.is_active(enforce_semester=True):
                     return render(request, 'app/error.html', {
                         "short": "This site is available for Tr. Canora's current students only",
                         "message": f"We found a student with that email address, but they are not in any active classes. Please show this screen to Tr. Canora so they can fix it.\n\n{pprint.pformat(idinfo)}"
