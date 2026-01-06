@@ -1,5 +1,6 @@
 import pprint
 
+from django.conf import settings
 from django.contrib.auth import authenticate, login as do_login, logout as do_logout
 from django.contrib.auth.models import User
 from django.http import HttpResponseBadRequest
@@ -69,7 +70,7 @@ def google(request):
             user = uq.first()
             student = user.student
 
-            if not student.is_active():
+            if not student.is_active(enforce_semester=settings.ENFORCE_SEMESTER_FOR_AUTH):
                 return render(request, 'app/error.html', {
                     "short": "This site is available for Tr. Canora's current students only",
                     "message": f"We found a student with that email address, but they are not in any active classes. Please show this screen to Tr. Canora so they can fix it.\n\n{pprint.pformat(idinfo)}"
@@ -85,7 +86,7 @@ def google(request):
             if sq.exists():
                 stu: Student = sq.first()
 
-                if not stu.is_active(enforce_semester=True):
+                if not stu.is_active(enforce_semester=settings.ENFORCE_SEMESTER_FOR_AUTH):
                     return render(request, 'app/error.html', {
                         "short": "This site is available for Tr. Canora's current students only",
                         "message": f"We found a student with that email address, but they are not in any active classes. Please show this screen to Tr. Canora so they can fix it.\n\n{pprint.pformat(idinfo)}"
