@@ -1,3 +1,16 @@
+# Announcements
+
+---
+
+## NHD
+* P3 &rightarrow; Gower
+* P5 &rightarrow; Pazmino
+* P7 &rightarrow; Robelo
+
+(If I forget to remove this, this is only relevant for Spring 2026)
+
+---
+
 # Clients and Servers
 
 ---
