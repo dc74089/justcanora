@@ -13,7 +13,7 @@
     </thead>
     <tbody>
     {% for cred in creds %}
-      {% if cred.student.is_active %}
+      {% if cred.student.is_active_enforcing_semester %}
         <tr>
           <td>{{ cred.student.full_name }}</td>
           <td><a href="https://lhpscs.com/{{ cred.directory }}"
@@ -110,7 +110,7 @@
   <details>
     <summary>Expand to view code</summary>
     <pre><code>
-      {% for cred in creds %}{% if cred.student.is_active %}
+      {% for cred in creds %}{% if cred.student.is_active_enforcing_semester %}
         mkdir /var/www/{{ cred.directory }}
         chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
         echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid=

@@ -65,6 +65,9 @@ class Student(models.Model):
         else:
             return self.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR).exists()
 
+    def is_active_enforcing_semester(self):
+        return self.is_active(enforce_semester=True)
+
     def all_courses_str(self):
         q = self.courses.filter(
             year=settings.CURRENT_ACADEMIC_YEAR,
