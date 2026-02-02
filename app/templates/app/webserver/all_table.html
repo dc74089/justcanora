@@ -1,6 +1,7 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
+  <h3>Active Students</h3>
   <table class="table table-hover table-striped">
     <thead>
     <tr>
@@ -12,21 +13,22 @@
     </thead>
     <tbody>
     {% for cred in creds %}
-      <tr>
-        <td>{{ cred.student.full_name }}</td>
-        <td><a href="https://lhpscs.com/{{ cred.directory }}"
-               target="_blank">https://lhpscs.com/{{ cred.directory }}</a></td>
-        <td>
-          <details>
-            <summary>Click Here to Reveal</summary>
-            {{ cred.password }}
-          </details>
-        </td>
-      
-        <td>
+      {% if cred.student.is_active %}
+        <tr>
+          <td>{{ cred.student.full_name }}</td>
+          <td><a href="https://lhpscs.com/{{ cred.directory }}"
+                 target="_blank">https://lhpscs.com/{{ cred.directory }}</a></td>
+          <td>
             <details>
-                <summary>Click Here to Reveal</summary>
-                <pre><code>
+              <summary>Click Here to Reveal</summary>
+              {{ cred.password }}
+            </details>
+          </td>
+
+          <td>
+            <details>
+              <summary>Click Here to Reveal</summary>
+              <pre><code>
 {
     "name": "CS 1 Server",
     "host": "167.71.163.179",
@@ -44,19 +46,87 @@
 }
           </code></pre>
             </details>
-        </td>
-      </tr>
+          </td>
+        </tr>
+      {% endif %}
     {% endfor %}
     </tbody>
   </table>
+
+  <h3>All Students</h3>
+  <details>
+    <table class="table table-hover table-striped">
+      <thead>
+      <tr>
+        <th>Student</th>
+        <th>Directory</th>
+        <th style="width: 30%">Password</th>
+        <th style="width: 30%">sftp.json</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for cred in creds %}
+        <tr>
+          <td>{{ cred.student.full_name }}</td>
+          <td><a href="https://lhpscs.com/{{ cred.directory }}"
+                 target="_blank">https://lhpscs.com/{{ cred.directory }}</a></td>
+          <td>
+            <details>
+              <summary>Click Here to Reveal</summary>
+              {{ cred.password }}
+            </details>
+          </td>
+
+          <td>
+            <details>
+              <summary>Click Here to Reveal</summary>
+              <pre><code>
+{
+    "name": "CS 1 Server",
+    "host": "167.71.163.179",
+    "protocol": "sftp",
+    "port": 2222,
+    "username": "{{ cred.username }}",
+    "remotePath": "/",
+    "password": "{{ cred.password }}",
+    "ignore": [
+        ".vscode",
+        ".git",
+        ".DS_Store",
+        "ignore"
+    ]
+}
+          </code></pre>
+            </details>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </details>
+
+
+  <h3><code>ftpasswd</code> Commands from Active Students</h3>
+  <details>
+    <summary>Expand to view code</summary>
+    <pre><code>
+      {% for cred in creds %}{% if cred.student.is_active %}
+        mkdir /var/www/{{ cred.directory }}
+        chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
+        echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid=
+        {{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
+      {% endif %}{% endfor %}
+    </code></pre>
+  </details>
   <h3>All <code>ftpasswd</code> Commands</h3>
   <details>
     <summary>Expand to view code</summary>
     <pre><code>
       {% for cred in creds %}
-  mkdir /var/www/{{ cred.directory }}
-  chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
-  echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
+        mkdir /var/www/{{ cred.directory }}
+        chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
+        echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid=
+        {{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
       {% endfor %}
     </code></pre>
   </details>
