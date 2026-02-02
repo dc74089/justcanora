@@ -113,8 +113,7 @@
       {% for cred in creds %}{% if cred.student.is_active_enforcing_semester %}
         mkdir /var/www/{{ cred.directory }}
         chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
-        echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid=
-        {{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
+        echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
       {% endif %}{% endfor %}
     </code></pre>
   </details>
@@ -125,8 +124,7 @@
       {% for cred in creds %}
         mkdir /var/www/{{ cred.directory }}
         chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
-        echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid=
-        {{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
+        echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
       {% endfor %}
     </code></pre>
   </details>
