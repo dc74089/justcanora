@@ -26,7 +26,7 @@ def get_auth_manager(request):
                                 redirect_uri=f"{request.scheme}://{request.get_host()}/auth/spotify",
                                 scope="user-modify-playback-state,user-read-playback-state,user-read-currently-playing,playlist-read-private,playlist-read-collaborative,playlist-modify-private,playlist-modify-public,streaming",
                                 cache_handler=cache_handler,
-                                show_dialog=True)
+                                show_dialog=False)
 
     return auth_manager
 
@@ -38,7 +38,7 @@ def get_default_auth_manager():
                                 redirect_uri=f"https://tr.canora.us/auth/spotify",
                                 scope="user-read-currently-playing,playlist-read-private,playlist-read-collaborative,playlist-modify-private,playlist-modify-public,streaming",
                                 cache_handler=cache_handler,
-                                show_dialog=True)
+                                show_dialog=False)
 
     return auth_manager
 
