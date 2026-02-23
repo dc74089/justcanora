@@ -53,14 +53,11 @@ def get_spotify(request):
 def needs_login(request):
     try:
         am = get_auth_manager(request)
-        if am.validate_token(am.get_cached_token()):
-            return False
-        else:
-            try:
-                am.refresh_access_token(am.get_cached_token())
-                return False
-            except:
-                return True
+        token_info = am.get_cached_token()
+        if not token_info:
+            return True
+        # validate_token refreshes and saves the token automatically if expired
+        return not am.validate_token(token_info)
     except SpotifyOauthError:
         return True
 
