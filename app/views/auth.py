@@ -52,7 +52,7 @@ def google(request):
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
         idinfo = id_token.verify_oauth2_token(data['credential'], requests.Request(),
-                                              "966461905987-nsfekbdp870jo9sarfkn078hle1hbj0u.apps.googleusercontent.com")
+                                              "966461905987-jrovfhjju9ietkq9k5glat0gahr6k28n.apps.googleusercontent.com")
         print(idinfo)
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
