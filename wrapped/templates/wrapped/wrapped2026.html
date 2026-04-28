@@ -20,6 +20,7 @@
       html {
           scroll-snap-type: y mandatory;
           overflow-x: hidden;
+          scrollbar-width: none;
       }
 
       .panel {
@@ -121,7 +122,7 @@
   </section>
 
   <section class="panel">
-    <h1 class="smalltext">You Finished <span class="particle-target" data-particle-max="2000">{{ data.student.grade }}th Grade!</span></h1>
+    <h1 class="smalltext">You Finished <span class="particle-target" data-particle-max="1000">{{ data.student.grade }}th Grade!</span></h1>
     <p class="smallertext my-5">We were all in school for around
       <span class="smallertext happygradtext">1,198</span>
       hours this year, but you didn't spend it all in class.<br/>You and your classmates also spent your time:
@@ -157,21 +158,21 @@
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">This year, you requested <span class="particle-target">{{ data.num_songs }}</span>
+      <h1 class="smalltext">This year, you requested <span class="particle-target" data-particle-max="300">{{ data.num_songs }}</span>
         songs.</h1>
 
       {% if data.song_percentile %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
-                class="particle-target">{{ data.song_percentile }}</span>!</h2>
+                class="happygradtext">{{ data.song_percentile }}</span>!</h2>
       {% endif %}
 
       {% if data.num_songs_rejected %}
-        <h1 class="smalltext">Of those, <span class="particle-target">{{ data.num_songs_rejected }}</span> were
+        <h1 class="smalltext">Of those, <span class="particle-target" data-particle-max="300">{{ data.num_songs_rejected }}</span> were
           rejected</h1>
-        <h2 class="smallertext ms-lg-5">&rightarrow; Womp womp :(</h2>
+        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="happygradtext">Womp womp :(</span></h2>
       {% elif data.num_songs_rejected == 0 %}
-        <h1 class="smalltext">Of those, <span class="particle-target">none</span> were rejected</h1>
-        <h2 class="smallertext ms-lg-5">&rightarrow; You've got great taste!</h2>
+        <h1 class="smalltext">Of those, <span class="happygradtext">none</span> were rejected</h1>
+        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="happygradtext">You've got great taste!</span></h2>
       {% endif %}
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
@@ -185,12 +186,12 @@
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">You turned in <span class="particle-target">{{ data.num_assignments }}</span>
+      <h1 class="smalltext">You turned in <span class="particle-target" data-particle-max="500">{{ data.num_assignments }}</span>
         assignments this year.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; But it didn't feel like that many, right?</h2>
 
       {% if data.num_late != None %}
-        <h1 class="smalltext">Of those, <span class="particle-target">{{ data.num_late }}</span> were late</h1>
+        <h1 class="smalltext">Of those, <span class="particle-target" data-particle-max="500">{{ data.num_late }}</span> were late</h1>
 
         {% if data.num_late == 0 %}
           <h2 class="smallertext ms-lg-5">&rightarrow; Congrats on the perfect streak!</h2>
@@ -215,21 +216,21 @@
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">You visited <span class="particle-target">{{ data.num_canvas_clicks | intcomma }}</span>
+      <h1 class="smalltext">You visited <span class="particle-target" data-particle-max="800">{{ data.num_canvas_clicks | intcomma }}</span>
         pages in Canvas.</h1>
       {% if data.canvas_clicks_percentile %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
-                class="particle-target">{{ data.canvas_clicks_percentile }}</span>!</h2>
+                class="happygradtext">{{ data.canvas_clicks_percentile }}</span>!</h2>
       {% else %}
-        <h2 class="smallertext ms-lg-5">&rightarrow; That's a huge number.</h2>
+        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="happygradtext">That's a huge number.</span></h2>
       {% endif %}
 
       {% if data.num_canvas_minutes %}
-        <h1 class="smalltext">You spent around <span class="particle-target">{{ data.num_canvas_minutes | intcomma }}</span>
+        <h1 class="smalltext">You spent around <span class="particle-target" data-particle-max="800">{{ data.num_canvas_minutes | intcomma }}</span>
           minutes clicking around in your courses.</h1>
         {% if data.canvas_minutes_percentile %}
           <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
-                  class="particle-target">{{ data.canvas_minutes_percentile }}</span>!</h2>
+                  class="happygradtext">{{ data.canvas_minutes_percentile }}</span>!</h2>
         {% endif %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
                 class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
@@ -243,17 +244,17 @@
     <section class="panel panel-light">
       <h2 class="mediumtext text-center">You joined</h2>
       <h1 class="text-center mt-0"><span class="particle-target mediumtext">Robotics</span></h1>
-      <h2 class="smallertext text-center">(which was a mighty fine choice if you ask me)</h2>
+      <h2 class="smallertext text-center happygradtext">(which was a mighty fine choice if you ask me)</h2>
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">This was Cyberhazards' <span class="particle-target">3rd</span> season.</h1>
+      <h1 class="smalltext">This was Cyberhazards' <span class="happygradtext">3rd</span> season.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; Thank you for helping us build our team!</h2>
-      <h1 class="smalltext">We played <span class="particle-target">24</span> official matches.</h1>
-      <h2 class="smallertext ms-lg-5">&rightarrow; That's <span class="particle-target">10</span> wins, <span
-              class="particle-target">14</span> losses, and <span class="particle-target">0</span> ties.</h2>
-      <h1 class="smalltext">We spent <span class="particle-target">$694.89</span> on food.</h1>
+      <h1 class="smalltext">We played <span class="happygradtext">35</span> official matches.</h1>
+      <h2 class="smallertext ms-lg-5">&rightarrow; That's <span class="happygradtext">14</span> wins, <span
+              class="happygradtext">19</span> losses, and <span class="happygradtext">2</span> ties.</h2>
+      <h1 class="smalltext">We spent <span class="particle-target" data-particle-max="1200">$1,102.36</span> on food.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; I'm honestly kind of impressed.</h2>
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
@@ -266,7 +267,7 @@
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
-  <section class="panel">
+  <section class="panel" data-particle-behavior="border" data-particle-density="2">
     <h1 class="smalltext mt-0">A quick note:</h1>
     <div class="handwritten smallertext">
       <p class="fw-light">

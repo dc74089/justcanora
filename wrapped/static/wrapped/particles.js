@@ -19,8 +19,11 @@
   const SAMPLE         = 4;
   const PARTICLE_R_MIN = 0.5;   // minimum particle radius (px)
   const PARTICLE_R_MAX = 1.4;   // maximum particle radius (px)
-  const HALO_MULT      = 4;     // halo radius = particle radius × this
-  const HALO_ALPHA     = 0.06;  // additive alpha for the glow ring pass
+  const HALO_MULT      = 1.5;     // halo radius = particle radius × this
+  const HALO_ALPHA     = 0.4;  // additive alpha for the glow ring pass
+  const BORDER_DEPTH   = 20;   // px — thickness of the border band
+  const STRAY_DIM      = 0.2;  // 0–1 target brightness for stray particles (halo + core)
+  const DIM_SPEED      = 0.04; // lerp rate toward target brightness (higher = faster transition)
 
   // Matches .happygradtext: linear-gradient(-45deg, #ff37e4, #ee7752, #e73c7e, #23a6d5, #23d5ab)
   const PALETTE = [
@@ -43,6 +46,7 @@
       this.tx        = null;
       this.ty        = null;
       this.active    = false;
+      this.dim       = STRAY_DIM;
       this.wander    = Math.random() * Math.PI * 2;
       this.pulse     = Math.random() * Math.PI * 2;
       this.pulseRate = 0.025 + Math.random() * 0.025;
@@ -109,6 +113,7 @@
 
       this.x += this.vx;
       this.y += this.vy;
+      this.dim += ((this.active ? 1.0 : STRAY_DIM) - this.dim) * DIM_SPEED;
     }
   }
 
@@ -155,9 +160,9 @@
   }
 
   // ── Assign text-forming targets ──────────────────────────────────────────────
-  // { pts, maxParticles }: from sampleText — maxParticles caps active swarm count
-  // swarmFraction (0–1): from data-particle-density on the panel
-  function assignTargets(particles, { pts: targets, maxParticles }, strayN, swarmFraction = 1.0) {
+  // swarmFraction (0–1): fraction of ALL particles to activate; 1.0 = no strays.
+  // Default density is (1 - STRAY), so omitting the attribute preserves the normal stray ratio.
+  function assignTargets(particles, { pts: targets, maxParticles }, swarmFraction = 1.0) {
     const order = particles.map((_, i) => i);
     for (let i = order.length - 1; i > 0; i--) {
       const j = (Math.random() * (i + 1)) | 0;
@@ -172,12 +177,39 @@
       [tgt[i], tgt[j]] = [tgt[j], tgt[i]];
     }
 
-    const base   = Math.round((particles.length - strayN) * Math.min(1, Math.max(0, swarmFraction)));
+    const base   = Math.round(particles.length * Math.min(1, Math.max(0, swarmFraction)));
     const swarmN = Math.min(base, maxParticles);
     for (let i = 0; i < swarmN; i++)
       particles[order[i]].setTarget(tgt[i % tgt.length].x, tgt[i % tgt.length].y);
     for (let i = swarmN; i < particles.length; i++)
       particles[order[i]].release();
+  }
+
+  // ── Border shape generator ───────────────────────────────────────────────────
+  // Generates exactly N points uniformly spaced around the perimeter so that
+  // every active particle gets a unique target — no stacking, no gaps.
+  // Each point has a random inward depth up to BORDER_DEPTH for an organic band.
+  function generateBorderPoints() {
+    const pts       = [];
+    const w         = innerWidth;
+    const h         = innerHeight;
+    const perimeter = 2 * (w + h);
+
+    for (let i = 0; i < N; i++) {
+      const d = (i / N) * perimeter;
+      let x, y;
+      if (d < w) {                         // top edge →
+        x = d;       y = Math.random() * BORDER_DEPTH;
+      } else if (d < w + h) {              // right edge ↓
+        x = w - Math.random() * BORDER_DEPTH; y = d - w;
+      } else if (d < 2 * w + h) {          // bottom edge ←
+        x = 2 * w + h - d; y = h - Math.random() * BORDER_DEPTH;
+      } else {                             // left edge ↑
+        x = Math.random() * BORDER_DEPTH; y = perimeter - d;
+      }
+      pts.push({ x, y });
+    }
+    return pts;
   }
 
   // ── Most-visible panel ───────────────────────────────────────────────────────
@@ -202,10 +234,10 @@
     window.addEventListener('resize', () => { resize(); refresh(); });
 
     const particles = Array.from({ length: N }, (_, i) => new Particle(i));
-    const strayN    = Math.round(N * STRAY);
     let swarming = [], straying = [...particles];
 
-    const coreBuckets = Array.from({ length: NC }, () => []);
+    const swarmBuckets = Array.from({ length: NC }, () => []);
+    const strayBuckets = Array.from({ length: NC }, () => []);
 
     function scatter() {
       for (const p of particles) {
@@ -221,9 +253,16 @@
 
     function refresh() {
       const panel    = currentPanel();
-      const textEls  = panel ? [...panel.querySelectorAll('.particle-target')] : [];
-      const density  = panel ? parseFloat(panel.dataset.particleDensity ?? '1') : 1;
-      assignTargets(particles, sampleText(textEls), strayN, density);
+      const density  = panel ? parseFloat(panel.dataset.particleDensity ?? String(1 - STRAY)) : (1 - STRAY);
+      const behavior = panel?.dataset.particleBehavior;
+
+      if (behavior === 'border') {
+        assignTargets(particles, { pts: generateBorderPoints(), maxParticles: Infinity }, density);
+      } else {
+        const textEls = panel ? [...panel.querySelectorAll('.particle-target')] : [];
+        assignTargets(particles, sampleText(textEls), density);
+      }
+
       swarming = particles.filter(p =>  p.active);
       straying = particles.filter(p => !p.active);
     }
@@ -252,49 +291,71 @@
       requestAnimationFrame(loop);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (let b = 0; b < NC; b++) coreBuckets[b].length = 0;
+      for (let b = 0; b < NC; b++) swarmBuckets[b].length = strayBuckets[b].length = 0;
 
       for (const p of swarming) {
         p.tick();
         p.pulse += p.pulseRate;
-        coreBuckets[p.colorIdx].push(p);
+        swarmBuckets[p.colorIdx].push(p);
       }
       for (const p of straying) {
         p.tick();
         p.pulse += p.pulseRate;
-        coreBuckets[p.colorIdx].push(p);
+        strayBuckets[p.colorIdx].push(p);
       }
 
-      // Halos: additive soft glow rings
       ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = HALO_ALPHA;
+
+      // Halos — avgDim per bucket keeps swarm and stray independent
       for (let b = 0; b < NC; b++) {
-        if (!coreBuckets[b].length) continue;
         const c = PALETTE[b];
         ctx.fillStyle = `hsl(${c.h},${c.s}%,${c.l}%)`;
-        ctx.beginPath();
-        for (const p of coreBuckets[b]) {
-          ctx.moveTo(p.x + p.r * HALO_MULT, p.y);
-          ctx.arc(p.x, p.y, p.r * HALO_MULT, 0, Math.PI * 2);
+
+        if (strayBuckets[b].length) {
+          let dimSum = 0;
+          for (const p of strayBuckets[b]) dimSum += p.dim;
+          ctx.globalAlpha = HALO_ALPHA * (dimSum / strayBuckets[b].length);
+          ctx.beginPath();
+          for (const p of strayBuckets[b]) {
+            ctx.moveTo(p.x + p.r * HALO_MULT, p.y);
+            ctx.arc(p.x, p.y, p.r * HALO_MULT, 0, Math.PI * 2);
+          }
+          ctx.fill();
         }
-        ctx.fill();
+
+        if (swarmBuckets[b].length) {
+          let dimSum = 0;
+          for (const p of swarmBuckets[b]) dimSum += p.dim;
+          ctx.globalAlpha = HALO_ALPHA * (dimSum / swarmBuckets[b].length);
+          ctx.beginPath();
+          for (const p of swarmBuckets[b]) {
+            ctx.moveTo(p.x + p.r * HALO_MULT, p.y);
+            ctx.arc(p.x, p.y, p.r * HALO_MULT, 0, Math.PI * 2);
+          }
+          ctx.fill();
+        }
       }
 
-      // Swarming cores: pulsing
+      // Cores — pulse × dim per bucket
       for (let b = 0; b < NC; b++) {
-        const ps = coreBuckets[b];
-        if (!ps.length) continue;
-        let sum = 0;
-        for (const p of ps) sum += 0.55 + 0.45 * Math.sin(p.pulse);
-        ctx.globalAlpha = (sum / ps.length) * 0.75;
         const c = PALETTE[b];
         ctx.fillStyle = `hsl(${c.h},${c.s}%,${Math.min(c.l + 15, 90)}%)`;
-        ctx.beginPath();
-        for (const p of ps) {
-          ctx.moveTo(p.x + p.r, p.y);
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+
+        for (const bucket of [strayBuckets[b], swarmBuckets[b]]) {
+          if (!bucket.length) continue;
+          let pulseSum = 0, dimSum = 0;
+          for (const p of bucket) {
+            pulseSum += 0.55 + 0.45 * Math.sin(p.pulse);
+            dimSum   += p.dim;
+          }
+          ctx.globalAlpha = (pulseSum / bucket.length) * 0.75 * (dimSum / bucket.length);
+          ctx.beginPath();
+          for (const p of bucket) {
+            ctx.moveTo(p.x + p.r, p.y);
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          }
+          ctx.fill();
         }
-        ctx.fill();
       }
 
       ctx.globalCompositeOperation = 'source-over';
