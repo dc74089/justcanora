@@ -5,27 +5,26 @@
   const STRAY          = 0.15;
   const ATTRACT        = 0.030;
   const ATTRACT_MAX    = 0.50;
-  const WANDER         = 0.14;
-  const WANDER_TURN    = 0.05;
-  const WANDER_FALLOFF = 40;
+  const WANDER         = 0.05;  // lateral force while approaching target (lower = straighter path)
+  const WANDER_TURN    = 0.015; // how quickly wander direction drifts
+  const WANDER_FALLOFF = 100;   // wander fades to zero within this many px of target
   const SETTLE_RADIUS  = 6;
   const DAMPING_NEAR   = 0.80;
   const DAMPING_FAR    = 0.93;
   const MAX_SPD        = 4.0;
-  const STRAY_WANDER   = 0.07;
-  const STRAY_TURN     = 0.025;
-  const STRAY_MAX_SPD  = 0.8;
+  const STRAY_WANDER   = 0.015; // stray drift force (very slow glide)
+  const STRAY_TURN     = 0.006; // stray turning rate (near-linear drift)
+  const STRAY_MAX_SPD  = 0.25;  // stray top speed (barely moving)
   const SCATTER_SPD    = 3.5;
   const SAMPLE         = 4;
-  const PARTICLE_R_MIN = 0.5;   // minimum particle radius (px)
-  const PARTICLE_R_MAX = 1.4;   // maximum particle radius (px)
+  const PARTICLE_R_MIN = 0.3;   // minimum particle radius (px)
+  const PARTICLE_R_MAX = 0.8;   // maximum particle radius (px)
   const HALO_MULT      = 2;     // halo radius = particle radius × this
-  const HALO_ALPHA     = 0.3;  // additive alpha for the glow ring pass
+  const HALO_ALPHA     = 0.4;  // additive alpha for the glow ring pass
   const BORDER_DEPTH   = 20;   // px — thickness of the border band
   const STRAY_DIM      = 0.2;  // 0–1 target brightness for stray particles (halo + core)
   const DIM_SPEED      = 0.04; // lerp rate toward target brightness (higher = faster transition)
 
-  // Matches .happygradtext: linear-gradient(-45deg, #ff37e4, #ee7752, #e73c7e, #23a6d5, #23d5ab)
   const PALETTE = [
     { h: 170, s: 100, l: 55 },  // mint/teal
     { h: 195, s: 100, l: 60 },  // cyan
