@@ -19,8 +19,8 @@
   const SAMPLE         = 4;
   const PARTICLE_R_MIN = 0.5;   // minimum particle radius (px)
   const PARTICLE_R_MAX = 1.4;   // maximum particle radius (px)
-  const HALO_MULT      = 1.5;     // halo radius = particle radius × this
-  const HALO_ALPHA     = 0.4;  // additive alpha for the glow ring pass
+  const HALO_MULT      = 2;     // halo radius = particle radius × this
+  const HALO_ALPHA     = 0.3;  // additive alpha for the glow ring pass
   const BORDER_DEPTH   = 20;   // px — thickness of the border band
   const STRAY_DIM      = 0.2;  // 0–1 target brightness for stray particles (halo + core)
   const DIM_SPEED      = 0.04; // lerp rate toward target brightness (higher = faster transition)
