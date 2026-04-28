@@ -3,8 +3,8 @@
 
   const N              = 4000;   // total particle count
   const STRAY          = 0.15;   // default fraction of particles left as free-floating strays (0–1)
-  const ATTRACT        = 0.030;  // per-frame force toward target, scaled by distance
-  const ATTRACT_MAX    = 0.50;   // cap on attraction force so particles don't teleport
+  const ATTRACT        = 0.040;  // per-frame force toward target, scaled by distance
+  const ATTRACT_MAX    = 0.75;   // cap on attraction force so particles don't teleport
   const WANDER         = 0.05;   // lateral force while approaching target (lower = straighter path)
   const WANDER_TURN    = 0.015;  // how quickly wander direction drifts
   const WANDER_FALLOFF = 100;    // wander fades to zero within this many px of target
@@ -15,7 +15,8 @@
   const STRAY_WANDER   = 0.015;  // stray drift force (very slow glide)
   const STRAY_TURN     = 0.006;  // stray turning rate (near-linear drift)
   const STRAY_MAX_SPD  = 0.25;   // stray top speed (barely moving)
-  const SCATTER_SPD    = 3.5;    // burst speed given to particles when a scroll scatter fires
+  const SCATTER_SPD    = 9.0;    // burst speed given to particles when a scroll scatter fires
+  const SCATTER_DECAY  = 0.97;   // per-frame speed multiplier after scatter (lets burst carry across screen)
   const SAMPLE         = 4;      // pixel stride when sampling text from the offscreen canvas (higher = fewer targets)
   const PARTICLE_R_MIN = 0.3;   // minimum particle radius (px)
   const PARTICLE_R_MAX = 0.8;   // maximum particle radius (px)
@@ -99,9 +100,10 @@
 
         const spd2 = this.vx * this.vx + this.vy * this.vy;
         if (spd2 > STRAY_MAX_SPD * STRAY_MAX_SPD) {
-          const inv = STRAY_MAX_SPD / Math.sqrt(spd2);
-          this.vx *= inv;
-          this.vy *= inv;
+          const spd    = Math.sqrt(spd2);
+          const capped = Math.max(spd * SCATTER_DECAY, STRAY_MAX_SPD);
+          this.vx = (this.vx / spd) * capped;
+          this.vy = (this.vy / spd) * capped;
         }
 
         if (this.x < -15)                   this.x = innerWidth  + 15;
