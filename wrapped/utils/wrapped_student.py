@@ -5,7 +5,7 @@ from dateutil import parser
 from tqdm import tqdm
 
 from app.canvas.canvas import get_canvas
-from app.models import Student, MusicSuggestion
+from app.models import Student, MusicSuggestion, HelpRequest
 from wrapped.models import Wrapped
 
 
@@ -20,6 +20,7 @@ def get_all():
 def get_all_for_student(student: Student):
     try:
         get_song_stats(student)
+        get_question_stats(student)
         get_assignment_stats(student)
         get_pageview_stats(student)
     except:
@@ -33,6 +34,7 @@ def get_all_for_student_by_id(sid: int):
 
 def rank_all():
     num_songs = sorted([x.num_songs for x in Wrapped.objects.all() if x.num_songs], reverse=True)
+    num_questions = sorted([x.num_questions for x in Wrapped.objects.all() if x.num_questions], reverse=True)
     num_assignments = sorted([x.num_assignments for x in Wrapped.objects.all() if x.num_assignments], reverse=True)
     num_late = sorted([x.num_late for x in Wrapped.objects.all() if x.num_late], reverse=True)
     num_canvas_minutes = sorted([x.num_canvas_minutes for x in Wrapped.objects.all() if x.num_canvas_minutes],
@@ -42,6 +44,7 @@ def rank_all():
 
     for wrapped in Wrapped.objects.all():
         with suppress(ValueError): wrapped.rank_songs = num_songs.index(wrapped.num_songs) + 1
+        with suppress(ValueError): wrapped.rank_questions = num_questions.index(wrapped.num_questions) + 1
         with suppress(ValueError): wrapped.rank_assignments = num_assignments.index(wrapped.num_assignments) + 1
         with suppress(ValueError): wrapped.rank_late = num_late.index(wrapped.num_late) + 1
         with suppress(ValueError): wrapped.rank_canvas_minutes = num_canvas_minutes.index(wrapped.num_canvas_minutes) + 1
@@ -130,5 +133,16 @@ def get_song_stats(student: Student):
 
     sw.num_songs = MusicSuggestion.objects.filter(student=student).count()
     sw.num_songs_rejected = MusicSuggestion.objects.filter(student=student, is_rejected=True).count()
+
+    sw.save()
+
+
+def get_question_stats(student: Student):
+    sw, _ = Wrapped.objects.get_or_create(student=student)
+
+    hrq = HelpRequest.objects.filter(student=student)
+
+    sw.num_questions = hrq.count()
+    sw.longest_question = sorted(hrq, key=lambda x: len(x.reason), reverse=True)[0].reason
 
     sw.save()
