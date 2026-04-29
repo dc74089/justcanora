@@ -97,6 +97,16 @@
           transform: translateX(-50%);
       }
 
+      /* Override global gradient — firefly bioluminescent glow */
+      .happygradtext {
+          background-image: none;
+          -webkit-background-clip: unset;
+          background-clip: unset;
+          -webkit-text-fill-color: #c8f042;
+          color: #c8f042;
+          text-shadow: 0 0 18px rgba(190, 240, 40, 0.35), 0 0 45px rgba(150, 220, 0, 0.15);
+      }
+
       /* Fixed canvas overlay — particles render here */
       #particle-canvas {
           position: fixed;
@@ -117,7 +127,8 @@
   <canvas id="particle-canvas"></canvas>
 
   <section class="panel panel-light">
-    <h1 class="smalltext text-center mt-0">The stars are aligning...</h1>
+    <h1 class="smalltext text-center mt-0">It's almost summer...</h1>
+    <h1 class="smalltext text-center mt-0">The fireflies are coming out...</h1>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 

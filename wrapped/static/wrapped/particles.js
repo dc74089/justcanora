@@ -30,12 +30,11 @@
   const TWINKLE_BOOST  = 0.45;   // peak alpha added at full twinkle intensity
 
   const PALETTE = [
-    { h:  28, s: 75, l: 75 },  // very warm — candlelight (~2700 K)
-    { h:  28, s: 75, l: 75 },  // very warm — candlelight (~2700 K)
-    { h:  42, s: 50, l: 82 },  // warm white (~3200 K)
-    { h: 200, s: 10, l: 90 },  // neutral white (~4500 K)
-    { h: 210, s: 45, l: 82 },  // cool white (~6000 K)
-    { h: 220, s: 70, l: 76 },  // very cold — icy blue (~8000 K)
+    { h:  75, s: 82, l: 65 },  // firefly green — matches accent text
+    { h:  52, s: 55, l: 80 },  // warm yellow-white — firefly glow haze
+    { h: 200, s: 10, l: 90 },  // neutral white — night air
+    { h: 210, s: 45, l: 83 },  // cool blue-white — moonlight
+    { h: 222, s: 68, l: 77 },  // cold icy blue — starlight
   ];
   const NC = PALETTE.length;
 
