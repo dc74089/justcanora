@@ -3,18 +3,18 @@
 
   const N              = 4000;   // total particle count
   const STRAY          = 0.15;   // default fraction of particles left as free-floating strays (0–1)
-  const ATTRACT        = 0.040;  // per-frame force toward target, scaled by distance
-  const ATTRACT_MAX    = 0.75;   // cap on attraction force so particles don't teleport
-  const WANDER         = 0.05;   // lateral force while approaching target (lower = straighter path)
-  const WANDER_TURN    = 0.015;  // how quickly wander direction drifts
-  const WANDER_FALLOFF = 100;    // wander fades to zero within this many px of target
+  const ATTRACT        = 0.4;  // per-frame force toward target, scaled by distance
+  const ATTRACT_MAX    = 0.50;   // cap on attraction force so particles don't teleport
+  const WANDER         = 0.20;   // lateral force while approaching target (lower = straighter path)
+  const WANDER_TURN    = 0.1;  // how quickly wander direction drifts
+  const WANDER_FALLOFF = 160;    // wander fades to zero within this many px of target
   const SETTLE_RADIUS  = 6;      // px — switch to strong damping once this close to target
-  const DAMPING_NEAR   = 0.80;   // velocity multiplier per frame when within SETTLE_RADIUS
-  const DAMPING_FAR    = 0.93;   // velocity multiplier per frame when outside SETTLE_RADIUS
-  const MAX_SPD        = 6.0;    // px/frame speed cap for swarming particles
-  const STRAY_WANDER   = 0.01;  // stray drift force (very slow glide)
-  const STRAY_TURN     = 0.006;  // stray turning rate (near-linear drift)
-  const STRAY_MAX_SPD  = 0.25;   // stray top speed (barely moving)
+  const DAMPING_NEAR   = 0.85;   // velocity multiplier per frame when within SETTLE_RADIUS
+  const DAMPING_FAR    = 0.95;   // velocity multiplier per frame when outside SETTLE_RADIUS
+  const MAX_SPD        = 4.5;    // px/frame speed cap for swarming particles
+  const STRAY_WANDER   = 0.018; // stray drift force (very slow glide)
+  const STRAY_TURN     = 0.03;  // stray turning rate (near-linear drift)
+  const STRAY_MAX_SPD  = 0.38;   // stray top speed (barely moving)
   const SCATTER_SPD    = 15.0;    // burst speed given to particles when a scroll scatter fires
   const SCATTER_DECAY  = 0.97;   // per-frame speed multiplier after scatter (lets burst carry across screen)
   const SAMPLE         = 2;      // pixel stride when sampling text from the offscreen canvas (higher = fewer targets)
