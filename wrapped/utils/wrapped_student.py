@@ -93,7 +93,7 @@ def get_pageview_stats(student: Student):
     last_req = None
 
     for req in cs.get_page_views(start_time="2025-08-01T00:00:00Z"):
-        sleep(0.1)  # To avoid rate limiting
+        sleep(0.01)  # To avoid rate limiting
 
         # Starts at now, goes backwards
         pageviews += 1
