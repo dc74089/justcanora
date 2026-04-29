@@ -98,7 +98,7 @@
       }
 
       /* Override global gradient — firefly bioluminescent glow */
-      .happygradtext {
+      .fireflytext {
           background-image: none;
           -webkit-background-clip: unset;
           background-clip: unset;
@@ -128,7 +128,7 @@
 
   <section class="panel panel-light">
     <h1 class="smalltext text-center mt-0">It's almost summer...</h1>
-    <h1 class="smalltext text-center mt-0">The <span class="happygradtext">fireflies</span> are coming out...</h1>
+    <h1 class="smalltext text-center mt-0">The <span class="fireflytext">fireflies</span> are coming out...</h1>
     <h1 class="smalltext text-center mt-5">It's time for...</h1>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
@@ -136,33 +136,33 @@
   <section class="panel panel-light">
     <h1 class="text-center mediumtext mt-0 particle-target">{{ data.student.fname }}'s</h1>
     <h1 class="text-center mediumtext mt-0">School Year</h1>
-    <h1 class="mediumtext text-center title-written happygradtext mt-0">WRAPPED</h1>
+    <h1 class="mediumtext text-center title-written fireflytext mt-0">WRAPPED</h1>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
   <section class="panel">
-    <h1 class="smalltext">You Finished <span class="happygradtext">{{ data.student.grade }}th Grade!</span></h1>
+    <h1 class="smalltext">You Finished <span class="fireflytext">{{ data.student.grade }}th Grade!</span></h1>
     <p class="smallertext my-5">We were all in school for around
-      <span class="smallertext happygradtext">1,198</span>
+      <span class="smallertext fireflytext">1,198</span>
       hours this year, but you didn't spend it all in class.<br/>You and your classmates also spent your time:
     </p>
     <ul class="smallertext ms-lg-5">
-      <li>At a Middle School <span class="happygradtext">Retreat</span></li>
+      <li>At a Middle School <span class="fireflytext">Retreat</span></li>
       <li>At assemblies with
-        <span class="happygradtext">Candace Fleming</span>
-        and <span class="happygradtext">folkloric Peruvian dancers</span>
+        <span class="fireflytext">Candace Fleming</span>
+        and <span class="fireflytext">folkloric Peruvian dancers</span>
       </li>
 
       {% if data.student.grade == 7 %}
-        <li>At a <span class="happygradtext">Camp Kulaqua</span> glow party</li>
+        <li>At a <span class="fireflytext">Camp Kulaqua</span> glow party</li>
       {% else %}
-        <li>Hiking, rafting, and canyoneering in <span class="happygradtext">North Carolina</span></li>
+        <li>Hiking, rafting, and canyoneering in <span class="fireflytext">North Carolina</span></li>
       {% endif %}
 
       <li>
         <span style="text-decoration: line-through; color: red"><span
                 style="color: white">Wandering the halls</span></span>
-        <span class="title-written happygradtext ms-2">Going to the Bathroom</span>
+        <span class="title-written fireflytext ms-2">Going to the Bathroom</span>
       </li>
     </ul>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
@@ -176,20 +176,20 @@
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">This year, you requested <span class="happygradtext">{{ data.num_songs }}</span>
+      <h1 class="smalltext">This year, you requested <span class="fireflytext">{{ data.num_songs }}</span>
         songs.</h1>
 
       {% if data.song_percentile %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
-                class="happygradtext">{{ data.song_percentile }}</span>!</h2>
+                class="fireflytext">{{ data.song_percentile }}</span>!</h2>
       {% endif %}
 
       {% if data.num_songs_rejected %}
-        <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_songs_rejected }}</span> were
+        <h1 class="smalltext">Of those, <span class="fireflytext">{{ data.num_songs_rejected }}</span> were
           rejected</h1>
-        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="happygradtext">Womp womp :(</span></h2>
+        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="fireflytext">Womp womp :(</span></h2>
       {% elif data.num_songs_rejected == 0 %}
-        <h1 class="smalltext">Of those, <span class="happygradtext">none</span> were rejected</h1>
+        <h1 class="smalltext">Of those, <span class="fireflytext">none</span> were rejected</h1>
         <h2 class="smallertext ms-lg-5">&rightarrow; You've got great taste!</h2>
       {% endif %}
       <p class="text-center fs-1 downarrow">&downarrow;</p>
@@ -209,18 +209,18 @@
 
     <section class="panel">
       <h1 class="smalltext">You put your name on the board <span
-              class="happygradtext">{{ data.num_questions }}</span>
+              class="fireflytext">{{ data.num_questions }}</span>
         time{% if data.num_questions > 1 %}s{% endif %}.</h1>
 
       {% if data.help_percentile %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
-                class="happygradtext">{{ data.help_percentile }}</span>!</h2>
+                class="fireflytext">{{ data.help_percentile }}</span>!</h2>
       {% endif %}
 
       {% if data.longest_question %}
-        <h1 class="smalltext">You had <span class="happygradtext">such</span> a way with words.</h1>
+        <h1 class="smalltext">You had <span class="fireflytext">such</span> a way with words.</h1>
         <h2 class="smallertext ms-lg-5">&rightarrow; Your greatest hits included questions like
-          <span class="happygradtext">"{{ data.longest_question }}"</span></h2>
+          <span class="fireflytext">"{{ data.longest_question }}"</span></h2>
       {% endif %}
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
@@ -234,12 +234,12 @@
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">You turned in <span class="happygradtext">{{ data.num_assignments }}</span>
+      <h1 class="smalltext">You turned in <span class="fireflytext">{{ data.num_assignments }}</span>
         assignments this year.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; But it didn't feel like that many, right?</h2>
 
       {% if data.num_late != None %}
-        <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_late }}</span> were late</h1>
+        <h1 class="smalltext">Of those, <span class="fireflytext">{{ data.num_late }}</span> were late</h1>
 
         {% if data.num_late == 0 %}
           <h2 class="smallertext ms-lg-5">&rightarrow; Congrats on the perfect streak!</h2>
@@ -264,25 +264,25 @@
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">You visited <span class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
+      <h1 class="smalltext">You visited <span class="fireflytext">{{ data.num_canvas_clicks | intcomma }}</span>
         pages in Canvas.</h1>
       {% if data.canvas_clicks_percentile %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
-                class="happygradtext">{{ data.canvas_clicks_percentile }}</span>!</h2>
+                class="fireflytext">{{ data.canvas_clicks_percentile }}</span>!</h2>
       {% else %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That's a huge number.</h2>
       {% endif %}
 
       {% if data.num_canvas_minutes %}
         <h1 class="smalltext">You spent around <span
-                class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span>
+                class="fireflytext">{{ data.num_canvas_minutes | intcomma }}</span>
           minutes clicking around in your courses.</h1>
         {% if data.canvas_minutes_percentile %}
           <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
-                  class="happygradtext">{{ data.canvas_minutes_percentile }}</span>!</h2>
+                  class="fireflytext">{{ data.canvas_minutes_percentile }}</span>!</h2>
         {% endif %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
-                class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
+                class="fireflytext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
       {% endif %}
 
       <p class="text-center fs-1 downarrow">&downarrow;</p>
@@ -298,12 +298,12 @@
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">This was Cyberhazards' <span class="happygradtext">3rd</span> season.</h1>
+      <h1 class="smalltext">This was Cyberhazards' <span class="fireflytext">3rd</span> season.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; Thank you for helping us build our team!</h2>
-      <h1 class="smalltext">We played <span class="happygradtext">35</span> official matches.</h1>
-      <h2 class="smallertext ms-lg-5">&rightarrow; That's <span class="happygradtext">14</span> wins, <span
-              class="happygradtext">19</span> losses, and <span class="happygradtext">2</span> ties.</h2>
-      <h1 class="smalltext">We spent <span class="happygradtext">$1,102.36</span> on food.</h1>
+      <h1 class="smalltext">We played <span class="fireflytext">35</span> official matches.</h1>
+      <h2 class="smallertext ms-lg-5">&rightarrow; That's <span class="fireflytext">14</span> wins, <span
+              class="fireflytext">19</span> losses, and <span class="fireflytext">2</span> ties.</h2>
+      <h1 class="smalltext">We spent <span class="fireflytext">$1,102.36</span> on food.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; I'm honestly kind of impressed.</h2>
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
@@ -312,7 +312,7 @@
   <section class="panel panel-light">
     <h1 class="text-center mt-0"><span class="particle-target mediumtext">Wow.</span></h1>
     <h2 class="smalltext text-center">{{ data.student.grade }}th grade was one crazy year.</h2>
-    <h2 class="smallertext text-center"><span class="happygradtext">And now it's over.</span></h2>
+    <h2 class="smallertext text-center"><span class="fireflytext">And now it's over.</span></h2>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
