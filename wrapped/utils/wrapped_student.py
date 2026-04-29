@@ -69,6 +69,7 @@ def get_assignment_stats(student: Student):
                 student_ids=[cs.id],
                 submitted_since="2025-08-01T00:00:00Z"
         ):
+            sleep(0.01)
             assignments += 1
             if sub.late:
                 late += 1
