@@ -128,7 +128,7 @@
 
   <section class="panel panel-light">
     <h1 class="smalltext text-center mt-0">It's almost summer...</h1>
-    <h1 class="smalltext text-center mt-0">The fireflies are coming out...</h1>
+    <h1 class="smalltext text-center mt-0">The <span class="happygradtext">fireflies</span> are coming out...</h1>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
@@ -197,27 +197,29 @@
 
   {% if data.questions %}
     <section class="panel panel-light">
-      <h1 class="mediumtext text-center mt-0">What about the</h1>
+      {% if data.num_songs %}
+        <h1 class="mediumtext text-center mt-0">What about the</h1>
+      {% else %}
+        <h1 class="mediumtext text-center mt-0">Remember the</h1>
+      {% endif %}
       <h1 class="mediumtext particle-target text-center mt-0 linearound">Help Requests?</h1>
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">This year, you requested <span class="happygradtext">{{ data.num_songs }}</span>
-        songs.</h1>
+      <h1 class="smalltext">This year, you put your name on the board <span
+              class="happygradtext">{{ data.num_questions }}</span>
+        times.</h1>
 
-      {% if data.song_percentile %}
+      {% if data.help_percentile %}
         <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
-                class="happygradtext">{{ data.song_percentile }}</span>!</h2>
+                class="happygradtext">{{ data.help_percentile }}</span>!</h2>
       {% endif %}
 
-      {% if data.num_songs_rejected %}
-        <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_songs_rejected }}</span> were
-          rejected</h1>
-        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="happygradtext">Womp womp :(</span></h2>
-      {% elif data.num_songs_rejected == 0 %}
-        <h1 class="smalltext">Of those, <span class="happygradtext">none</span> were rejected</h1>
-        <h2 class="smallertext ms-lg-5">&rightarrow; You've got great taste!</h2>
+      {% if data.longest_question %}
+        <h1 class="smalltext">Your questions were always so <span class="happygradtext">eloquent</span>.</h1>
+        <h2 class="smallertext ms-lg-5">&rightarrow; Your greatest hits included questions like
+          <span class="happygradtext">"{{ data.longest_question }}"</span></h2>
       {% endif %}
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>

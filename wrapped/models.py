@@ -60,6 +60,10 @@ class Wrapped(models.Model):
         if self.rank_songs:
             return self.percentile_string(self.rank_songs / Wrapped.objects.count())
 
+    def help_percentile(self):
+        if self.rank_questions:
+            return self.percentile_string(self.rank_questions / Wrapped.objects.count())
+
     def canvas_minutes_percentile(self):
         if self.rank_canvas_minutes:
             return self.percentile_string(self.rank_canvas_minutes / Wrapped.objects.count())
