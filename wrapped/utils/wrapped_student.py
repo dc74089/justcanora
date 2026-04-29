@@ -1,6 +1,7 @@
 import traceback
 from contextlib import suppress
 from datetime import timedelta
+from time import sleep
 
 from dateutil import parser
 from tqdm import tqdm
@@ -92,6 +93,8 @@ def get_pageview_stats(student: Student):
     last_req = None
 
     for req in cs.get_page_views(start_time="2025-08-01T00:00:00Z"):
+        sleep(0.1)  # To avoid rate limiting
+
         # Starts at now, goes backwards
         pageviews += 1
 
