@@ -81,8 +81,12 @@
       }
 
       @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50%       { transform: translateY(-10px); }
+          0%, 100% {
+              transform: translateY(0);
+          }
+          50% {
+              transform: translateY(-10px);
+          }
       }
 
       .downarrow {
@@ -112,12 +116,15 @@
 {% block content-full %}
   <canvas id="particle-canvas"></canvas>
 
-  <!-- particle-target: text invisible, particles form the shape (big headings) -->
+  <section class="panel panel-light">
+    <h1 class="smalltext text-center mt-0">The stars are aligning...</h1>
+    <p class="text-center fs-1 downarrow">&downarrow;</p>
+  </section>
 
   <section class="panel panel-light">
-    <h1 class="text-center mediumtext mt-0 title-written linearound happygradtext">{{ data.student.fname }}'s</h1>
+    <h1 class="text-center mediumtext mt-0 particle-target">{{ data.student.fname }}'s</h1>
     <h1 class="text-center mediumtext mt-0">School Year</h1>
-    <h1 class="mediumtext text-center linearound particle-target mt-0">WRAPPED</h1>
+    <h1 class="mediumtext text-center title-written happygradtext mt-0">WRAPPED</h1>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
@@ -152,7 +159,35 @@
   {% if data.num_songs %}
     <section class="panel panel-light">
       <h1 class="mediumtext text-center mt-0">Remember the</h1>
-      <h1 class="mediumtext particle-target text-center mt-0">Class Playlist?</h1>
+      <h1 class="mediumtext particle-target text-center mt-0 linearound">Class Playlist?</h1>
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
+    </section>
+
+    <section class="panel">
+      <h1 class="smalltext">This year, you requested <span class="happygradtext">{{ data.num_songs }}</span>
+        songs.</h1>
+
+      {% if data.song_percentile %}
+        <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
+                class="happygradtext">{{ data.song_percentile }}</span>!</h2>
+      {% endif %}
+
+      {% if data.num_songs_rejected %}
+        <h1 class="smalltext">Of those, <span class="happygradtext">{{ data.num_songs_rejected }}</span> were
+          rejected</h1>
+        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="happygradtext">Womp womp :(</span></h2>
+      {% elif data.num_songs_rejected == 0 %}
+        <h1 class="smalltext">Of those, <span class="happygradtext">none</span> were rejected</h1>
+        <h2 class="smallertext ms-lg-5">&rightarrow; You've got great taste!</h2>
+      {% endif %}
+      <p class="text-center fs-1 downarrow">&downarrow;</p>
+    </section>
+  {% endif %}
+
+  {% if data.questions %}
+    <section class="panel panel-light">
+      <h1 class="mediumtext text-center mt-0">What about the</h1>
+      <h1 class="mediumtext particle-target text-center mt-0 linearound">Help Requests?</h1>
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
 
@@ -209,8 +244,8 @@
 
   {% if data.num_canvas_clicks %}
     <section class="panel panel-light">
-      <h1 class="text-center mediumtext mt-0">School was a</h1>
-      <h1 class="text-center mediumtext particle-target linearound">Full-Time Job!</h1>
+      <h1 class="text-center mediumtext mt-0">It all happened on</h1>
+      <h1 class="text-center mediumtext particle-target linearound">Canvas</h1>
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
 
@@ -225,7 +260,8 @@
       {% endif %}
 
       {% if data.num_canvas_minutes %}
-        <h1 class="smalltext">You spent around <span class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span>
+        <h1 class="smalltext">You spent around <span
+                class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span>
           minutes clicking around in your courses.</h1>
         {% if data.canvas_minutes_percentile %}
           <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the top <span
@@ -262,11 +298,11 @@
   <section class="panel panel-light">
     <h1 class="text-center mt-0"><span class="particle-target mediumtext">Wow.</span></h1>
     <h2 class="smalltext text-center">{{ data.student.grade }}th grade was one crazy year.</h2>
-    <h2 class="smallertext text-center">And now it's over.</h2>
+    <h2 class="smallertext text-center"><span class="happygradtext">And now it's over.</span></h2>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
-  <section class="panel" data-particle-behavior="border" data-particle-density="2">
+  <section class="panel">
     <h1 class="smalltext mt-0">A quick note:</h1>
     <div class="handwritten smallertext">
       <p class="fw-light">

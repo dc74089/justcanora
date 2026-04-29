@@ -12,26 +12,30 @@
   const DAMPING_NEAR   = 0.80;   // velocity multiplier per frame when within SETTLE_RADIUS
   const DAMPING_FAR    = 0.93;   // velocity multiplier per frame when outside SETTLE_RADIUS
   const MAX_SPD        = 6.0;    // px/frame speed cap for swarming particles
-  const STRAY_WANDER   = 0.015;  // stray drift force (very slow glide)
+  const STRAY_WANDER   = 0.01;  // stray drift force (very slow glide)
   const STRAY_TURN     = 0.006;  // stray turning rate (near-linear drift)
   const STRAY_MAX_SPD  = 0.25;   // stray top speed (barely moving)
-  const SCATTER_SPD    = 9.0;    // burst speed given to particles when a scroll scatter fires
+  const SCATTER_SPD    = 15.0;    // burst speed given to particles when a scroll scatter fires
   const SCATTER_DECAY  = 0.97;   // per-frame speed multiplier after scatter (lets burst carry across screen)
-  const SAMPLE         = 4;      // pixel stride when sampling text from the offscreen canvas (higher = fewer targets)
+  const SAMPLE         = 2;      // pixel stride when sampling text from the offscreen canvas (higher = fewer targets)
   const PARTICLE_R_MIN = 0.3;   // minimum particle radius (px)
   const PARTICLE_R_MAX = 0.8;   // maximum particle radius (px)
-  const HALO_MULT      = 2;     // halo radius = particle radius × this
-  const HALO_ALPHA     = 0.4;  // additive alpha for the glow ring pass
+  const HALO_MULT      = 2.5;     // halo radius = particle radius × this
+  const HALO_ALPHA     = 1;  // additive alpha for the glow ring pass
   const BORDER_DEPTH   = 20;   // px — thickness of the border band
   const STRAY_DIM      = 0.2;  // 0–1 target brightness for stray particles (halo + core)
   const DIM_SPEED      = 0.04; // lerp rate toward target brightness (higher = faster transition)
+  const TWINKLE_CHANCE = 0.0015; // probability per frame that a swarming particle starts a twinkle
+  const TWINKLE_DECAY  = 0.10;   // per-frame decay of twinkle intensity (higher = shorter flash)
+  const TWINKLE_BOOST  = 0.45;   // peak alpha added at full twinkle intensity
 
   const PALETTE = [
-    { h: 170, s: 100, l: 55 },  // mint/teal
-    { h: 195, s: 100, l: 60 },  // cyan
-    { h: 250, s:  90, l: 72 },  // periwinkle
-    { h: 300, s: 100, l: 70 },  // violet-pink
-    { h:  50, s: 100, l: 65 },  // warm gold accent
+    { h:  28, s: 75, l: 75 },  // very warm — candlelight (~2700 K)
+    { h:  28, s: 75, l: 75 },  // very warm — candlelight (~2700 K)
+    { h:  42, s: 50, l: 82 },  // warm white (~3200 K)
+    { h: 200, s: 10, l: 90 },  // neutral white (~4500 K)
+    { h: 210, s: 45, l: 82 },  // cool white (~6000 K)
+    { h: 220, s: 70, l: 76 },  // very cold — icy blue (~8000 K)
   ];
   const NC = PALETTE.length;
 
@@ -47,6 +51,7 @@
       this.ty        = null;
       this.active    = false;
       this.dim       = STRAY_DIM;
+      this.twinkle   = 0;
       this.wander    = Math.random() * Math.PI * 2;
       this.pulse     = Math.random() * Math.PI * 2;
       this.pulseRate = 0.025 + Math.random() * 0.025;
@@ -61,6 +66,7 @@
     release() {
       this.tx = null; this.ty = null;
       this.active = false;
+      this.twinkle = 0;
     }
 
     tick() {
@@ -92,6 +98,9 @@
           this.vx *= inv;
           this.vy *= inv;
         }
+
+        if (Math.random() < TWINKLE_CHANCE) this.twinkle = 1.0;
+        this.twinkle *= (1 - TWINKLE_DECAY);
 
       } else {
         this.wander += (Math.random() - 0.5) * STRAY_TURN * 2;
@@ -355,6 +364,19 @@
             ctx.moveTo(p.x + p.r, p.y);
             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
           }
+          ctx.fill();
+        }
+      }
+
+      // Twinkle pass — individual draws only for active particles mid-flash
+      for (let b = 0; b < NC; b++) {
+        const c = PALETTE[b];
+        ctx.fillStyle = `hsl(${c.h},${c.s}%,${Math.min(c.l + 30, 100)}%)`;
+        for (const p of swarmBuckets[b]) {
+          if (p.twinkle < 0.04) continue;
+          ctx.globalAlpha = p.twinkle * TWINKLE_BOOST;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * (1 + p.twinkle * 1.5), 0, Math.PI * 2);
           ctx.fill();
         }
       }

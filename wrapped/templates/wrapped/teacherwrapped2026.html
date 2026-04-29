@@ -109,9 +109,14 @@
   <canvas id="particle-canvas"></canvas>
 
   <section class="panel panel-light">
-    <h1 class="text-center mediumtext mt-0 title-written linearound">{{ data.display_name }}'s</h1>
+    <h1 class="smalltext text-center mt-0">The stars are aligning...</h1>
+    <p class="text-center fs-1 downarrow">&downarrow;</p>
+  </section>
+
+  <section class="panel panel-light">
+    <h1 class="text-center mediumtext mt-0 particle-target">{{ data.display_name }}'s</h1>
     <h1 class="text-center mediumtext mt-0">School Year</h1>
-    <h1 class="mediumtext text-center linearound particle-target mt-0">WRAPPED</h1>
+    <h1 class="mediumtext text-center mt-0 title-written happygradtext">WRAPPED</h1>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
@@ -133,8 +138,8 @@
       {% endif %}
 
       <li>At assemblies with
-        <span class="happygradtext">Derreck Kayongo</span>
-        and <span class="happygradtext">The Yale Whiffenpoofs</span>
+        <span class="happygradtext">Candace Fleming</span>
+        and <span class="happygradtext">folkloric Peruvian dancers</span>
       </li>
 
       <li>
@@ -178,7 +183,7 @@
   {% if data.num_canvas_clicks %}
     <section class="panel panel-light">
       <h1 class="text-center mediumtext mt-0">Speaking of</h1>
-      <h1 class="text-center mediumtext particle-target linearound">Canvas...</h1>
+      <h1 class="text-center mediumtext particle-target linearound">Canvas</h1>
       <p class="text-center fs-1 downarrow">&downarrow;</p>
     </section>
 
@@ -210,7 +215,7 @@
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
-  <section class="panel" data-particle-behavior="border">
+  <section class="panel">
     <h1 class="smalltext mt-0">A quick note:</h1>
     <div class="handwritten smallertext">
       <p class="fw-light">
@@ -232,7 +237,7 @@
       </p>
 
       <p class="mt-5 fw-light">With smiles and admiration,<br>
-        <span class="smalltext fw-bold" style="color: white">-Dominic<span
+        <span class="smalltext fw-bold happygradtext" style="color: white">-Dominic<span
                 style="writing-mode: vertical-lr">:)</span></span>
       </p>
     </div>
