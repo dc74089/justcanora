@@ -64,7 +64,7 @@ def get_assignment_stats(student: Student):
         cc = canvas.get_course(course.id)
         for sub in cc.get_multiple_submissions(
                 student_ids=[cs.id],
-                submitted_since="2024-08-01T00:00:00Z"
+                submitted_since="2025-08-01T00:00:00Z"
         ):
             assignments += 1
             if sub.late:
@@ -89,7 +89,7 @@ def get_pageview_stats(student: Student):
     session_start = None
     last_req = None
 
-    for req in cs.get_page_views(start_time="2024-08-01T00:00:00Z"):
+    for req in cs.get_page_views(start_time="2025-08-01T00:00:00Z"):
         # Starts at now, goes backwards
         pageviews += 1
 
