@@ -145,6 +145,10 @@ def get_question_stats(student: Student):
     hrq = HelpRequest.objects.filter(student=student)
 
     sw.num_questions = hrq.count()
-    sw.longest_question = sorted(hrq, key=lambda x: len(x.reason), reverse=True)[0].reason
+
+    try:
+        sw.longest_question = sorted(hrq, key=lambda x: len(x.reason), reverse=True)[0].reason
+    except IndexError:
+        pass
 
     sw.save()
