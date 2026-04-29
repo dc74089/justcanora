@@ -97,6 +97,10 @@
           transform: translateX(-50%);
       }
 
+      .nobounce {
+          animation: none !important;
+      }
+
       /* Override global gradient — firefly bioluminescent glow */
       .fireflytext {
           background-image: none;
@@ -105,6 +109,33 @@
           -webkit-text-fill-color: #c8f042;
           color: #c8f042;
           text-shadow: 0 0 18px rgba(190, 240, 40, 0.35), 0 0 45px rgba(150, 220, 0, 0.15);
+      }
+
+      html.scroll-locked {
+          overflow-y: hidden;
+      }
+
+      #start-btn {
+          background: rgba(255, 255, 255, 0.08);
+          border: 2px solid rgba(255, 255, 255, 0.6);
+          border-radius: 9999px;
+          color: white;
+          cursor: pointer;
+          padding: 0.35em 1.1em;
+          font: inherit;
+          font-size: 1.2em !important;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4em;
+          transition: border-color 0.2s, background 0.2s;
+          bottom: 100px;
+      }
+
+      #start-btn:hover {
+          border-color: white;
+          background: rgba(255, 255, 255, 0.15);
       }
 
       /* Fixed canvas overlay — particles render here */
@@ -125,12 +156,15 @@
 
 {% block content-full %}
   <canvas id="particle-canvas"></canvas>
+  <audio id="forest-audio" loop>
+    <source src="{% static 'wrapped/forest.webm' %}" type="audio/webm">
+  </audio>
 
-  <section class="panel panel-light">
-    <h1 class="smalltext text-center mt-0">It's almost summer...</h1>
-    <h1 class="smalltext text-center mt-0">The <span class="fireflytext">fireflies</span> are coming out...</h1>
+  <section class="panel panel-light" id="intro-panel">
+    <h1 class="smalltext text-center mt-0">It's almost summer</h1>
+    <h1 class="smalltext text-center mt-0">The <span class="fireflytext">fireflies</span> are coming out</h1>
     <h1 class="smalltext text-center mt-5">It's time for...</h1>
-    <p class="text-center fs-1 downarrow">&downarrow;</p>
+    <button id="start-btn" class="text-center fs-1 downarrow nobounce">Begin &downarrow;</button>
   </section>
 
   <section class="panel panel-light">
@@ -345,4 +379,22 @@
       </p>
     </div>
   </section>
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const audio = document.getElementById('forest-audio');
+      const startBtn = document.getElementById('start-btn');
+      const secondPanel = document.querySelectorAll('.panel')[1];
+
+      html.classList.add('scroll-locked');
+
+      startBtn.addEventListener('click', function () {
+        audio.volume = 0.3;
+        audio.play();
+        html.classList.remove('scroll-locked');
+        secondPanel.scrollIntoView({ behavior: 'smooth' });
+      });
+    })();
+  </script>
 {% endblock %}
