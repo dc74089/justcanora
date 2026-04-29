@@ -1,3 +1,4 @@
+import traceback
 from contextlib import suppress
 from datetime import timedelta
 
@@ -23,7 +24,8 @@ def get_all_for_student(student: Student):
         get_question_stats(student)
         get_assignment_stats(student)
         get_pageview_stats(student)
-    except:
+    except Exception as e:
+        traceback.print_exc()
         print(f"Problem with {student.name()}")
 
 
