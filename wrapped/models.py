@@ -12,6 +12,7 @@ from justcanora import settings
 class Wrapped(models.Model):
     student = models.OneToOneField(Student, on_delete=models.CASCADE, null=False, blank=False, primary_key=True)
     direct_link = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    manual = models.BooleanField(default=False)
     num_songs = models.IntegerField(null=True, blank=True)
     rank_songs = models.IntegerField(null=True, blank=True)
     num_songs_rejected = models.IntegerField(null=True, blank=True)
