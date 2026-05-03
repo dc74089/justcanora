@@ -2,7 +2,7 @@ Django~=5.2.13
 mysqlclient~=2.2.8
 google-auth~=2.40.3
 requests~=2.33.1
-canvasapi @ git+https://github.com/dcanora-lhps/canvasapi.git@688b037e163b933eea79613b8426a15b9fc53c22
+canvasapi @ git+https://github.com/dcanora-lhps/canvasapi.git@b2fa7a7102743767c5a519c04990cf7467b76d23
 Pillow~=12.2.0
 spotipy~=2.26.0
 django-crontab~=0.7.1
