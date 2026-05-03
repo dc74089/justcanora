@@ -84,7 +84,7 @@ class Wrapped(models.Model):
         adv = False
 
         for course in self.student.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR):
-            if course.type == "CS1" or course.type == "CS2":
+            if course.type == "CS1" or course.type == "CS2" or course.type == "APCSA":
                 cs = True
 
             if course.type == "advisory":
@@ -94,21 +94,21 @@ class Wrapped(models.Model):
                 ps = True
 
         if ps and cs and adv:
-            return "Computer Science, Public Speaking, and Advisory"
+            return "in Computer Science, Public Speaking, and Advisory"
         elif ps and cs:
-            return "Computer Science and Public Speaking"
+            return "in Computer Science and Public Speaking"
         elif cs and adv:
-            return "Computer Science and Advisory"
+            return "in Computer Science and Advisory"
         elif ps and adv:
-            return "Public Speaking and Advisory"
+            return "in Public Speaking and Advisory"
         elif ps:
-            return "Public Speaking"
+            return "in Public Speaking"
         elif cs:
-            return "Computer Science"
+            return "in Computer Science"
         elif adv:
-            return "Advisory"
+            return "in Advisory"
         else:
-            return "class"
+            return "around campus"
 
     def __str__(self):
         return f"{self.student.name()}'s 2025 SY Wrapped"
