@@ -1,9 +1,34 @@
+import queue
+import threading
+import traceback
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import render
 
+from app.canvas.canvas import get_canvas
+
+_generation_queue: queue.Queue = queue.Queue()
+
+
+def _generation_worker():
+    while True:
+        student = _generation_queue.get()
+        try:
+            print(f"[wrapped] Starting generation for {student.full_name()} ({student.id})")
+            get_all_for_student(student)
+            rank_all()
+            print(f"[wrapped] Finished generation for {student.full_name()} ({student.id})")
+        except Exception:
+            traceback.print_exc()
+        finally:
+            _generation_queue.task_done()
+
+
+threading.Thread(target=_generation_worker, daemon=True).start()
 from app.models import Student
 from .models import Wrapped, TeacherWrapped
+from .utils.wrapped_student import get_all_for_student, rank_all
 
 
 def wrapped(request):
@@ -81,4 +106,58 @@ def wrapped_teacher_demo(request):
     return render(request, 'wrapped/teacherwrapped2026.html', {
         'data': TeacherWrapped.objects.get(teacher_id=11862),
         'now_playing_available': False
+    })
+
+
+@staff_member_required
+def generate_manual(request):
+    ctx = {}
+
+    if request.method == 'POST':
+        raw_id = request.POST.get('canvas_id', '').strip()
+        try:
+            canvas_id = int(raw_id)
+        except ValueError:
+            ctx['error'] = f"'{raw_id}' is not a valid Canvas ID."
+            return render(request, 'wrapped/generate_manual.html', ctx)
+
+        try:
+            canvas = get_canvas()
+            canvas_user = canvas.get_user(canvas_id)
+        except Exception as e:
+            ctx['error'] = f"Canvas user {canvas_id} not found: {e}"
+            return render(request, 'wrapped/generate_manual.html', ctx)
+
+        student, student_created = Student.objects.get_or_create(id=canvas_id)
+        if student_created or not (student.fname and student.lname):
+            student.lname = canvas_user.sortable_name.split(',')[0].strip()
+            student.fname = canvas_user.sortable_name.split(',')[-1].strip()
+            try:
+                student.email = canvas_user.login_id
+            except AttributeError:
+                pass
+            student.save()
+
+        wrapped, _ = Wrapped.objects.get_or_create(student=student)
+        wrapped.manual = True
+        wrapped.save()
+
+        _generation_queue.put(student)
+        print(f"[wrapped] Queued generation for {student.full_name()} ({student.id}) — queue size: {_generation_queue.qsize()}")
+
+        ctx['wrapped'] = wrapped
+        ctx['student_created'] = student_created
+
+    ctx['manual_wrappeds'] = Wrapped.objects.filter(manual=True).order_by('student__fname')
+    return render(request, 'wrapped/generate_manual.html', ctx)
+
+
+@staff_member_required
+def admin(request):
+    all_wrappeds = Wrapped.objects.all()
+    return render(request, 'wrapped/admin.html', {
+        'total': all_wrappeds.count(),
+        'manual_count': all_wrappeds.filter(manual=True).count(),
+        'no_data_count': all_wrappeds.filter(num_assignments__isnull=True).count(),
+        'queue_size': _generation_queue.qsize(),
     })

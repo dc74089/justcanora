@@ -1,0 +1,64 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+      <h2 class="mb-4">Generate Manual Wrapped</h2>
+
+      {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+
+      {% if wrapped %}
+        <div class="alert alert-success">
+          <strong>{{ wrapped.student.full_name }}</strong>'s Wrapped has been generated{% if student_created %} and a new Student record was created{% endif %}.
+        </div>
+        <table class="table table-bordered mb-4">
+          <tr><th>Canvas ID</th><td>{{ wrapped.student.id }}</td></tr>
+          <tr><th>Songs</th><td>{{ wrapped.num_songs }}</td></tr>
+          <tr><th>Assignments</th><td>{{ wrapped.num_assignments }}</td></tr>
+          <tr><th>Late</th><td>{{ wrapped.num_late }}</td></tr>
+          <tr><th>Canvas Minutes</th><td>{{ wrapped.num_canvas_minutes }}</td></tr>
+          <tr><th>Canvas Clicks</th><td>{{ wrapped.num_canvas_clicks }}</td></tr>
+          <tr><th>Questions</th><td>{{ wrapped.num_questions }}</td></tr>
+        </table>
+        <a href="{{ wrapped.demo_url }}" class="btn btn-primary me-2">View Wrapped</a>
+        <a href="{% url 'wrapped_generate_manual' %}" class="btn btn-secondary">Generate Another</a>
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="canvas_id" class="form-label">Canvas ID</label>
+            <input type="number" class="form-control" id="canvas_id" name="canvas_id"
+                   placeholder="e.g. 3345" required autofocus>
+          </div>
+          <button type="submit" class="btn btn-primary">Generate Wrapped</button>
+        </form>
+      {% endif %}
+
+      {% if manual_wrappeds %}
+        <h4 class="mt-5 mb-3">Manually Generated Wrappeds</h4>
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Canvas ID</th>
+              <th>Direct Link</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for w in manual_wrappeds %}
+              <tr>
+                <td>{{ w.student.full_name }}</td>
+                <td>{{ w.student.id }}</td>
+                <td><a href="{{ w.demo_url }}">{{ w.demo_url }}</a></td>
+                <td><a href="{% url 'admin:wrapped_wrapped_change' w.student.id %}">Edit</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
