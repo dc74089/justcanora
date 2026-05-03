@@ -2,21 +2,23 @@
 
 {% block content %}
   <div class="row">
-    {% for cat, val in data.items %}
-      <div class="col-12 col-md-4">
-        <h1>{{ cat }}</h1>
+    {% for category in data %}
+      <div class="col-12 col-md-4 mb-4">
+        <h1>{{ category.label }}</h1>
 
         <table class="table table-striped table-hover">
           <thead>
           <tr>
             <th>Rank</th>
             <th>Student</th>
+            <th>Value</th>
           </tr>
           </thead>
-          {% for w in val %}
+          {% for item in category.items %}
             <tr>
               <th>{{ forloop.counter }}</th>
-              <td>{{ w.student }}</td>
+              <td>{{ item.student }}</td>
+              <td>{{ item.value }}</td>
             </tr>
           {% endfor %}
         </table>

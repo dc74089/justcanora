@@ -51,19 +51,29 @@ def wrapped_direct(request, key):
 
 @staff_member_required
 def ranks(request):
-    all = Wrapped.objects.all()
+    wrappeds = list(Wrapped.objects.select_related('student').all())
 
-    out = {
-        "Songs": Wrapped.objects.all().order_by('rank_songs'),
-        "Assignments": Wrapped.objects.all().order_by('rank_assignments'),
-        "Late": Wrapped.objects.all().order_by('rank_late'),
-        "Minutes": Wrapped.objects.all().order_by('rank_canvas_minutes'),
-        "Clicks": Wrapped.objects.all().order_by('rank_canvas_clicks'),
-    }
+    categories = [
+        ("Songs", "rank_songs", "num_songs"),
+        ("Assignments", "rank_assignments", "num_assignments"),
+        ("Late", "rank_late", "num_late"),
+        ("Canvas Minutes", "rank_canvas_minutes", "num_canvas_minutes"),
+        ("Canvas Clicks", "rank_canvas_clicks", "num_canvas_clicks"),
+    ]
 
-    return render(request, "wrapped/ranks.html", {
-        "data": out
-    })
+    data = [
+        {
+            "label": label,
+            "items": [
+                {"student": w.student, "value": getattr(w, value_field)}
+                for w in sorted(wrappeds, key=lambda w: getattr(w, rank_field) or float('inf'))
+                if getattr(w, rank_field) is not None
+            ],
+        }
+        for label, rank_field, value_field in categories
+    ]
+
+    return render(request, "wrapped/ranks.html", {"data": data})
 
 
 @staff_member_required

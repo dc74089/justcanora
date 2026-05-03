@@ -39,30 +39,42 @@
   </div>
 
   <h4 class="mb-3">Pages</h4>
-  <div class="list-group mb-5" style="max-width: 480px;">
-    <a href="{% url 'wrapped_generate_manual' %}" class="list-group-item list-group-item-action">
-      Generate Manual Wrapped
-    </a>
-    <a href="{% url 'wrapped_student_data' %}" class="list-group-item list-group-item-action">
-      Student Data Table
-    </a>
-    <a href="{% url 'wrapped_teacher_data' %}" class="list-group-item list-group-item-action">
-      Teacher Data Table
-    </a>
-    <a href="{% url 'ranks' %}" class="list-group-item list-group-item-action">
-      Rankings
-    </a>
-    <a href="{% url 'wrapped_demo' %}" class="list-group-item list-group-item-action">
-      Student Demo
-    </a>
-    <a href="{% url 'wrapped_teacher_demo' %}" class="list-group-item list-group-item-action">
-      Teacher Demo
-    </a>
-    <a href="{% url 'admin:wrapped_wrapped_changelist' %}" class="list-group-item list-group-item-action">
-      Django Admin — Wrapped
-    </a>
-    <a href="{% url 'admin:wrapped_teacherwrapped_changelist' %}" class="list-group-item list-group-item-action">
-      Django Admin — Teacher Wrapped
-    </a>
+  <div class="card mb-5">
+    <div class="card-body">
+      <table class="table table-bordered table-hover">
+        <tr>
+          <td class="text-center">Someone slipped through the cracks.</td>
+          <td><a class="btn btn-grad w-100" href="{% url 'wrapped_generate_manual' %}">Generate Manual</a></td>
+        </tr>
+        <tr>
+          <td class="text-center">Know thy students.</td>
+          <td><a class="btn btn-grad w-100" href="{% url 'wrapped_student_data' %}">Student Data</a></td>
+        </tr>
+        <tr>
+          <td class="text-center">Know thy teachers.</td>
+          <td><a class="btn btn-grad w-100" href="{% url 'wrapped_teacher_data' %}">Teacher Data</a></td>
+        </tr>
+        <tr>
+          <td class="text-center">Who's on top?</td>
+          <td><a class="btn btn-grad w-100" href="{% url 'ranks' %}">Rankings</a></td>
+        </tr>
+        <tr>
+          <td class="text-center">See it through their eyes.</td>
+          <td><a class="btn btn-grad w-100" href="{% url 'wrapped_demo' %}">Student Demo</a></td>
+        </tr>
+        <tr>
+          <td class="text-center">The other side of the desk.</td>
+          <td><a class="btn btn-grad w-100" href="{% url 'wrapped_teacher_demo' %}">Teacher Demo</a></td>
+        </tr>
+        <tr>
+          <td class="text-center">Pull the levers.</td>
+          <td><a class="btn btn-grad w-100" href="{% url 'admin:wrapped_wrapped_changelist' %}">Django Admin — Students</a></td>
+        </tr>
+        <tr>
+          <td class="text-center">Pull the other levers.</td>
+          <td><a class="btn btn-grad w-100" href="{% url 'admin:wrapped_teacherwrapped_changelist' %}">Django Admin — Teachers</a></td>
+        </tr>
+      </table>
+    </div>
   </div>
 {% endblock %}
