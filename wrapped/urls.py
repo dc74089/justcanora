@@ -4,6 +4,7 @@ from wrapped import views
 
 urlpatterns = [
     path('', views.wrapped, name='wrapped'),
+    path('<uuid:key>', views.wrapped_direct, name='wrapped_direct'),
     path('ranks', views.ranks, name='ranks'),
     path('demo/', views.wrapped_demo, name='wrapped_demo'),
     path('teacherdemo/', views.wrapped_teacher_demo, name='wrapped_teacher_demo'),

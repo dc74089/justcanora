@@ -18,6 +18,12 @@ def wrapped(request):
     })
 
 
+def wrapped_direct(request, key):
+    return render(request, 'wrapped/wrapped2026.html', {
+        'data': Wrapped.objects.get(direct_link=key)
+    })
+
+
 @staff_member_required
 def ranks(request):
     all = Wrapped.objects.all()
