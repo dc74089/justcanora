@@ -20,6 +20,7 @@
       html {
           scroll-snap-type: y mandatory;
           overflow-x: hidden;
+          scrollbar-width: none;
       }
 
       .panel {
@@ -90,6 +91,47 @@
           transform: translateX(-50%);
       }
 
+      .nobounce {
+          animation: none !important;
+      }
+
+      /* Override global gradient — firefly bioluminescent glow */
+      .fireflytext {
+          background-image: none;
+          -webkit-background-clip: unset;
+          background-clip: unset;
+          -webkit-text-fill-color: #c8f042;
+          color: #c8f042;
+          text-shadow: 0 0 18px rgba(190, 240, 40, 0.35), 0 0 45px rgba(150, 220, 0, 0.15);
+      }
+
+      html.scroll-locked {
+          overflow-y: hidden;
+      }
+
+      #start-btn {
+          background: rgba(255, 255, 255, 0.08);
+          border: 2px solid rgba(255, 255, 255, 0.6);
+          border-radius: 9999px;
+          color: white;
+          cursor: pointer;
+          padding: 0.35em 1.1em;
+          font: inherit;
+          font-size: 1.2em !important;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4em;
+          transition: border-color 0.2s, background 0.2s;
+          bottom: 100px;
+      }
+
+      #start-btn:hover {
+          border-color: white;
+          background: rgba(255, 255, 255, 0.15);
+      }
+
       #particle-canvas {
           position: fixed;
           top: 0;
@@ -107,45 +149,50 @@
 
 {% block content-full %}
   <canvas id="particle-canvas"></canvas>
+  <audio id="forest-audio" loop>
+    <source src="{% static 'wrapped/forest.webm' %}" type="audio/webm">
+  </audio>
 
-  <section class="panel panel-light">
-    <h1 class="smalltext text-center mt-0">The stars are aligning...</h1>
-    <p class="text-center fs-1 downarrow">&downarrow;</p>
+  <section class="panel panel-light" id="intro-panel">
+    <h1 class="smalltext text-center mt-0">It's almost summer</h1>
+    <h1 class="smalltext text-center mt-0">The <span class="fireflytext">fireflies</span> are coming out</h1>
+    <h1 class="smalltext text-center mt-5">It's time for...</h1>
+    <button id="start-btn" class="text-center fs-1 downarrow nobounce">Begin &downarrow;</button>
   </section>
 
   <section class="panel panel-light">
     <h1 class="text-center mediumtext mt-0 particle-target">{{ data.display_name }}'s</h1>
     <h1 class="text-center mediumtext mt-0">School Year</h1>
-    <h1 class="mediumtext text-center mt-0 title-written happygradtext">WRAPPED</h1>
+    <h1 class="mediumtext text-center mt-0 title-written fireflytext">WRAPPED</h1>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
   <section class="panel">
-    <h1 class="smalltext">You Finished <span class="happygradtext">SY 25-26</span>!</h1>
-    <p class="smallertext my-5">We were all in school for around <span class="happygradtext">1,198</span> hours this
+    <h1 class="smalltext">You Finished <span class="fireflytext">SY 25-26</span>!</h1>
+    <p class="smallertext my-5">We were all in school for around <span class="fireflytext">1,198</span> hours this
       year, but you didn't spend it all teaching.<br/>You also spent your time:</p>
     <ul class="smallertext ms-lg-5">
       <li>
-        Grabbing a <span class="happygradtext">coffee</span> or a <span class="happygradtext">soda</span>
+        Grabbing a <span class="fireflytext">coffee</span> or a <span class="fireflytext">soda</span>
         in the lounge (if the machines were working)
       </li>
 
       {% if data.kulaqua %}
-        <li>At a <span class="happygradtext">Camp Kulaqua</span> glow party</li>
+        <li>At a <span class="fireflytext">Camp Kulaqua</span> glow party</li>
       {% endif %}
       {% if data.nc %}
-        <li>Hiking, rafting, and canyoneering in <span class="happygradtext">North Carolina</span></li>
+        <li>Hiking, rafting, and canyoneering in <span class="fireflytext">North Carolina</span></li>
       {% endif %}
 
       <li>At assemblies with
-        <span class="happygradtext">Candace Fleming</span>
-        and <span class="happygradtext">folkloric Peruvian dancers</span>
+        <span class="fireflytext">Candace Fleming</span>
+        and <span class="fireflytext">folkloric Peruvian dancers</span>
       </li>
 
       <li>
         <span style="text-decoration: line-through; color: red"><span
                 style="color: white">Complaining about your students</span></span>
-        <span class="title-written happygradtext ms-2">Consulting with your Colleagues</span>
+        <span class="title-written fireflytext ms-2">Consulting with your Colleagues</span>
       </li>
     </ul>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
@@ -159,19 +206,19 @@
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">You assigned <span class="happygradtext">{{ data.num_assignments }}</span>
+      <h1 class="smalltext">You assigned <span class="fireflytext">{{ data.num_assignments }}</span>
         assignments in Canvas.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; Though if you ask a student, it was <i>at least</i> double that</h2>
 
-      <h1 class="smalltext">You graded <span class="happygradtext">{{ data.num_graded }}</span> submissions</h1>
+      <h1 class="smalltext">You graded <span class="fireflytext">{{ data.num_graded }}</span> submissions</h1>
 
       {% if data.num_late != None %}
         <h2 class="smallertext ms-lg-5">&rightarrow; Of those, <span
-                class="happygradtext">{{ data.num_late }}</span> were late</h2>
+                class="fireflytext">{{ data.num_late }}</span> were late</h2>
       {% endif %}
 
       {% if data.num_zeros != None %}
-        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="happygradtext">{{ data.num_zeros }}</span>
+        <h2 class="smallertext ms-lg-5">&rightarrow; <span class="fireflytext">{{ data.num_zeros }}</span>
           went in as a zero</h2>
       {% endif %}
 
@@ -188,19 +235,19 @@
     </section>
 
     <section class="panel">
-      <h1 class="smalltext">You visited <span class="happygradtext">{{ data.num_canvas_clicks | intcomma }}</span>
+      <h1 class="smalltext">You visited <span class="fireflytext">{{ data.num_canvas_clicks | intcomma }}</span>
         pages in Canvas.</h1>
       <h2 class="smallertext ms-lg-5">&rightarrow; That's a huge number.</h2>
 
       {% if data.num_canvas_minutes %}
-        <h1 class="smalltext">You spent around <span class="happygradtext">{{ data.num_canvas_minutes | intcomma }}</span>
+        <h1 class="smalltext">You spent around <span class="fireflytext">{{ data.num_canvas_minutes | intcomma }}</span>
           minutes clicking around in your courses.</h1>
         {% if data.canvas_minutes_percentile %}
           <h2 class="smallertext ms-lg-5">&rightarrow; That puts you in the <span
-                  class="happygradtext">top {{ data.canvas_minutes_percentile }}</span>!</h2>
+                  class="fireflytext">top {{ data.canvas_minutes_percentile }}</span>!</h2>
         {% else %}
           <h2 class="smallertext ms-lg-5">&rightarrow; That's about <span
-                  class="happygradtext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
+                  class="fireflytext">{{ data.canvas_minutes_per_day }}</span> minutes every day</h2>
         {% endif %}
       {% endif %}
 
@@ -237,9 +284,27 @@
       </p>
 
       <p class="mt-5 fw-light">With smiles and admiration,<br>
-        <span class="smalltext fw-bold happygradtext" style="color: white">-Dominic<span
+        <span class="smalltext fw-bold happygradtext">-Dominic<span
                 style="writing-mode: vertical-lr">:)</span></span>
       </p>
     </div>
   </section>
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const audio = document.getElementById('forest-audio');
+      const startBtn = document.getElementById('start-btn');
+      const secondPanel = document.querySelectorAll('.panel')[1];
+
+      html.classList.add('scroll-locked');
+
+      startBtn.addEventListener('click', function () {
+        audio.volume = 0.12;
+        audio.play();
+        html.classList.remove('scroll-locked');
+        secondPanel.scrollIntoView({ behavior: 'smooth' });
+      });
+    })();
+  </script>
 {% endblock %}
