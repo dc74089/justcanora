@@ -28,6 +28,7 @@ class Wrapped(models.Model):
     rank_questions = models.IntegerField(null=True, blank=True)
     longest_question = models.TextField(null=True, blank=True)
     robotics = models.BooleanField(default=False)
+    college = models.CharField(max_length=100, null=True, blank=True)
     personal_note = models.TextField(null=True, blank=True)
 
     def demo_url(self):
