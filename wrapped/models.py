@@ -79,6 +79,9 @@ class Wrapped(models.Model):
     def canvas_minutes_per_day(self):
         return self.num_canvas_minutes // 180
 
+    def in_class(self):
+        return self.student.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR).exists()
+
     def class_string(self):
         ps = False
         cs = False

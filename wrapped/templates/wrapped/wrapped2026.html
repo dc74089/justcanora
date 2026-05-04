@@ -181,22 +181,34 @@
       hours this year, but you didn't spend it all in class.<br/>You and your classmates also spent your time:
     </p>
     <ul class="smallertext ms-lg-5">
-      <li>At a Middle School <span class="fireflytext">Retreat</span></li>
-      <li>At assemblies with
-        <span class="fireflytext">Candace Fleming</span>
-        and <span class="fireflytext">folkloric Peruvian dancers</span>
-      </li>
+      {% if data.student.grade <= 9 %}
+        <li>At a Middle School <span class="fireflytext">Retreat</span></li>
+        <li>At assemblies with
+          <span class="fireflytext">Candace Fleming</span>
+          and <span class="fireflytext">folkloric Peruvian dancers</span>
+        </li>
+      {% else %}
+        <li>At <span class="fireflytext">homecoming</span> throwing back to Disney Channel classics</li>
+        <li>At assemblies with
+          <span class="fireflytext">Candace Fleming</span>
+          and <span class="fireflytext">David McCreary</span>
+        </li>
+      {% endif %}
 
       {% if data.student.grade == 7 %}
         <li>At a <span class="fireflytext">Camp Kulaqua</span> glow party</li>
-      {% else %}
+      {% elif data.student.grade == 8 %}
         <li>Hiking, rafting, and canyoneering in <span class="fireflytext">North Carolina</span></li>
+      {% elif data.student.grade == 11 %}
+        <li>Participating in the <span class="fireflytext">Junior-Senior Games</span></li>
+      {% elif data.student.grade == 12 %}
+        <li>Putting on a <span class="fireflytext">Halloween Carnival</span> for Lower Schoolers</li>
       {% endif %}
 
       <li>
         <span style="text-decoration: line-through; color: red"><span
                 style="color: white">Wandering the halls</span></span>
-        <span class="title-written fireflytext ms-2">Going to the Bathroom</span>
+        <span class="title-written fireflytext ms-2">"Going to the Bathroom"</span>
       </li>
     </ul>
     <p class="text-center fs-1 downarrow">&downarrow;</p>
@@ -356,7 +368,11 @@
       <p class="fw-light">
         {{ data.student.fname }}, I can't believe the school year is already over!
         It was so much fun having you {{ data.class_string }} this year.
-        Thanks for choosing to take my class, I hope you learned a thing or two.
+        {% if data.in_class %}
+          Thanks for choosing to take my class, I hope you learned a thing or two.
+        {% else %}
+          Thanks for coming to hang out, I hope you enjoyed every moment you spent in my room.
+        {% endif %}
         I'm <u>so proud</u> of everything you were able to accomplish this year.
       </p>
 
@@ -368,6 +384,14 @@
         {% if data.student.grade == 8 %}
           <span class="fw-bold">Go have the most amazing summer</span>,
           and best of luck in Upper School next year!
+        {% elif data.student.grade == 12 %}
+          {% if data.college %}
+            Best of luck at {{ data.college }} next year!
+            Wishing you only the best as you open this next chapter of your life.
+          {% else %}
+            <span class="fw-bold">Go have the most amazing summer</span>.
+            Wishing you only the best as you open this next chapter of your life.
+          {% endif %}
         {% else %}
           <span class="fw-bold">Go and have the most amazing summer!</span>
           And hey -- don't be a stranger next year.
@@ -381,20 +405,20 @@
   </section>
 
   <script>
-    (function () {
-      const html = document.documentElement;
-      const audio = document.getElementById('forest-audio');
-      const startBtn = document.getElementById('start-btn');
-      const secondPanel = document.querySelectorAll('.panel')[1];
+      (function () {
+          const html = document.documentElement;
+          const audio = document.getElementById('forest-audio');
+          const startBtn = document.getElementById('start-btn');
+          const secondPanel = document.querySelectorAll('.panel')[1];
 
-      html.classList.add('scroll-locked');
+          html.classList.add('scroll-locked');
 
-      startBtn.addEventListener('click', function () {
-        audio.volume = 0.12;
-        audio.play();
-        html.classList.remove('scroll-locked');
-        secondPanel.scrollIntoView({ behavior: 'smooth' });
-      });
-    })();
+          startBtn.addEventListener('click', function () {
+              audio.volume = 0.12;
+              audio.play();
+              html.classList.remove('scroll-locked');
+              secondPanel.scrollIntoView({behavior: 'smooth'});
+          });
+      })();
   </script>
 {% endblock %}
