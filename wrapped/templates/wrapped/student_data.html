@@ -54,7 +54,7 @@
             <td>{{ w.num_late }}</td>
             <td>{{ w.robotics }}</td>
             <td>{{ w.personal_note|default:"" }}</td>
-            <td><a href="{% url 'admin:wrapped_wrapped_change' w.student_id %}" class="btn btn-grad">Edit</a></td>
+            <td><a href="{% url 'admin:wrapped_wrapped_change' w.student_id %}" target="_blank" class="btn btn-grad">Edit</a></td>
           </tr>
         {% endfor %}
         </tbody>
@@ -87,7 +87,7 @@
           <td>{{ w.num_late }}</td>
           <td>{{ w.robotics }}</td>
           <td>{{ w.personal_note|default:"" }}</td>
-          <td><a href="{% url 'admin:wrapped_wrapped_change' w.student_id %}" class="btn btn-grad">Edit</a></td>
+          <td><a href="{% url 'admin:wrapped_wrapped_change' w.student_id %}" target="_blank" class="btn btn-grad">Edit</a></td>
         </tr>
       {% endfor %}
       </tbody>
