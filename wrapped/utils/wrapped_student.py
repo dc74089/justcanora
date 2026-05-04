@@ -10,6 +10,7 @@ from app.canvas.canvas import get_canvas
 from app.models import Student, MusicSuggestion, HelpRequest
 from wrapped.models import Wrapped
 
+start = parser.parse("2025-08-01T00:00:00Z")
 
 def get_all():
     for student in tqdm(Student.objects.all().exclude(id__in=[2224, 102798])):
@@ -137,7 +138,7 @@ def get_pageview_stats(student: Student):
 def get_song_stats(student: Student):
     sw, _ = Wrapped.objects.get_or_create(student=student)
 
-    sw.num_songs = MusicSuggestion.objects.filter(student=student).count()
+    sw.num_songs = MusicSuggestion.objects.filter(student=student, added__gte=start).count()
     sw.num_songs_rejected = MusicSuggestion.objects.filter(student=student, is_rejected=True).count()
 
     sw.save()
@@ -146,7 +147,7 @@ def get_song_stats(student: Student):
 def get_question_stats(student: Student):
     sw, _ = Wrapped.objects.get_or_create(student=student)
 
-    hrq = HelpRequest.objects.filter(student=student)
+    hrq = HelpRequest.objects.filter(student=student, timestamp__gte=start)
 
     sw.num_questions = hrq.count()
 
