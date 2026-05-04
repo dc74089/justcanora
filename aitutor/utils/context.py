@@ -12,6 +12,8 @@ def context_processor(request):
                 languages.append("java")
             if 'CS2' in request.user.student.courses.values_list('type', flat=True):
                 languages.append("python")
+            if 'CS1' in request.user.student.courses.values_list('type', flat=True):
+                languages.append("html")
     except:
         pass
 
