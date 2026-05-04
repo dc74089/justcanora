@@ -78,9 +78,41 @@ def ranks(request):
 
 @staff_member_required
 def student_data(request):
-    return render(request, "wrapped/student_data.html", {
-        "data": Wrapped.objects.all().order_by('student__fname')
-    })
+    ctx = {}
+
+    if request.method == 'POST':
+        raw_id = request.POST.get('canvas_id', '').strip()
+        try:
+            canvas_id = int(raw_id)
+        except ValueError:
+            ctx['error'] = f"'{raw_id}' is not a valid Canvas ID."
+        else:
+            try:
+                canvas = get_canvas()
+                canvas_user = canvas.get_user(canvas_id)
+            except Exception as e:
+                ctx['error'] = f"Canvas user {canvas_id} not found: {e}"
+            else:
+                student, student_created = Student.objects.get_or_create(id=canvas_id)
+                if student_created or not (student.fname and student.lname):
+                    student.lname = canvas_user.sortable_name.split(',')[0].strip()
+                    student.fname = canvas_user.sortable_name.split(',')[-1].strip()
+                    try:
+                        student.email = canvas_user.login_id
+                    except AttributeError:
+                        pass
+                    student.save()
+
+                wrapped, _ = Wrapped.objects.get_or_create(student=student)
+                wrapped.manual = True
+                wrapped.save()
+
+                _generation_queue.put(student)
+                ctx['queued'] = student
+
+    ctx['manual_wrappeds'] = Wrapped.objects.filter(manual=True).order_by('student__fname')
+    ctx['data'] = Wrapped.objects.all().order_by('student__fname')
+    return render(request, "wrapped/student_data.html", ctx)
 
 
 @staff_member_required
@@ -118,48 +150,6 @@ def wrapped_teacher_demo(request):
         'now_playing_available': False
     })
 
-
-@staff_member_required
-def generate_manual(request):
-    ctx = {}
-
-    if request.method == 'POST':
-        raw_id = request.POST.get('canvas_id', '').strip()
-        try:
-            canvas_id = int(raw_id)
-        except ValueError:
-            ctx['error'] = f"'{raw_id}' is not a valid Canvas ID."
-            return render(request, 'wrapped/generate_manual.html', ctx)
-
-        try:
-            canvas = get_canvas()
-            canvas_user = canvas.get_user(canvas_id)
-        except Exception as e:
-            ctx['error'] = f"Canvas user {canvas_id} not found: {e}"
-            return render(request, 'wrapped/generate_manual.html', ctx)
-
-        student, student_created = Student.objects.get_or_create(id=canvas_id)
-        if student_created or not (student.fname and student.lname):
-            student.lname = canvas_user.sortable_name.split(',')[0].strip()
-            student.fname = canvas_user.sortable_name.split(',')[-1].strip()
-            try:
-                student.email = canvas_user.login_id
-            except AttributeError:
-                pass
-            student.save()
-
-        wrapped, _ = Wrapped.objects.get_or_create(student=student)
-        wrapped.manual = True
-        wrapped.save()
-
-        _generation_queue.put(student)
-        print(f"[wrapped] Queued generation for {student.full_name()} ({student.id}) — queue size: {_generation_queue.qsize()}")
-
-        ctx['wrapped'] = wrapped
-        ctx['student_created'] = student_created
-
-    ctx['manual_wrappeds'] = Wrapped.objects.filter(manual=True).order_by('student__fname')
-    return render(request, 'wrapped/generate_manual.html', ctx)
 
 
 @staff_member_required

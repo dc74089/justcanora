@@ -1,28 +1,96 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
-  <table class="table table-hover table-striped">
-    <tr>
-      <th>Name</th>
-      <th>URL</th>
-      <th>Canvas ID</th>
-      <th>Num Songs</th>
-      <th>Num Late</th>
-      <th>Robotics</th>
-      <th>Note</th>
-      <th></th>
-    </tr>
-    {% for w in data %}
-      <tr {% if w.student.grade is None %}class="table-danger"{% endif %}>
-        <td>{{ w.student.full_name }}</td>
-        <td><a href="{% url 'wrapped_direct' w.direct_link %}">{{ w.student.full_name }}</a></td>
-        <td>{{ w.student.id }}</td>
-        <td>{{ w.num_songs }}</td>
-        <td>{{ w.num_late }}</td>
-        <td>{{ w.robotics }}</td>
-        <td>{{ w.personal_note|default:"" }}</td>
-        <td><a href="{% url 'admin:wrapped_wrapped_change' w.student_id %}" class="btn btn-grad">Edit</a></td>
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Generate Manual Wrapped</h5>
+
+          {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+          {% endif %}
+          {% if queued %}
+            <div class="alert alert-success">Queued generation for {{ queued.full_name }}.</div>
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="canvas_id" class="form-label">Canvas ID</label>
+              <input type="number" class="form-control" id="canvas_id" name="canvas_id"
+                     placeholder="e.g. 3345" required autofocus>
+            </div>
+            <button type="submit" class="btn btn-grad w-100">Generate</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if manual_wrappeds %}
+    <h4 class="mb-3">Manual <span class="badge text-bg-secondary">{{ manual_wrappeds|length }}</span></h4>
+    <div class="table-responsive mb-5">
+      <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>URL</th>
+          <th>Canvas ID</th>
+          <th>Num Songs</th>
+          <th>Num Late</th>
+          <th>Robotics</th>
+          <th>Note</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for w in manual_wrappeds %}
+          <tr {% if w.student.grade is None %}class="table-danger"{% endif %}>
+            <td>{{ w.student.full_name }}</td>
+            <td><a href="{% url 'wrapped_direct' w.direct_link %}">{{ w.student.full_name }}</a></td>
+            <td>{{ w.student.id }}</td>
+            <td>{{ w.num_songs }}</td>
+            <td>{{ w.num_late }}</td>
+            <td>{{ w.robotics }}</td>
+            <td>{{ w.personal_note|default:"" }}</td>
+            <td><a href="{% url 'admin:wrapped_wrapped_change' w.student_id %}" class="btn btn-grad">Edit</a></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+  <h4 class="mb-3">All Students <span class="badge text-bg-secondary">{{ data|length }}</span></h4>
+  <div class="table-responsive">
+    <table class="table table-hover table-striped">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>URL</th>
+        <th>Canvas ID</th>
+        <th>Num Songs</th>
+        <th>Num Late</th>
+        <th>Robotics</th>
+        <th>Note</th>
+        <th></th>
       </tr>
-    {% endfor %}
-  </table>
+      </thead>
+      <tbody>
+      {% for w in data %}
+        <tr {% if w.student.grade is None %}class="table-danger"{% endif %}>
+          <td>{{ w.student.full_name }}</td>
+          <td><a href="{% url 'wrapped_direct' w.direct_link %}">{{ w.student.full_name }}</a></td>
+          <td>{{ w.student.id }}</td>
+          <td>{{ w.num_songs }}</td>
+          <td>{{ w.num_late }}</td>
+          <td>{{ w.robotics }}</td>
+          <td>{{ w.personal_note|default:"" }}</td>
+          <td><a href="{% url 'admin:wrapped_wrapped_change' w.student_id %}" class="btn btn-grad">Edit</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}
