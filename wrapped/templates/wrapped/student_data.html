@@ -48,7 +48,7 @@
         {% for w in manual_wrappeds %}
           <tr {% if w.student.grade is None %}class="table-danger"{% endif %}>
             <td>{{ w.student.full_name }}</td>
-            <td><a href="{% url 'wrapped_direct' w.direct_link %}">{{ w.student.full_name }}</a></td>
+            <td><a href="{% url 'wrapped_direct' w.direct_link %}" target="_blank">{{ w.student.full_name }}</a></td>
             <td>{{ w.student.id }}</td>
             <td>{{ w.num_songs }}</td>
             <td>{{ w.num_late }}</td>
