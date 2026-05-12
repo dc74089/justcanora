@@ -39,13 +39,15 @@ def wrapped(request):
         return HttpResponseBadRequest()
 
     return render(request, 'wrapped/wrapped2026.html', {
-        'data': Wrapped.objects.get(student=request.user.student)
+        'data': Wrapped.objects.get(student=request.user.student),
+        'now_playing_available': False
     })
 
 
 def wrapped_direct(request, key):
     return render(request, 'wrapped/wrapped2026.html', {
-        'data': Wrapped.objects.get(direct_link=key)
+        'data': Wrapped.objects.get(direct_link=key),
+        'now_playing_available': False
     })
 
 

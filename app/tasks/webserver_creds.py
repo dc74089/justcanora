@@ -14,7 +14,7 @@ def generate_creds(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURREN
 
 
 def generate_shark_tank_creds():
-    for pd in [3, 4, 5, 6]:
+    for pd in [2, 5, 7]:
         for group in [1, 2, 3, 4, 5]:
             wc = WebserverCredential(
                 directory=f"sharkspring26/{pd}-{group}",
