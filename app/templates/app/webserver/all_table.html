@@ -109,23 +109,30 @@
   <h3><code>ftpasswd</code> Commands from Active Students</h3>
   <details>
     <summary>Expand to view code</summary>
-    <pre><code>
-      {% for cred in creds %}{% if cred.student.is_active_enforcing_semester %}
-        mkdir /var/www/{{ cred.directory }}
-        chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
-        echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
-      {% endif %}{% endfor %}
-    </code></pre>
+    <button type="button" class="btn btn-sm btn-primary mb-2" onclick="copyCode(this, 'active-ftpasswd')">Copy All</button>
+    <pre><code id="active-ftpasswd">{% for cred in creds %}{% if cred.student.is_active_enforcing_semester %}mkdir /var/www/{{ cred.directory }}
+chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
+echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
+{% endif %}{% endfor %}</code></pre>
   </details>
   <h3>All <code>ftpasswd</code> Commands</h3>
   <details>
     <summary>Expand to view code</summary>
-    <pre><code>
-      {% for cred in creds %}
-        mkdir /var/www/{{ cred.directory }}
-        chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
-        echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
-      {% endfor %}
-    </code></pre>
+    <button type="button" class="btn btn-sm btn-primary mb-2" onclick="copyCode(this, 'all-ftpasswd')">Copy All</button>
+    <pre><code id="all-ftpasswd">{% for cred in creds %}mkdir /var/www/{{ cred.directory }}
+chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
+echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
+{% endfor %}</code></pre>
   </details>
+
+  <script>
+    function copyCode(button, elementId) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const original = button.innerText;
+        button.innerText = 'Copied!';
+        setTimeout(() => { button.innerText = original; }, 2000);
+      });
+    }
+  </script>
 {% endblock %}
