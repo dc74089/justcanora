@@ -19,7 +19,7 @@ def generate_shark_tank_creds():
             wc = WebserverCredential(
                 directory=f"sharkspring26/{pd}-{group}",
                 password=WebserverCredential.gen_password(),
-                uid=int(f"89{pd}{group}"),
+                uid=int(f"91{pd}{group}"),
                 shark=True
             )
 
