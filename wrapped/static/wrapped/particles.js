@@ -11,7 +11,7 @@
   const SETTLE_RADIUS  = 6;      // px — switch to strong damping once this close to target
   const DAMPING_NEAR   = 0.85;   // velocity multiplier per frame when within SETTLE_RADIUS
   const DAMPING_FAR    = 0.95;   // velocity multiplier per frame when outside SETTLE_RADIUS
-  const MAX_SPD        = 4.5;    // px/frame speed cap for swarming particles
+  const MAX_SPD        = 5.5;    // px/frame speed cap for swarming particles
   const STRAY_WANDER   = 0.018; // stray drift force (very slow glide)
   const STRAY_TURN     = 0.03;  // stray turning rate (near-linear drift)
   const STRAY_MAX_SPD  = 0.38;   // stray top speed (barely moving)
