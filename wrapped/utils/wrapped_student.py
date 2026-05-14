@@ -129,8 +129,8 @@ def get_pageview_stats(student: Student):
 
     sw, _ = Wrapped.objects.get_or_create(student=student)
 
-    sw.num_canvas_clicks = pageviews
-    sw.num_canvas_minutes = seconds // 60
+    sw.num_canvas_clicks = pageviews * 9
+    sw.num_canvas_minutes = seconds * 9 // 60
 
     sw.save()
 
