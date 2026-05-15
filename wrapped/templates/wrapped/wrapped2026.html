@@ -164,7 +164,10 @@
     <h1 class="smalltext text-center mt-0">It's almost summer</h1>
     <h1 class="smalltext text-center mt-0">The <span class="fireflytext">fireflies</span> are coming out</h1>
     <h1 class="smalltext text-center mt-5">It's time for...</h1>
+    {% comment %}
     <button id="start-btn" class="text-center fs-1 downarrow nobounce">Begin &downarrow;</button>
+    {% endcomment %}
+    <p class="text-center fs-1 downarrow">&downarrow;</p>
   </section>
 
   <section class="panel panel-light">
@@ -404,6 +407,7 @@
     </div>
   </section>
 
+  {% comment %}
   <script>
       (function () {
           const html = document.documentElement;
@@ -421,4 +425,5 @@
           });
       })();
   </script>
+  {% endcomment %}
 {% endblock %}
