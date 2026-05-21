@@ -183,7 +183,7 @@ def get_pageview_stats(teacher_id):
 
     tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
 
-    tw.num_canvas_clicks = pageviews
-    tw.num_canvas_minutes = seconds // 60
+    tw.num_canvas_clicks = pageviews * 9
+    tw.num_canvas_minutes = seconds * 9 // 60
 
     tw.save()
