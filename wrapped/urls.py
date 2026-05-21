@@ -12,5 +12,6 @@ urlpatterns = [
     path('generate/', views.student_data, name='wrapped_generate_manual'),
     path('studentdata/', views.student_data, name='wrapped_student_data'),
     path('teacherdata/', views.teacher_data, name='wrapped_teacher_data'),
+    path('teacherdata/csv', views.teacher_csv, name='wrapped_teacher_csv'),
     path('teacher/<str:key>', views.wrapped_teacher, name='wrapped_teacher'),
 ]

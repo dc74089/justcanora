@@ -1,6 +1,9 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
+  <h2 class="text-center">
+    <a href="{% url 'wrapped_teacher_csv' %}" class="btn btn-grad">Download CSV</a>
+  </h2>
   <table class="table table-hover table-striped">
     <tr>
       <th>Name</th>
@@ -10,6 +13,7 @@
       <th>Kulaqua</th>
       <th>NC</th>
       <th>New</th>
+      <th>Edit</th>
     </tr>
     {% for tw in data %}
       <tr>
@@ -20,6 +24,7 @@
         <td>{{ tw.kulaqua }}</td>
         <td>{{ tw.nc }}</td>
         <td>{{ tw.new_to_ccc }}</td>
+        <td><a href="{% url 'admin:wrapped_teacherwrapped_change' tw.teacher_id %}">Edit</a></td>
       </tr>
     {% endfor %}
   </table>

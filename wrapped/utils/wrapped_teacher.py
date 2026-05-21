@@ -12,9 +12,7 @@ all_ms_teachers = [
     1544,  # Bartz
     1549,  # Brewer
     8035,  # Capers
-    1592,  # Cortelyou
     8045,  # Darden
-    1723,  # Daugherty
     1546,  # Denard
     11858,  # Fitz
     11862,  # Funston
@@ -27,17 +25,19 @@ all_ms_teachers = [
     1552,  # Hujik
     1553,  # R. Lee
     13153,  # Mercado
+    15528, # Negrete
+    4543, # Olson?
     1635,  # Pazmino
     4220,  # Rassa
     1705,  # Robelo
     1687,  # Schaeffer
     8015,  # Shaffer
+    15869, # Stamper
     9880,  # Stein
     1557,  # Sweet
     1558,  # Vander Meulen
     11859,  # Walsh
     4644,  # Wang
-    1690,  # Young
     14546,  # Ziegler
 ]
 
@@ -65,9 +65,9 @@ def get_user_info(teacher_id):
     u = canvas.get_user(teacher_id)
 
     tw, _ = TeacherWrapped.objects.get_or_create(teacher_id=teacher_id)
-    tw.email = u.email
-    tw.name = u.name
-    tw.display_name = u.short_name
+    tw.email = u.email.strip()
+    tw.name = u.name.strip()
+    tw.display_name = u.short_name.strip()
 
     tw.save()
 

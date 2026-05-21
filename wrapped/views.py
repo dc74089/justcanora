@@ -3,7 +3,9 @@ import threading
 import traceback
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponseForbidden, HttpResponseBadRequest
+import csv
+
+from django.http import HttpResponseForbidden, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render
 
 from app.canvas.canvas import get_canvas
@@ -163,3 +165,17 @@ def admin(request):
         'no_data_count': all_wrappeds.filter(num_assignments__isnull=True).count(),
         'queue_size': _generation_queue.qsize(),
     })
+
+
+def teacher_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="teacher_wrappeds.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'URL'])
+
+    for tw in TeacherWrapped.objects.all():
+        url = request.build_absolute_uri(f'/wrapped/teacher/{tw.key}')
+        writer.writerow([tw.name, url])
+
+    return response
