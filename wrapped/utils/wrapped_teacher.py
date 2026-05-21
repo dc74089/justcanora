@@ -90,7 +90,7 @@ def get_course_stats(teacher_id):
     for course in ct.get_courses(enrollment_type="teacher"):
         cc = canvas.get_course(course.id)
 
-        if "2025" not in str(cc.sis_course_id):
+        if "2026" not in str(cc.sis_course_id):
             print(f"Skipping {cc.name} ({cc.sis_course_id}) due to SIS ID")
             continue
         elif cc.name.split("-")[-1] not in tw.name:
