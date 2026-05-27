@@ -172,10 +172,10 @@ def teacher_csv(request):
     response['Content-Disposition'] = 'attachment; filename="teacher_wrappeds.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['Name', 'URL'])
+    writer.writerow(['Name', 'Email', 'URL'])
 
     for tw in TeacherWrapped.objects.all():
         url = request.build_absolute_uri(f'/wrapped/teacher/{tw.key}')
-        writer.writerow([tw.name, url])
+        writer.writerow([tw.name, tw.email, url])
 
     return response
