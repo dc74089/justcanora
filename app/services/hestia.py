@@ -36,6 +36,12 @@ class HestiaClient:
         self.dry_run = settings.HESTIA_DRY_RUN if dry_run is None else dry_run
         self.timeout = timeout
 
+        # The panel's self-signed cert makes urllib3 warn on every request when
+        # verification is off (expected here); quiet it.
+        if not self.verify_ssl:
+            from urllib3.exceptions import InsecureRequestWarning
+            requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
     @property
     def base_url(self):
         return f"https://{self.host}:{self.port}/api/index.php"
@@ -51,27 +57,26 @@ class HestiaClient:
             "or HESTIA_ADMIN_USER/HESTIA_ADMIN_PASSWORD)."
         )
 
-    def _call(self, cmd, *args, returncode=True, fmt=None):
+    def _call(self, cmd, *args, returncode=True):
         """Run a single `v-*` command.
 
-        With `returncode=True` the API returns just the exit code; we treat
-        "0" as success and raise otherwise. With `fmt` set (e.g. "json") the
-        raw formatted output is returned instead.
+        With `returncode=True` the API returns just the numeric exit code; we
+        treat "0" as success and raise otherwise. With `returncode=False` the
+        command's own output is returned (for reads, pass "json" as the last
+        arg to get JSON — Hestia has no separate `format` param).
         """
         params = {"cmd": cmd}
         for i, arg in enumerate(args, start=1):
             params[f"arg{i}"] = str(arg)
         if returncode:
             params["returncode"] = "yes"
-        if fmt:
-            params["format"] = fmt
 
         # Log (and, in dry-run, short-circuit) before attaching secrets so we
         # never write credentials to the log.
         printable = " ".join(str(a) for a in args)
         if self.dry_run:
             log.info("[hestia dry-run] %s %s", cmd, printable)
-            return "" if fmt else "0"
+            return "0" if returncode else ""
         log.info("[hestia] %s %s", cmd, printable)
 
         params.update(self._auth_params())
@@ -91,24 +96,34 @@ class HestiaClient:
 
     # -- reads -------------------------------------------------------------
 
-    def list_users(self):
-        """Return the panel's user list as a dict keyed by username."""
+    def raw(self, cmd, *args):
+        """Low-level data-mode call returning the untouched response text.
+        Useful for debugging what the panel actually sends back."""
+        return self._call(cmd, *args, returncode=False)
+
+    def _call_json(self, cmd, *args):
         import json
-        raw = self._call("v-list-users", returncode=False, fmt="json")
+        raw = self._call(cmd, *args, "json", returncode=False)
         if not raw:
             return {}
-        return json.loads(raw)
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            raise HestiaError(
+                f"{cmd} did not return JSON (access key may lack permission for "
+                f"{cmd}, or the API is misconfigured). Response was: {raw[:300]!r}"
+            )
+
+    def list_users(self):
+        """Return the panel's user list as a dict keyed by username."""
+        return self._call_json("v-list-users")
 
     def user_exists(self, username):
         return username in self.list_users()
 
     def list_web_domains(self, username):
         """Return a user's web domains as a dict keyed by domain."""
-        import json
-        raw = self._call("v-list-web-domains", username, returncode=False, fmt="json")
-        if not raw:
-            return {}
-        return json.loads(raw)
+        return self._call_json("v-list-web-domains", username)
 
     def web_domain_exists(self, username, domain):
         return domain in self.list_web_domains(username)

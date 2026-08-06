@@ -21,6 +21,8 @@ class Command(BaseCommand):
         parser.add_argument("--users", action="store_true",
                             help="Print every username returned, not just the count.")
         parser.add_argument("--user", help="Also list this user's web domains.")
+        parser.add_argument("--raw", action="store_true",
+                            help="Print the untouched v-list-users response (for debugging).")
 
     def handle(self, *args, **opts):
         # Read-only, so force a real request regardless of HESTIA_DRY_RUN.
@@ -35,6 +37,15 @@ class Command(BaseCommand):
         self.stdout.write(f"Target: {client.host}:{client.port}")
         self.stdout.write(f"Auth:   {auth}")
         self.stdout.write(f"Verify SSL: {client.verify_ssl}")
+
+        if opts["raw"]:
+            try:
+                body = client.raw("v-list-users", "json")
+            except HestiaError as e:
+                raise self._fail(f"Request failed: {e}")
+            self.stdout.write("\n--- raw v-list-users response ---")
+            self.stdout.write(repr(body))
+            self.stdout.write("--- end raw ---\n")
 
         try:
             users = client.list_users()
