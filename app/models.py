@@ -113,6 +113,7 @@ class Course(models.Model):
         ("23/24", "2023-24"),
         ("24/25", "2024-25"),
         ("25/26", "2025-26"),
+        ("26/27", "2026-27"),
     )
 
     course_id = models.IntegerField(null=False, blank=False)
