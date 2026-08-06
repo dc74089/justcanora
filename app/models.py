@@ -120,7 +120,7 @@ class Course(models.Model):
     section_id = models.IntegerField(null=False, blank=False)
     period = models.IntegerField(null=True, blank=True)
     semester = models.IntegerField(null=True, blank=True)
-    year = models.CharField(max_length=100, choices=academic_years, default="25/26")
+    year = models.CharField(max_length=100, choices=academic_years, default="26/27")
     name = models.TextField()
     students = models.ManyToManyField("Student", related_name="courses")
     type = models.CharField(max_length=100, choices=course_types, default="other")
