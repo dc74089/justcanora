@@ -124,13 +124,22 @@ manual is genuinely workable here — just needs a calendar reminder.
 
 ### Installing the cert into Hestia (either path)
 
+Hestia's `v-add-web-domain-ssl` can't be pointed straight at the acme.sh
+dir: it looks for cert files named after the web domain
+(`<domain>.crt`/`.key`), while acme.sh stores `fullchain.cer`/`lhpscs.com.key`
+— so it fails with exit 3 (E_NOTEXIST). The fix is a box-side wrapper,
+`/usr/local/hestia/bin/v-add-web-domain-ssl-wildcard USER DOMAIN [BASE]`,
+that stages the wildcard files under domain-named files in a temp dir and
+then calls `v-add-web-domain-ssl` (or `v-update-web-domain-ssl` if SSL is
+already on). See `webserver-runbook.md` for the wrapper script itself.
+
 ```bash
-v-add-web-domain-ssl <username> <username>.lhpscs.com /root/.acme.sh/lhpscs.com_ecc/
-v-add-web-domain-ssl-force <username> <username>.lhpscs.com
+v-add-web-domain-ssl-wildcard <username> <username>.lhpscs.com lhpscs.com
 ```
-Same cert/key files reused for every student — not a new cert request
-per student. The app does this automatically at provision time
-(`HestiaClient.install_ssl_wildcard`, part of `provision_webserver --personal`).
+Same wildcard cert reused for every student — not a new cert request per
+student. The app calls this wrapper automatically at provision time
+(`HestiaClient.install_ssl_wildcard`, part of `provision_webserver --personal`),
+and its command name must be in the API key's profile.
 
 ### Renewal automation
 
@@ -144,15 +153,16 @@ account. The account list is pulled **live from the app's roster endpoint**
 ```bash
 #!/bin/bash
 # /root/hestia-push-wildcard-cert.sh
-CERT_DIR="/root/.acme.sh/lhpscs.com_ecc"
 ROSTER_URL="https://tr.canora.us/webserver/ssl_roster/"
 TOKEN="…"   # matches HESTIA_ROSTER_TOKEN in the app env
 
 curl -fsS -H "Authorization: Bearer $TOKEN" "$ROSTER_URL" | while read -r user domain; do
-  [ -n "$user" ] && v-update-web-domain-ssl "$user" "$domain" "$CERT_DIR"
+  [ -n "$user" ] && /usr/local/hestia/bin/v-add-web-domain-ssl-wildcard "$user" "$domain" lhpscs.com
 done
 systemctl reload nginx
 ```
+(The wrapper picks add-vs-update per domain, so the same script works for the
+first install and every renewal.)
 Attach with `--reloadcmd /root/hestia-push-wildcard-cert.sh` on the issue
 command. The roster lists only provisioned personal accounts (shark-tank
 domains carry their own per-domain certs, renewed by Hestia's native cron).

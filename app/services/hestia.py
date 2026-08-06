@@ -139,11 +139,16 @@ class HestiaClient:
 
     # -- SSL ---------------------------------------------------------------
 
-    def install_ssl_wildcard(self, username, domain, cert_dir=None):
-        """Install the shared *.lhpscs.com wildcard cert on a subdomain."""
-        cert_dir = cert_dir or settings.HESTIA_CERT_DIR
-        self._call("v-add-web-domain-ssl", username, domain, cert_dir)
-        return self._call("v-add-web-domain-ssl-force", username, domain)
+    def install_ssl_wildcard(self, username, domain):
+        """Install the shared wildcard cert on a subdomain.
+
+        Delegates to a box-side wrapper (`v-add-web-domain-ssl-wildcard`, see
+        the runbook) that renames the acme.sh wildcard files to the per-domain
+        names Hestia requires (`<domain>.crt`/`.key`) and picks add-vs-update
+        automatically. Plain `v-add-web-domain-ssl` can't be pointed straight
+        at the acme.sh dir — it looks for `<domain>.crt` and fails (exit 3).
+        """
+        return self._call("v-add-web-domain-ssl-wildcard", username, domain, settings.HESTIA_BASE_DOMAIN)
 
     def install_ssl_letsencrypt(self, username, domain):
         """Issue a per-domain Let's Encrypt cert (shark tank real domains).

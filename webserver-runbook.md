@@ -66,11 +66,61 @@ Set these in the app's environment (Docker env / secrets).
 2. Allow subdomain creation under the base domain:
    `v-add-web-domain-allow-users admin lhpscs.com`
 3. Issue the wildcard cert with acme.sh (DNS-01) — see `hestia.md` Path A/B.
-   The result lives in `HESTIA_CERT_DIR`.
-4. Create a **restricted API access key** (`v-add-access-key`) for the app,
-   and open/firewall `:8083` so only the app host can reach it.
-5. Install `hestia-push-wildcard-cert.sh` as the acme.sh `--reloadcmd`
-   (script in `hestia.md` → Renewal automation).
+   The result lives in `HESTIA_CERT_DIR` (`/root/.acme.sh/lhpscs.com_ecc/`).
+4. **Install the wildcard-SSL wrapper.** Hestia's `v-add-web-domain-ssl` wants
+   cert files named `<domain>.crt`/`.key`, but acme.sh stores
+   `fullchain.cer`/`lhpscs.com.key` — pointing it at the acme dir fails with
+   exit 3. This wrapper stages domain-named files and installs (add or update):
+   ```bash
+   cat > /usr/local/hestia/bin/v-add-web-domain-ssl-wildcard <<'EOF'
+   #!/bin/bash
+   # info: install the shared wildcard acme.sh cert onto a Hestia web domain
+   # options: USER DOMAIN [BASE_DOMAIN] [RESTART]
+   user="$1"; domain="$2"; base_domain="${3:-lhpscs.com}"; restart="$4"
+   source /etc/hestiacp/hestia.conf
+   source $HESTIA/func/main.sh
+   source $HESTIA/func/domain.sh
+   check_args '2' "$#" 'USER DOMAIN [BASE_DOMAIN] [RESTART]'
+   is_object_valid 'user' 'USER' "$user"
+   is_object_valid 'web' 'DOMAIN' "$domain"
+   acme_dir="/root/.acme.sh/${base_domain}_ecc"
+   [ -d "$acme_dir" ] || acme_dir="/root/.acme.sh/${base_domain}"
+   src_crt="$acme_dir/fullchain.cer"; src_key="$acme_dir/${base_domain}.key"
+   [ -e "$src_crt" ] || check_result "$E_NOTEXIST" "$src_crt not found"
+   [ -e "$src_key" ] || check_result "$E_NOTEXIST" "$src_key not found"
+   stage="$(mktemp -d)"; trap 'rm -rf "$stage"' EXIT
+   cp -f "$src_crt" "$stage/$domain.crt"; cp -f "$src_key" "$stage/$domain.key"
+   chmod 600 "$stage/$domain".*
+   if [ "$(get_object_value 'web' 'DOMAIN' "$domain" '$SSL')" = "yes" ]; then
+       $BIN/v-update-web-domain-ssl "$user" "$domain" "$stage" "$restart"
+   else
+       $BIN/v-add-web-domain-ssl "$user" "$domain" "$stage" "same" "$restart"
+   fi
+   exit $?
+   EOF
+   chown root:root /usr/local/hestia/bin/v-add-web-domain-ssl-wildcard
+   chmod 755 /usr/local/hestia/bin/v-add-web-domain-ssl-wildcard
+   ```
+5. **Create the API permission profile + key.** A key's `PERMISSIONS` is a list
+   of *profile* names (files in `/usr/local/hestia/data/api/`), each holding a
+   `COMMANDS=` list; a command not covered 401s. Create a profile with exactly
+   what the app calls, then a key bound to it:
+   ```bash
+   cat > /usr/local/hestia/data/api/csclass <<'EOF'
+   ROLE='admin'
+   COMMANDS='v-make-tmp-file,v-list-users,v-list-web-domains,v-add-user,v-add-web-domain,v-add-web-domain-ssl-wildcard,v-add-letsencrypt-domain,v-add-web-domain-httpauth,v-delete-web-domain-httpauth,v-change-user-password,v-suspend-user,v-unsuspend-user,v-delete-user'
+   EOF
+   chown root:root /usr/local/hestia/data/api/csclass
+   chmod 640 /usr/local/hestia/data/api/csclass
+   v-add-access-key 'admin' 'csclass' 'cs-class-app' json   # returns ACCESS_KEY_ID + SECRET
+   ```
+   Put the returned key into the app's `HESTIA_ACCESS_KEY`/`HESTIA_SECRET_KEY`.
+   Open/firewall `:8083` so only the app host's IP can reach it, and add that IP
+   to the key's allowed IPs if using Hestia's `API_ALLOWED_IP`.
+   To change scope later, just edit `COMMANDS=` in the profile (no key rotation).
+6. Install `hestia-push-wildcard-cert.sh` as the acme.sh `--reloadcmd`
+   (script in `hestia.md` → Renewal automation; it loops the roster and calls
+   the wrapper above).
 
 ### In the app
 1. Set the `HESTIA_*` env vars above (at minimum the host + access key +
