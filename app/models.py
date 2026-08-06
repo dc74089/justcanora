@@ -248,38 +248,68 @@ class SpeechRating(models.Model):
         return f"{self.author.name()} evaluating {self.speaker.name()} on {self.rubric.speech}"
 
 
-class WebserverCredential(models.Model):
-    student = models.OneToOneField("Student", on_delete=models.SET_NULL, null=True, blank=True)
-    directory = models.TextField(null=True, blank=True)
-    password = models.TextField(null=True, blank=True)
-    uid = models.IntegerField(null=False, blank=False, unique=True)
-    shark = models.BooleanField(default=False, null=False, blank=False)
+def gen_web_password():
+    """A 20-char password students paste into their sftp.json."""
+    return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20))
 
-    def username(self):
-        return self.directory.split("/")[-1] if self.directory else None
+
+class WebserverCredential(models.Model):
+    """A student's personal HestiaCP account: <username>.lhpscs.com, behind
+    the shared mscs/mscs basic-auth prompt."""
+    student = models.OneToOneField("Student", on_delete=models.SET_NULL, null=True, blank=True)
+    username = models.TextField(null=True, blank=True)  # Hestia login == email prefix
+    password = models.TextField(null=True, blank=True)  # stored plaintext for sftp.json
+    provisioned_at = models.DateTimeField(null=True, blank=True)
+    ssl_installed = models.BooleanField(default=False, null=False)
+
+    @property
+    def subdomain(self):
+        return f"{self.username}.{settings.HESTIA_BASE_DOMAIN}" if self.username else None
+
+    @property
+    def url(self):
+        return f"https://{self.subdomain}" if self.username else None
 
     @classmethod
     def gen_password(cls):
-        return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(20))
-
-    @classmethod
-    def gen_uid(cls, student):
-        if student.id == 0:
-            raise Exception()
-
-        id = student.id
-
-        while True:
-            if id > 1000 and not WebserverCredential.objects.filter(uid=id).exists():
-                return id
-
-            id *= 10
+        return gen_web_password()
 
     def __str__(self):
-        if self.student:
-            return f"Webserver Creds for {self.student.full_name()} (/{self.directory}; {self.uid})"
-        else:
-            return f"Webserver Creds for (/{self.directory}; {self.uid})"
+        who = self.student.full_name() if self.student else "unknown"
+        return f"Webserver Creds for {who} ({self.subdomain})"
+
+
+class SharkProject(models.Model):
+    """A shark-tank group project: a real registered domain (its own DNS + LE
+    cert), shared by 2-4 students via one group login. No basic auth.
+    Identified by period-group, e.g. 1-4."""
+    name = models.TextField()
+    domain = models.TextField(null=True, blank=True)  # real registered domain
+    members = models.ManyToManyField("Student", blank=True, related_name="shark_projects")
+    username = models.TextField(null=True, blank=True)  # shared Hestia group login
+    password = models.TextField(null=True, blank=True)
+    year = models.CharField(max_length=100, choices=Course.academic_years, default="25/26")
+    semester = models.IntegerField(null=True, blank=True)
+    period = models.IntegerField(null=True, blank=True)
+    group_number = models.IntegerField(null=True, blank=True)
+    provisioned_at = models.DateTimeField(null=True, blank=True)
+    ssl_installed = models.BooleanField(default=False, null=False)
+
+    def label(self):
+        if self.period is not None and self.group_number is not None:
+            return f"{self.period}-{self.group_number}"
+        return self.name
+
+    @property
+    def url(self):
+        return f"https://{self.domain}" if self.domain else None
+
+    @classmethod
+    def gen_password(cls):
+        return gen_web_password()
+
+    def __str__(self):
+        return f"Shark Project {self.label()} ({self.domain or 'no domain'})"
 
 
 class HelpRequest(models.Model):

@@ -34,6 +34,28 @@ OPENAI_MODEL_FOR_CHAT = "o4-mini"
 OPENAI_MODEL_FOR_ASSESSMENT = "o4-mini"
 OPENAI_MODEL_FOR_SUMMARY = "o4-mini"
 
+# HestiaCP student hosting (lhpscs.com). See hestia.md for the full story.
+# The panel API lives on the student webserver, a separate machine from this app.
+HESTIA_HOST = os.getenv("HESTIA_HOST", "167.71.163.179")
+HESTIA_API_PORT = os.getenv("HESTIA_API_PORT", "8083")
+# Preferred auth: a restricted API access key (v-add-access-key). Falls back to
+# admin user/password if no key is configured.
+HESTIA_ACCESS_KEY = os.getenv("HESTIA_ACCESS_KEY", "")
+HESTIA_SECRET_KEY = os.getenv("HESTIA_SECRET_KEY", "")
+HESTIA_ADMIN_USER = os.getenv("HESTIA_ADMIN_USER", "")
+HESTIA_ADMIN_PASSWORD = os.getenv("HESTIA_ADMIN_PASSWORD", "")
+# The panel typically serves a self-signed cert on :8083, so verification is off
+# by default; set HESTIA_VERIFY_SSL=1 once a trusted cert is in place.
+HESTIA_VERIFY_SSL = os.getenv("HESTIA_VERIFY_SSL", "0") in ("1", "true", "True")
+HESTIA_BASE_DOMAIN = os.getenv("HESTIA_BASE_DOMAIN", "lhpscs.com")
+HESTIA_STUDENT_PACKAGE = os.getenv("HESTIA_STUDENT_PACKAGE", "student_package")
+HESTIA_CERT_DIR = os.getenv("HESTIA_CERT_DIR", "/root/.acme.sh/lhpscs.com_ecc/")
+# Shared basic-auth prompt on personal student sites (not used for shark tank).
+HESTIA_BASIC_AUTH_USER = os.getenv("HESTIA_BASIC_AUTH_USER", "mscs")
+HESTIA_BASIC_AUTH_PASSWORD = os.getenv("HESTIA_BASIC_AUTH_PASSWORD", "mscs")
+# Guard rail: refuse to send real commands unless explicitly enabled.
+HESTIA_DRY_RUN = os.getenv("HESTIA_DRY_RUN", "1") in ("1", "true", "True")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
