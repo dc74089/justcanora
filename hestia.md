@@ -89,6 +89,21 @@ subdomain and only counts as **one** issuance against the rate limit
 (`acme.sh`), then manually installing the resulting cert into each
 student's Hestia web domain.
 
+### First-time acme.sh setup (both paths)
+
+```bash
+# 1. Install (sets up its own daily renew cron)
+curl https://get.acme.sh | sh -s email=admin@lhpscs.com
+
+# 2. Use Let's Encrypt (acme.sh now defaults to ZeroSSL)
+/root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+
+# 3. Register the LE account with a REAL email.
+#    Skipping this (or a placeholder) triggers:
+#      "contact email has forbidden domain example.com"
+/root/.acme.sh/acme.sh --register-account --server letsencrypt -m you@yourschool.org
+```
+
 ### Namecheap DNS-01 — two possible paths
 
 Namecheap gates API access behind an eligibility requirement: account
@@ -106,15 +121,19 @@ export NAMECHEAP_API_KEY="..."
 export NAMECHEAP_USERNAME="..."
 export NAMECHEAP_SOURCEIP="<vps-public-ip>"
 
-# 3. Issue — fully automated, no manual DNS steps
-acme.sh --issue --dns dns_namecheap -d lhpscs.com -d *.lhpscs.com
+# 3. Issue — fully automated, no manual DNS steps.
+#    --keylength ec-256 puts the cert in /root/.acme.sh/lhpscs.com_ecc/
+#    (where the install wrapper looks); quote '*' so the shell doesn't glob it.
+acme.sh --issue --dns dns_namecheap -d lhpscs.com -d '*.lhpscs.com' \
+  --keylength ec-256 --reloadcmd /root/hestia-push-wildcard-cert.sh
 ```
-acme.sh installs its own daily cron and renews automatically (~30 days
-before expiry) using the same credentials.
+acme.sh saves the NAMECHEAP_* creds + reloadcmd into its config and renews
+automatically (~60 days) with no further input — the `export`s above are only
+needed for this first issue.
 
 **Path B — account doesn't qualify (manual DNS, still fine at this scale):**
 ```bash
-acme.sh --issue -d lhpscs.com -d *.lhpscs.com --dns \
+acme.sh --issue -d lhpscs.com -d '*.lhpscs.com' --dns --keylength ec-256 \
   --yes-I-know-dns-manual-mode-enough-go-ahead-please
 ```
 Prints two `_acme-challenge.lhpscs.com` TXT records to paste into

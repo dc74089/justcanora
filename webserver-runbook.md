@@ -68,11 +68,13 @@ Set these in the app's environment (Docker env / secrets).
 3. Issue the wildcard cert with acme.sh (DNS-01) — see `hestia.md` Path A/B.
    The result lives in `HESTIA_CERT_DIR` (`/root/.acme.sh/lhpscs.com_ecc/`).
 4. **Install the wildcard-SSL wrapper.** Hestia's `v-add-web-domain-ssl` wants
-   cert files named `<domain>.crt`/`.key`, but acme.sh stores
-   `fullchain.cer`/`lhpscs.com.key` — pointing it at the acme dir fails with
-   exit 3. This wrapper stages domain-named files and installs (add or update):
+   cert files named `<domain>.crt`/`.key`/`.ca`, but acme.sh stores the wildcard
+   as `<base>.cer` / `<base>.key` / `ca.cer` — pointing it at the acme dir fails
+   with exit 3. This wrapper stages domain-named files (leaf cert + key +
+   intermediate CA) and installs, choosing add vs update by SSL status.
+   Create `/usr/local/hestia/bin/v-add-web-domain-ssl-wildcard` (root:root,
+   chmod 755) with exactly this content:
    ```bash
-   cat > /usr/local/hestia/bin/v-add-web-domain-ssl-wildcard <<'EOF'
    #!/bin/bash
    # info: install the shared wildcard acme.sh cert onto a Hestia web domain
    # options: USER DOMAIN [BASE_DOMAIN] [RESTART]
@@ -85,11 +87,16 @@ Set these in the app's environment (Docker env / secrets).
    is_object_valid 'web' 'DOMAIN' "$domain"
    acme_dir="/root/.acme.sh/${base_domain}_ecc"
    [ -d "$acme_dir" ] || acme_dir="/root/.acme.sh/${base_domain}"
-   src_crt="$acme_dir/fullchain.cer"; src_key="$acme_dir/${base_domain}.key"
+   src_crt="$acme_dir/${base_domain}.cer"   # leaf certificate
+   src_key="$acme_dir/${base_domain}.key"
+   src_ca="$acme_dir/ca.cer"                 # intermediate chain
    [ -e "$src_crt" ] || check_result "$E_NOTEXIST" "$src_crt not found"
    [ -e "$src_key" ] || check_result "$E_NOTEXIST" "$src_key not found"
+   [ -e "$src_ca" ]  || check_result "$E_NOTEXIST" "$src_ca not found"
    stage="$(mktemp -d)"; trap 'rm -rf "$stage"' EXIT
-   cp -f "$src_crt" "$stage/$domain.crt"; cp -f "$src_key" "$stage/$domain.key"
+   cp -f "$src_crt" "$stage/$domain.crt"
+   cp -f "$src_key" "$stage/$domain.key"
+   cp -f "$src_ca"  "$stage/$domain.ca"
    chmod 600 "$stage/$domain".*
    if [ "$(get_object_value 'web' 'DOMAIN' "$domain" '$SSL')" = "yes" ]; then
        $BIN/v-update-web-domain-ssl "$user" "$domain" "$stage" "$restart"
@@ -97,10 +104,9 @@ Set these in the app's environment (Docker env / secrets).
        $BIN/v-add-web-domain-ssl "$user" "$domain" "$stage" "same" "$restart"
    fi
    exit $?
-   EOF
-   chown root:root /usr/local/hestia/bin/v-add-web-domain-ssl-wildcard
-   chmod 755 /usr/local/hestia/bin/v-add-web-domain-ssl-wildcard
    ```
+   Test it standalone before relying on it (needs the wildcard cert already
+   issued): `v-add-web-domain-ssl-wildcard <user> <user>.lhpscs.com lhpscs.com`.
 5. **Create the API permission profile + key.** A key's `PERMISSIONS` is a list
    of *profile* names (files in `/usr/local/hestia/data/api/`), each holding a
    `COMMANDS=` list; a command not covered 401s. Create a profile with exactly
