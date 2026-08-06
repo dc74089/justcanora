@@ -95,23 +95,7 @@ touch ~/Documents/CS1/.vscode/sftp.json
               <b>This code is SPECIFIC TO YOU, don't share it with ANYONE.</b>
             </li>
 
-            <pre><code>
-{
-    "name": "CS 1 Server",
-    "host": "167.71.163.179",
-    "protocol": "sftp",
-    "port": 2222,
-    "username": "{{ creds.username }}",
-    "remotePath": "/",
-    "password": "{{ creds.password }}",
-    "ignore": [
-        ".vscode",
-        ".git",
-        ".DS_Store",
-        "ignore"
-    ]
-}
-          </code></pre>
+            <pre><code>{% include 'app/webserver/_sftp_json.html' with name="CS 1 Server" host=sftp_host port=sftp_port username=creds.username remote_path=creds.remote_path password=creds.password %}</code></pre>
             
             <li>Quit (&#8984;Q) and reopen VS Code</li>
           </ol>
@@ -135,14 +119,33 @@ touch ~/Documents/CS1/.vscode/sftp.json
           <p>To access your site:</p>
 
           <ol>
-            <li>Visit <a href="https://lhpscs.com/{{ creds.directory }}">https://lhpscs.com/{{ creds.directory }}</a>
+            <li>Visit <a href="{{ creds.url }}" target="_blank">{{ creds.url }}</a>
             </li>
-            <li>If it asks you to log in, use the username <code>mscs</code> and the password <code>mscs</code> (make
-              sure both are all lowercase)
+            <li>If it asks you to log in, use the username <code>{{ basic_auth_user }}</code> and the password
+              <code>{{ basic_auth_password }}</code> (make sure both are all lowercase)
             </li>
           </ol>
         </div>
       </div>
+
+      {% if shark_projects %}
+        <div class="card mb-4">
+          <div class="card-body">
+            <h2 class="card-title">Shark Tank Project{{ shark_projects|length|pluralize }}</h2>
+            <p>Your group project has its own website. Unlike your personal site, it is
+              <b>public</b> &mdash; there is no <code>{{ basic_auth_user }}</code> login in front of it, so
+              anyone can view it. Set up a second folder in VS Code with the <code>sftp.json</code> below.</p>
+
+            {% for project in shark_projects %}
+              <hr/>
+              <h4>Group {{ project.label }} &mdash;
+                <a href="{{ project.url }}" target="_blank">{{ project.domain }}</a></h4>
+              <p><b>This code is SPECIFIC TO YOUR GROUP, don't share it outside your group.</b></p>
+              <pre><code>{% include 'app/webserver/_sftp_json.html' with name=project.domain host=sftp_host port=sftp_port username=project.username remote_path=project.remote_path password=project.password %}</code></pre>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}

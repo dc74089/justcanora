@@ -1,53 +1,24 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
+  <h2>Personal Sites</h2>
+
   <h3>Active Students</h3>
   <table class="table table-hover table-striped">
     <thead>
     <tr>
       <th>Student</th>
-      <th>Directory</th>
-      <th style="width: 30%">Password</th>
-      <th style="width: 30%">sftp.json</th>
+      <th>Site</th>
+      <th>Status</th>
+      <th>SSL</th>
+      <th style="width: 25%">Password</th>
+      <th style="width: 25%">sftp.json</th>
     </tr>
     </thead>
     <tbody>
     {% for cred in creds %}
       {% if cred.student.is_active_enforcing_semester %}
-        <tr>
-          <td>{{ cred.student.full_name }}</td>
-          <td><a href="https://lhpscs.com/{{ cred.directory }}"
-                 target="_blank">https://lhpscs.com/{{ cred.directory }}</a></td>
-          <td>
-            <details>
-              <summary>Click Here to Reveal</summary>
-              {{ cred.password }}
-            </details>
-          </td>
-
-          <td>
-            <details>
-              <summary>Click Here to Reveal</summary>
-              <pre><code>
-{
-    "name": "CS 1 Server",
-    "host": "167.71.163.179",
-    "protocol": "sftp",
-    "port": 2222,
-    "username": "{{ cred.username }}",
-    "remotePath": "/",
-    "password": "{{ cred.password }}",
-    "ignore": [
-        ".vscode",
-        ".git",
-        ".DS_Store",
-        "ignore"
-    ]
-}
-          </code></pre>
-            </details>
-          </td>
-        </tr>
+        {% include 'app/webserver/_cred_row.html' with cred=cred %}
       {% endif %}
     {% endfor %}
     </tbody>
@@ -59,80 +30,62 @@
       <thead>
       <tr>
         <th>Student</th>
-        <th>Directory</th>
-        <th style="width: 30%">Password</th>
-        <th style="width: 30%">sftp.json</th>
+        <th>Site</th>
+        <th>Status</th>
+        <th>SSL</th>
+        <th style="width: 25%">Password</th>
+        <th style="width: 25%">sftp.json</th>
       </tr>
       </thead>
       <tbody>
       {% for cred in creds %}
-        <tr>
-          <td>{{ cred.student.full_name }}</td>
-          <td><a href="https://lhpscs.com/{{ cred.directory }}"
-                 target="_blank">https://lhpscs.com/{{ cred.directory }}</a></td>
-          <td>
-            <details>
-              <summary>Click Here to Reveal</summary>
-              {{ cred.password }}
-            </details>
-          </td>
-
-          <td>
-            <details>
-              <summary>Click Here to Reveal</summary>
-              <pre><code>
-{
-    "name": "CS 1 Server",
-    "host": "167.71.163.179",
-    "protocol": "sftp",
-    "port": 2222,
-    "username": "{{ cred.username }}",
-    "remotePath": "/",
-    "password": "{{ cred.password }}",
-    "ignore": [
-        ".vscode",
-        ".git",
-        ".DS_Store",
-        "ignore"
-    ]
-}
-          </code></pre>
-            </details>
-          </td>
-        </tr>
+        {% include 'app/webserver/_cred_row.html' with cred=cred %}
       {% endfor %}
       </tbody>
     </table>
   </details>
 
-
-  <h3><code>ftpasswd</code> Commands from Active Students</h3>
-  <details>
-    <summary>Expand to view code</summary>
-    <button type="button" class="btn btn-sm btn-primary mb-2" onclick="copyCode(this, 'active-ftpasswd')">Copy All</button>
-    <pre><code id="active-ftpasswd">{% for cred in creds %}{% if cred.student.is_active_enforcing_semester %}mkdir /var/www/{{ cred.directory }}
-chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
-echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
-{% endif %}{% endfor %}</code></pre>
-  </details>
-  <h3>All <code>ftpasswd</code> Commands</h3>
-  <details>
-    <summary>Expand to view code</summary>
-    <button type="button" class="btn btn-sm btn-primary mb-2" onclick="copyCode(this, 'all-ftpasswd')">Copy All</button>
-    <pre><code id="all-ftpasswd">{% for cred in creds %}mkdir /var/www/{{ cred.directory }}
-chown -R {{ cred.uid }}:{{ cred.uid }} /var/www/{{ cred.directory }}
-echo {{ cred.password }} | ftpasswd --file /etc/proftpd/ftpd.passwd --passwd --name={{ cred.username }} --uid={{ cred.uid }} --home=/var/www/{{ cred.directory }} --shell=/bin/false --stdin
-{% endfor %}</code></pre>
-  </details>
-
-  <script>
-    function copyCode(button, elementId) {
-      const text = document.getElementById(elementId).innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const original = button.innerText;
-        button.innerText = 'Copied!';
-        setTimeout(() => { button.innerText = original; }, 2000);
-      });
-    }
-  </script>
+  <h2 class="mt-4">Shark Tank Projects</h2>
+  <table class="table table-hover table-striped">
+    <thead>
+    <tr>
+      <th>Group</th>
+      <th>Domain</th>
+      <th>Members</th>
+      <th>Status</th>
+      <th>SSL</th>
+      <th style="width: 20%">Password</th>
+      <th style="width: 20%">sftp.json</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for project in shark_projects %}
+      <tr>
+        <td>{{ project.label }}</td>
+        <td><a href="{{ project.url }}" target="_blank">{{ project.domain }}</a></td>
+        <td>{% for m in project.members.all %}{{ m.full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        <td>
+          {% if project.provisioned_at %}<span class="badge bg-success">provisioned</span>
+          {% else %}<span class="badge bg-secondary">not provisioned</span>{% endif %}
+        </td>
+        <td>
+          {% if project.ssl_installed %}<span class="badge bg-success">SSL</span>
+          {% else %}<span class="badge bg-warning text-dark">no SSL</span>{% endif %}
+        </td>
+        <td>
+          <details>
+            <summary>Click Here to Reveal</summary>
+            {{ project.password }}
+          </details>
+        </td>
+        <td>
+          <details>
+            <summary>Click Here to Reveal</summary>
+            <pre><code>{% include 'app/webserver/_sftp_json.html' with name=project.domain host=sftp_host port=sftp_port username=project.username remote_path=project.remote_path password=project.password %}</code></pre>
+          </details>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}

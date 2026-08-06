@@ -2,8 +2,10 @@
 
 Reference notes for a self-hosted HestiaCP environment providing ~100 middle
 school students (MS CS 1, web design class) with FTP/SFTP access to publish
-static/dynamic web content. Carried over from a prior conversation; picking
-up here with SSL as the next task (not yet started).
+static/dynamic web content. Account provisioning, per-account SSL install,
+and the renewal roster are now integrated into the Django app (justcanora)
+over the HestiaCP panel API; what remains is box-side setup and go-live
+(wildcard cert issuance, API key + firewall, DNS).
 
 ## Environment
 
@@ -19,22 +21,31 @@ up here with SSL as the next task (not yet started).
   default behavior — no shell, jailed to their own home dir) with zero
   cross-visibility between students.
 
-## Account provisioning (in progress)
+## Account provisioning
 
-Plan is bulk creation from this site via Hestia's CLI
+Driven from the Django app over the HestiaCP panel API on :8083 — see
+`app/services/hestia.py` (thin `v-*` client) and the `provision_webserver`
+management command. The app is the source of truth; there is no hand-run
+CLI loop.
 
 ```bash
-# one-time: a "student" package to keep accounts minimal
+# one-time on the box: a "student" package to keep accounts minimal
 # (disk quota ~250-500MB, max web domains = 1, max mail/DNS/DB = 0)
 
-# per student:
-v-add-user <username> '<password>' <email> student_package <first> <last>
-v-add-web-domain <username> <username>.lhpscs.com
+# from the app (dry-run logs the intended v-* calls and sends nothing):
+manage.py provision_webserver --dry-run
+manage.py provision_webserver --personal   # per CS1-roster student:
+                                            #   v-add-user … student_package <first> <last>
+                                            #   v-add-web-domain <username>.lhpscs.com
+                                            #   v-add-web-domain-httpauth (shared mscs/mscs)
+                                            #   wildcard SSL install
+manage.py provision_webserver --shark       # shark-tank groups: own real domain, no basic auth
+manage.py provision_webserver --shark-ssl   # per-domain Let's Encrypt (needs live DNS first)
 ```
 
-Not yet built: the actual loop/script reading the spreadsheet and calling
-these commands per row, with a dry-run mode. Also not yet decided: exact
-package limits.
+Safety: `HESTIA_DRY_RUN=1` by default — must set `=0` to send real commands.
+`manage.py hestia_check` is a read-only connectivity/credentials test
+(`v-list-users`). Still to decide: exact package limits.
 
 ## Issues hit so far (resolved)
 
@@ -118,35 +129,52 @@ v-add-web-domain-ssl <username> <username>.lhpscs.com /root/.acme.sh/lhpscs.com_
 v-add-web-domain-ssl-force <username> <username>.lhpscs.com
 ```
 Same cert/key files reused for every student — not a new cert request
-per student. This loop belongs in the bulk-provisioning script.
+per student. The app does this automatically at provision time
+(`HestiaClient.install_ssl_wildcard`, part of `provision_webserver --personal`).
 
-### Renewal automation (needs building)
+### Renewal automation
 
 Because this cert lives outside Hestia's native LE flow, Hestia's own
-daily auto-renew cron won't touch it. Plan: a `--reloadcmd` script that
-acme.sh calls automatically after every issue/renew, looping over a
-maintained list of student accounts and re-pushing the refreshed cert:
+daily auto-renew cron won't touch it. A `--reloadcmd` script that acme.sh
+calls after every issue/renew re-pushes the refreshed cert to each student
+account. The account list is pulled **live from the app's roster endpoint**
+(`/webserver/ssl_roster/`, bearer-token auth) — no hand-maintained
+`student-list.txt`:
 
 ```bash
 #!/bin/bash
 # /root/hestia-push-wildcard-cert.sh
 CERT_DIR="/root/.acme.sh/lhpscs.com_ecc"
-while read -r student; do
-  v-update-web-domain-ssl "$student" "${student}.lhpscs.com" "$CERT_DIR"
-done < /root/student-list.txt
+ROSTER_URL="https://tr.canora.us/webserver/ssl_roster/"
+TOKEN="…"   # matches HESTIA_ROSTER_TOKEN in the app env
+
+curl -fsS -H "Authorization: Bearer $TOKEN" "$ROSTER_URL" | while read -r user domain; do
+  [ -n "$user" ] && v-update-web-domain-ssl "$user" "$domain" "$CERT_DIR"
+done
 systemctl reload nginx
 ```
-Attach with `--reloadcmd /root/hestia-push-wildcard-cert.sh` on the
-issue command. Open question: how `student-list.txt` gets kept in sync
-with new mid-year student accounts (ideally auto-appended at provisioning
-time so new students get the cert pushed immediately rather than waiting
-for the next renewal cycle).
+Attach with `--reloadcmd /root/hestia-push-wildcard-cert.sh` on the issue
+command. The roster lists only provisioned personal accounts (shark-tank
+domains carry their own per-domain certs, renewed by Hestia's native cron).
+New mid-year students appear in the roster automatically — and already get
+the wildcard cert at provision time — so nothing needs manual syncing.
 
-## Open items
+## Open items (box-side setup + go-live)
 
-1. Confirm Namecheap account API eligibility → choose Path A or B above
-2. Build the wildcard cert issuance + install flow end-to-end
-3. Build/wire up `hestia-push-wildcard-cert.sh` as the reloadcmd
-4. Decide how new-student onboarding keeps `student-list.txt` in sync
-5. (Separately, still pending from provisioning) finish the bulk
-   CSV-driven `v-add-user` / `v-add-web-domain` script with dry-run mode
+1. Confirm Namecheap account API eligibility → choose Path A or B above.
+2. Issue the wildcard cert on the box via acme.sh (DNS-01). The app installs
+   it per account; acme.sh issuance itself is a one-time box-side setup.
+3. Create a restricted Hestia API access key and open/firewall :8083 to the
+   app host; set `HESTIA_*` env in the app and verify with
+   `manage.py hestia_check`.
+4. Confirm the SFTP port + chroot doc-root baked into students' `sftp.json`
+   (defaults: port 22, `/web/<domain>/public_html`) against the live box;
+   override via `HESTIA_SFTP_PORT` if needed.
+5. Point each shark-tank project's real domain DNS at the VPS before running
+   `provision_webserver --shark-ssl`.
+6. Set `HESTIA_ROSTER_TOKEN` and drop `hestia-push-wildcard-cert.sh` in as the
+   acme.sh `--reloadcmd`.
+
+Resolved: bulk provisioning is the app's `provision_webserver` command
+(dry-run built in), superseding the CSV/CLI loop; the reloadcmd pulls its
+roster from the app, so there's no `student-list.txt` to keep in sync.

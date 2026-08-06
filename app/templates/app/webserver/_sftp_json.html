@@ -1,0 +1,15 @@
+{
+    "name": "{{ name|default:"CS 1 Server" }}",
+    "host": "{{ host }}",
+    "protocol": "sftp",
+    "port": {{ port }},
+    "username": "{{ username }}",
+    "remotePath": "{{ remote_path }}",
+    "password": "{{ password }}",
+    "ignore": [
+        ".vscode",
+        ".git",
+        ".DS_Store",
+        "ignore"
+    ]
+}

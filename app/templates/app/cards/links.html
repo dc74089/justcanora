@@ -13,13 +13,17 @@
 
         {% if creds %}
           <a class="btn btn-grad mx-2" href="{% url 'webserver_guide' %}">View HTML Publishing Instructions</a>
-          {% comment %}
-            <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/{{ creds.directory }}">View My CS1 Site</a>
-          {% endcomment %}
+          {% if creds.url %}
+            <a class="btn btn-grad-positive mx-2" href="{{ creds.url }}" target="_blank">View My CS1 Site</a>
+          {% endif %}
         {% endif %}
 
+        {% for project in shark_projects %}
+          <a class="btn btn-grad-positive mx-2" href="{{ project.url }}" target="_blank">View Shark Tank {{ project.label }}</a>
+        {% endfor %}
+
         {% if cs1 %}
-          <a class="btn btn-grad-positive mx-2" href="https://lhpscs.com/dcanora/">Tr. Canora's CS1 Site</a>
+          <a class="btn btn-grad-positive mx-2" href="https://dcanora.lhpscs.com" target="_blank">Tr. Canora's CS1 Site</a>
         {% endif %}
 
         {% if pycharm %}

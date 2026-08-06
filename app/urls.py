@@ -34,6 +34,7 @@ urlpatterns = [
 
     path('webserver/instructions/', webserver.instructions, name='webserver_guide'),
     path('webserver/all_creds/', webserver.all_table, name='webserver_all'),
+    path('webserver/ssl_roster/', webserver.ssl_roster, name='webserver_ssl_roster'),
 
     path('pycharm/instructions/', jetbrains.setup_instructions, name='jetbrains_setup_instructions'),
 

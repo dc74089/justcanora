@@ -271,6 +271,10 @@ class WebserverCredential(models.Model):
     def url(self):
         return f"https://{self.subdomain}" if self.username else None
 
+    @property
+    def remote_path(self):
+        return f"/web/{self.subdomain}/public_html" if self.username else None
+
     @classmethod
     def gen_password(cls):
         return gen_web_password()
@@ -289,7 +293,7 @@ class SharkProject(models.Model):
     members = models.ManyToManyField("Student", blank=True, related_name="shark_projects")
     username = models.TextField(null=True, blank=True)  # shared Hestia group login
     password = models.TextField(null=True, blank=True)
-    year = models.CharField(max_length=100, choices=Course.academic_years, default="25/26")
+    year = models.CharField(max_length=100, choices=Course.academic_years, default="26/27")
     semester = models.IntegerField(null=True, blank=True)
     period = models.IntegerField(null=True, blank=True)
     group_number = models.IntegerField(null=True, blank=True)
@@ -304,6 +308,10 @@ class SharkProject(models.Model):
     @property
     def url(self):
         return f"https://{self.domain}" if self.domain else None
+
+    @property
+    def remote_path(self):
+        return f"/web/{self.domain}/public_html" if self.domain else None
 
     @classmethod
     def gen_password(cls):

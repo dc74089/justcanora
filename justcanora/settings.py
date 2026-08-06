@@ -48,6 +48,10 @@ HESTIA_ADMIN_PASSWORD = os.getenv("HESTIA_ADMIN_PASSWORD", "")
 # by default; set HESTIA_VERIFY_SSL=1 once a trusted cert is in place.
 HESTIA_VERIFY_SSL = os.getenv("HESTIA_VERIFY_SSL", "0") in ("1", "true", "True")
 HESTIA_BASE_DOMAIN = os.getenv("HESTIA_BASE_DOMAIN", "lhpscs.com")
+# Connection details students paste into sftp.json. Hestia chroots each SFTP
+# login to their home, so the site lives under /web/<domain>/public_html.
+HESTIA_SFTP_HOST = os.getenv("HESTIA_SFTP_HOST", HESTIA_HOST)
+HESTIA_SFTP_PORT = os.getenv("HESTIA_SFTP_PORT", "22")
 HESTIA_STUDENT_PACKAGE = os.getenv("HESTIA_STUDENT_PACKAGE", "student_package")
 HESTIA_CERT_DIR = os.getenv("HESTIA_CERT_DIR", "/root/.acme.sh/lhpscs.com_ecc/")
 # Shared basic-auth prompt on personal student sites (not used for shark tank).
@@ -55,6 +59,9 @@ HESTIA_BASIC_AUTH_USER = os.getenv("HESTIA_BASIC_AUTH_USER", "mscs")
 HESTIA_BASIC_AUTH_PASSWORD = os.getenv("HESTIA_BASIC_AUTH_PASSWORD", "mscs")
 # Guard rail: refuse to send real commands unless explicitly enabled.
 HESTIA_DRY_RUN = os.getenv("HESTIA_DRY_RUN", "1") in ("1", "true", "True")
+# Shared bearer token the webserver's acme.sh reloadcmd uses to fetch the
+# current wildcard-cert roster (see the ssl_roster view). Empty = endpoint off.
+HESTIA_ROSTER_TOKEN = os.getenv("HESTIA_ROSTER_TOKEN", "")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/

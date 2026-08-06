@@ -29,6 +29,10 @@ def links(request):
         if WebserverCredential.objects.filter(student=request.user.student).exists():
             ctx['creds'] = WebserverCredential.objects.filter(student=request.user.student).first()
 
+        shark_projects = s.shark_projects.all()
+        if shark_projects.exists():
+            ctx['shark_projects'] = shark_projects
+
         if s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER, type="CS1").exists():
             ctx['cs1'] = True
 
