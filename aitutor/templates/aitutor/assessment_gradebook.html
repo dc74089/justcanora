@@ -1,0 +1,195 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/bootstrap-table.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/bootstrap-table.min.js"></script>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/extensions/filter-control/bootstrap-table-filter-control.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+
+  <script>
+      function load_conversation(conv_id) {
+          $.get('{% url 'chat_assessment_results_convo' %}', {conv_id: conv_id}, function (data) {
+              $('#conv_body').html("Loading...");
+              $('#conversation-modal').modal('show');
+              $('#conv_body').html(data);
+          })
+      }
+
+      function repost(conv_id) {
+          if (!confirm("Re-post this grade to Canvas?")) return;
+          $.post("{% url 'chat_assessment_repost' %}", {conv_id: conv_id}).then(function () {
+              alert("Re-posted to Canvas.");
+          })
+      }
+
+      function reopen(conv_id) {
+          if (!confirm("Reopen this assessment so the student can continue or redo it?")) return;
+          $.post("{% url 'chat_assessment_reopen' %}", {conv_id: conv_id}).then(function () {
+              location.reload();
+          })
+      }
+
+      function open_override(conv_id, score, credit) {
+          $("#override_conv_id").val(conv_id);
+          $("#override_score").val(score || 5);
+          $("#override_credit").val(credit ? "true" : "false");
+          $("#override_feedback").val("");
+          $('#override-modal').modal('show');
+      }
+
+      function submit_override() {
+          $.post("{% url 'chat_assessment_override' %}", {
+              conv_id: $("#override_conv_id").val(),
+              score: $("#override_score").val(),
+              credit: $("#override_credit").val(),
+              feedback: $("#override_feedback").val()
+          }).then(function () {
+              location.reload();
+          })
+      }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <h1>Quick Check Gradebook</h1>
+
+  {% for book in gradebook %}
+    <div class="card mt-3">
+      <div class="card-body">
+        <h2 class="card-title">{{ book.assessment.short_name }}
+          <small class="text-muted">— {{ book.assessment.course.name }}</small>
+        </h2>
+
+        <div class="mb-3 d-flex flex-wrap gap-2">
+          <span class="badge bg-secondary">Roster {{ book.stats.roster }}</span>
+          <span class="badge bg-info text-dark">Started {{ book.stats.started }}</span>
+          <span class="badge bg-success">Completed {{ book.stats.completed }} ({{ book.stats.completion_pct }}%)</span>
+          <span class="badge bg-primary">Avg {{ book.stats.avg_score|default:"—" }}/5</span>
+          <span class="badge bg-warning text-dark">Credit {{ book.stats.credit_pct }}%</span>
+        </div>
+
+        <table data-toggle="table" data-filter-control="true">
+          <thead>
+          <tr>
+            <th data-field="student" data-filter-control="input">Student</th>
+            <th data-field="status" data-filter-control="select">Status</th>
+            <th data-field="score">Score</th>
+            <th data-field="credit" data-filter-control="select">Credit</th>
+            <th data-field="feedback" data-filter-control="input">Feedback</th>
+            <th data-field="actions">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for r in book.rows %}
+            <tr>
+              <td>
+                {{ r.student.full_name }}
+                {% if not r.enrolled %}<span class="badge bg-light text-dark">not enrolled</span>{% endif %}
+              </td>
+              <td>
+                {% if r.status == 'completed' %}
+                  <span class="badge bg-success">Completed</span>
+                {% elif r.status == 'in_progress' %}
+                  <span class="badge bg-warning text-dark">In progress</span>
+                {% elif r.status == 'locked' %}
+                  <span class="badge bg-danger">Locked</span>
+                {% else %}
+                  <span class="badge bg-secondary">Not started</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if r.score %}
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="progress flex-grow-1" style="min-width: 70px;">
+                      <div class="progress-bar btn-grad" role="progressbar" style="width: {{ r.score_pct }}%"></div>
+                    </div>
+                    <span>{{ r.score }}/5</span>
+                  </div>
+                {% else %}—{% endif %}
+              </td>
+              <td>
+                {% if r.status == 'completed' %}
+                  {% if r.credit %}✔️{% else %}❌{% endif %}
+                {% else %}—{% endif %}
+              </td>
+              <td>{{ r.feedback|truncatewords:20 }}</td>
+              <td>
+                {% if r.conv %}
+                  <div class="d-flex flex-wrap gap-1">
+                    <a class="btn btn-sm btn-grad" onclick="load_conversation('{{ r.conv.id }}')">View</a>
+                    <a class="btn btn-sm btn-grad-positive"
+                       onclick="open_override('{{ r.conv.id }}', {{ r.score|default:5 }}, {{ r.credit|yesno:'true,false' }})">Override</a>
+                    {% if r.conv.locked %}
+                      <a class="btn btn-sm btn-grad" onclick="reopen('{{ r.conv.id }}')">Reopen</a>
+                    {% endif %}
+                    {% if r.status == 'completed' %}
+                      <a class="btn btn-sm btn-grad" onclick="repost('{{ r.conv.id }}')">Re-post</a>
+                    {% endif %}
+                  </div>
+                {% else %}—{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted">No assessments defined yet. Add one in the Django admin.</p>
+  {% endfor %}
+{% endblock %}
+
+{% block modals %}
+  <div class="modal" tabindex="-1" id="conversation-modal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Conversation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="conv_body"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" tabindex="-1" id="override-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Override Result</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="override_conv_id">
+          <div class="mb-2">
+            <label for="override_score">Understanding score</label>
+            <select class="form-select" id="override_score">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label for="override_credit">Credit</label>
+            <select class="form-select" id="override_credit">
+              <option value="true">Complete</option>
+              <option value="false">Incomplete</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label for="override_feedback">Feedback (leave blank to keep existing)</label>
+            <textarea class="form-control" id="override_feedback" rows="3"></textarea>
+          </div>
+          <p class="text-muted"><small>Saving re-posts the grade to Canvas.</small></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-grad-positive" onclick="submit_override()">Save &amp; Re-post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from aitutor.views import chat, assessment, moderation
+from aitutor.views import chat, assessment, moderation, dashboard
 
 urlpatterns = [
     path('', chat.chat_home, name='chat_home'),
@@ -14,6 +14,13 @@ urlpatterns = [
     path('assessment/send', assessment.assessment_send_message, name='chat_assessment_send'),
     path('assessment/results', assessment.assessment_results, name='chat_assessment_results'),
     path('assessment/results/full_convo', assessment.assessment_results_get_convo, name='chat_assessment_results_convo'),
+    path('assessment/repost', assessment.assessment_repost, name='chat_assessment_repost'),
+    path('assessment/reopen', assessment.assessment_reopen, name='chat_assessment_reopen'),
+    path('assessment/override', assessment.assessment_override, name='chat_assessment_override'),
+
+    path('staff', dashboard.staff_dashboard, name='chat_staff_dashboard'),
+    path('staff/strikes', dashboard.strikes_panel, name='chat_strikes'),
+    path('staff/strikes/clear', dashboard.clear_strike, name='chat_clear_strike'),
 
     path('moderate', moderation.moderate, name='chat_moderate'),
     path('moderate/conversation', moderation.moderation_get_conversation, name='chat_moderate_get_conversation'),

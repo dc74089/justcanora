@@ -1,0 +1,87 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <script>
+      function load_conversation(conv_id) {
+          $.get('{% url 'chat_moderate_get_conversation' %}', {conv_id: conv_id}, function (data) {
+              $('#conv_body').html("Loading...");
+              $('#conversation-modal').modal('show');
+              $('#conv_body').html(data);
+          })
+      }
+
+      function clear_strike(strike_id) {
+          if (!confirm("Clear this strike? This counts toward lifting a ban.")) return;
+          $.post("{% url 'chat_clear_strike' %}", {strike_id: strike_id}).then(function () {
+              location.reload();
+          })
+      }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <h1>Strikes &amp; Bans</h1>
+
+  <div class="accordion mt-3" id="strikesAccordion">
+    {% for row in rows %}
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#strike-{{ row.student.id }}" aria-expanded="false">
+            {{ row.student.full_name }}
+            {% if row.banned %}
+              <span class="badge bg-danger ms-2">Banned</span>
+            {% endif %}
+            <span class="badge bg-secondary ms-2">{{ row.count }} strike{{ row.count|pluralize }}</span>
+          </button>
+        </h2>
+        <div id="strike-{{ row.student.id }}" class="accordion-collapse collapse" data-bs-parent="#strikesAccordion">
+          <div class="accordion-body">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>When</th>
+                <th>Reason</th>
+                <th>Conversation</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for strike in row.strikes %}
+                <tr>
+                  <td>{{ strike.time }}</td>
+                  <td>{{ strike.reason }}</td>
+                  <td>
+                    {% if strike.conversation %}
+                      <a class="btn btn-sm btn-grad" onclick="load_conversation('{{ strike.conversation.id }}')">View</a>
+                    {% else %}—{% endif %}
+                  </td>
+                  <td>
+                    <a class="btn btn-sm btn-grad-negative" onclick="clear_strike('{{ strike.id }}')">Clear</a>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">No strikes on record.</p>
+    {% endfor %}
+  </div>
+{% endblock %}
+
+{% block modals %}
+  <div class="modal" tabindex="-1" id="conversation-modal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Conversation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="conv_body"></div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
