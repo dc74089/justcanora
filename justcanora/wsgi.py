@@ -9,12 +9,8 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 
 import os
 
-import socketio
-
 from django.core.wsgi import get_wsgi_application
-
-from justcanora.sio import sio
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'justcanora.settings')
 
-application = socketio.WSGIApp(sio, get_wsgi_application())
+application = get_wsgi_application()

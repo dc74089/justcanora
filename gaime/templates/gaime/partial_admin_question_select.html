@@ -1,5 +1,0 @@
-<select class="form-control" id="question-select">
-  {% for question in questions %}
-    <option value="{{ question.id }}">{% if question.used %}USED - {% endif %}{{ question.prompt }}</option>
-  {% endfor %}
-</select>

@@ -75,11 +75,6 @@
       <ul class="navbar-nav me-auto">
       </ul>
       <ul class="navbar-nav ms-auto">
-        {% if gaime_available %}
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'gaime_index' %}">G(ai)me Show</a>
-          </li>
-        {% endif %}
         {% if request.user.is_authenticated %}
           {% if tutor_available %}
             <li class="nav-item active">
