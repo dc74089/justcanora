@@ -49,18 +49,57 @@
               location.reload();
           })
       }
+
+      function open_assessment_form() {
+          $("#af_title").text("New Assessment");
+          $("#af_short_name").val("");
+          $("#af_course").val($("#af_course option:first").val());
+          $("#af_canvas").val("");
+          $("#af_prompt").val("");
+          $('#assessment-form-modal').modal('show');
+      }
+
+      function clone_assessment(assessment_id) {
+          $.get("{% url 'chat_assessment_detail' %}", {assessment_id: assessment_id}, function (d) {
+              $("#af_title").text("Clone Assessment");
+              $("#af_short_name").val(d.short_name + " (copy)");
+              $("#af_course").val(d.course_id);
+              $("#af_canvas").val(d.canvas_assignment_id);
+              $("#af_prompt").val(d.prompt);
+              $('#assessment-form-modal').modal('show');
+          })
+      }
+
+      function submit_assessment() {
+          $.post("{% url 'chat_assessment_save' %}", {
+              short_name: $("#af_short_name").val(),
+              course_id: $("#af_course").val(),
+              canvas_assignment_id: $("#af_canvas").val(),
+              prompt: $("#af_prompt").val()
+          }).then(function () {
+              location.reload();
+          }).fail(function (xhr) {
+              alert(xhr.responseText || "Could not save assessment.");
+          })
+      }
   </script>
 {% endblock %}
 
 {% block content %}
-  <h1>Quick Check Gradebook</h1>
+  <div class="d-flex justify-content-between align-items-center">
+    <h1>Quick Check Gradebook</h1>
+    <a class="btn btn-grad-positive" onclick="open_assessment_form()">New Assessment</a>
+  </div>
 
   {% for book in gradebook %}
     <div class="card mt-3">
       <div class="card-body">
-        <h2 class="card-title">{{ book.assessment.short_name }}
-          <small class="text-muted">— {{ book.assessment.course.name }}</small>
-        </h2>
+        <div class="d-flex justify-content-between align-items-start">
+          <h2 class="card-title">{{ book.assessment.short_name }}
+            <small class="text-muted">— {{ book.assessment.course.name }}</small>
+          </h2>
+          <a class="btn btn-sm btn-grad" onclick="clone_assessment('{{ book.assessment.id }}')">Clone</a>
+        </div>
 
         <div class="mb-3 d-flex flex-wrap gap-2">
           <span class="badge bg-secondary">Roster {{ book.stats.roster }}</span>
@@ -188,6 +227,42 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-grad-positive" onclick="submit_override()">Save &amp; Re-post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" tabindex="-1" id="assessment-form-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="af_title">New Assessment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label for="af_short_name">Short name</label>
+            <input class="form-control" id="af_short_name">
+          </div>
+          <div class="mb-2">
+            <label for="af_course">Course</label>
+            <select class="form-select" id="af_course">
+              {% for c in courses %}
+                <option value="{{ c.id }}">{{ c.name }} ({{ c.year }} · S{{ c.semester }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-2">
+            <label for="af_canvas">Canvas assignment ID</label>
+            <input type="number" class="form-control" id="af_canvas">
+          </div>
+          <div class="mb-2">
+            <label for="af_prompt">Learning goal / prompt</label>
+            <textarea class="form-control" id="af_prompt" rows="6"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-grad-positive" onclick="submit_assessment()">Save</button>
         </div>
       </div>
     </div>

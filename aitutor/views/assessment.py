@@ -1,9 +1,10 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden, HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseForbidden, HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
+from app.models import Course
 from aitutor.models import Assessment, AssessmentConversation, AgentMessage, Agent
 from aitutor.utils import claude
 from aitutor.utils.grades import post_assessment_grade
@@ -146,6 +147,7 @@ def assessment_results(request):
     if request.user.is_staff:
         return render(request, "aitutor/assessment_gradebook.html", {
             "gradebook": build_gradebook(),
+            "courses": Course.objects.order_by('-year', 'name'),
         })
 
     return render(request, "aitutor/assessment_results.html", {
@@ -209,5 +211,49 @@ def assessment_override(request):
     conv.save()
 
     post_assessment_grade(conv)
+
+    return HttpResponse(status=200)
+
+
+@staff_member_required
+def assessment_detail(request):
+    """Return an assessment's fields as JSON so the gradebook can pre-fill the
+    form when cloning."""
+    a = Assessment.objects.get(id=request.GET['assessment_id'])
+    return JsonResponse({
+        "short_name": a.short_name,
+        "course_id": a.course_id,
+        "canvas_assignment_id": a.canvas_assignment_id,
+        "prompt": a.prompt,
+    })
+
+
+@csrf_exempt
+@staff_member_required
+def assessment_save(request):
+    """Create an assessment from the gradebook form (also the target for a
+    cloned assessment — the form is pre-filled from the source, saved as new)."""
+    data = request.POST
+    short_name = data.get('short_name', '').strip()
+    prompt = data.get('prompt', '').strip()
+
+    if not short_name or not prompt:
+        return HttpResponseBadRequest("Short name and prompt are required.")
+
+    if Assessment.objects.filter(short_name=short_name).exists():
+        return HttpResponseBadRequest("An assessment with that short name already exists.")
+
+    try:
+        course = Course.objects.get(id=data['course_id'])
+        canvas_assignment_id = int(data['canvas_assignment_id'])
+    except (KeyError, ValueError, Course.DoesNotExist):
+        return HttpResponseBadRequest("Pick a course and enter a numeric Canvas assignment ID.")
+
+    Assessment.objects.create(
+        short_name=short_name,
+        course=course,
+        canvas_assignment_id=canvas_assignment_id,
+        prompt=prompt,
+    )
 
     return HttpResponse(status=200)

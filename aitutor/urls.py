@@ -17,6 +17,8 @@ urlpatterns = [
     path('assessment/repost', assessment.assessment_repost, name='chat_assessment_repost'),
     path('assessment/reopen', assessment.assessment_reopen, name='chat_assessment_reopen'),
     path('assessment/override', assessment.assessment_override, name='chat_assessment_override'),
+    path('assessment/save', assessment.assessment_save, name='chat_assessment_save'),
+    path('assessment/detail', assessment.assessment_detail, name='chat_assessment_detail'),
 
     path('staff', dashboard.staff_dashboard, name='chat_staff_dashboard'),
     path('staff/strikes', dashboard.strikes_panel, name='chat_strikes'),
