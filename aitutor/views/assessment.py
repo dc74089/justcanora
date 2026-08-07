@@ -4,14 +4,20 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
 from aitutor.models import Assessment, AssessmentConversation, AgentMessage, Agent
-from aitutor.utils import openai
+from aitutor.utils import claude
 
 
 @login_required
 def start_assessment(request, assessment_id):
     assessment = Assessment.objects.get(id=assessment_id)
+    student = request.user.student
 
-    ac, created = AssessmentConversation.objects.get_or_create(assessment=assessment, student=request.user.student, agent=Agent.get_assessment_agent())
+    # Only students enrolled in the assessment's course may start it (staff can
+    # always launch, e.g. to preview). Otherwise anyone with the UUID could.
+    if not request.user.is_staff and not student.courses.filter(pk=assessment.course_id).exists():
+        return HttpResponseForbidden()
+
+    ac, created = AssessmentConversation.objects.get_or_create(assessment=assessment, student=student, agent=Agent.get_assessment_agent())
 
     return redirect('chat_assessment', ac.id)
 
@@ -23,8 +29,8 @@ def assessment(request, conversation_id):
     if conversation.student != request.user.student:
         return HttpResponseForbidden()
 
-    if conversation.messages().count() == 0:
-        openai.send_message_for_assessment(conversation.id, "I am ready to start.")
+    if conversation.messages().count() == 0 and not conversation.locked:
+        claude.send_message_for_assessment(conversation.id, "I am ready to start.")
 
     return render(request, 'aitutor/assessment.html', {
         "conversation": conversation,
@@ -55,7 +61,12 @@ def assessment_send_message(request):
     if conv.student != request.user.student:
         return HttpResponseForbidden()
 
-    resp: AgentMessage = openai.send_message_for_assessment(conv.id, data["message"])
+    # A finished/locked assessment is immutable — ignore further messages so a
+    # student can't re-run scoring and overwrite their own result.
+    if conv.locked:
+        return HttpResponse(status=200)
+
+    resp: AgentMessage = claude.send_message_for_assessment(conv.id, data["message"])
 
     return HttpResponse(status=200)
 

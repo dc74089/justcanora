@@ -36,27 +36,20 @@ class Conversation(models.Model):
     def get_last_message_id(self):
         return self.message_set.filter(role="agent").last().message_id
 
-    def to_openai_json(self, student=None):
-        out = []
-
-        out.append({
-            "role": "developer",
-            "content": self.agent.dev_message
-        })
+    def to_claude_messages(self, student=None):
+        system = self.agent.dev_message
 
         if student:
-            out.append({
-                "role": "developer",
-                "content": f"You are speaking with a student named {student.fname}."
-            })
+            system += f"\n\nYou are speaking with a student named {student.fname}."
 
+        messages = []
         for message in self.message_set.all().order_by('time'):
-            out.append({
+            messages.append({
                 "role": "user" if message.is_user() else "assistant",
                 "content": message.message
             })
 
-        return out
+        return system, messages
 
 
     def info_for_summary(self):
@@ -67,15 +60,6 @@ class Conversation(models.Model):
                 "role": "user" if message.is_user() else "assistant",
                 "content": message.message
             })
-
-        return out
-
-
-    def info_for_moderation(self):
-        out = ""
-
-        for message in self.message_set.all().order_by('time'):
-            out += (("User" if message.is_user() else "Assistant") + ": " + message.message + "\n")
 
         return out
 
@@ -160,6 +144,19 @@ class Assessment(models.Model):
     canvas_assignment_id = models.IntegerField(null=False, blank=False)
     prompt = models.TextField(null=False, blank=False)
 
+    # Course-specific framing injected into the assessment agent's dev message
+    # (see AssessmentConversation.to_claude_messages). Keyed by Course.type so a
+    # Python or web-dev assessment isn't told it's assessing AP CSA.
+    COURSE_CONTEXTS = {
+        "APCSA": "a student in AP Computer Science A. Your assessment aligns with "
+                 "the College Board's AP CSA curriculum and focuses on Java programming.",
+        "CS2": "a student in Computer Science 2, a Python programming course.",
+        "CS1": "a student in Web Development, an introductory HTML and CSS course.",
+    }
+
+    def course_context(self):
+        return self.COURSE_CONTEXTS.get(self.course.type, "a computer science student.")
+
     def __str__(self):
         return f"{self.short_name} ({self.course.name})"
 
@@ -176,27 +173,22 @@ class AssessmentConversation(Conversation):
         else:
             return self.understanding_score * 100 / 5
 
-    def to_openai_json(self):
-        out = []
-
+    def to_claude_messages(self):
         dir = settings.BASE_DIR / "aitutor/agents/assessment"
         with open(dir / 'base.txt', 'r') as f:
             dev_msg = f.read()
 
+        dev_msg = dev_msg.replace("%%COURSE_CONTEXT%%", self.assessment.course_context())
         dev_msg = dev_msg.replace("-----", self.assessment.prompt)
 
-        out.append({
-            "role": "developer",
-            "content": dev_msg
-        })
-
+        messages = []
         for message in self.message_set.all().order_by('time'):
-            out.append({
+            messages.append({
                 "role": "user" if message.is_user() else "assistant",
                 "content": message.message
             })
 
-        return out
+        return dev_msg, messages
 
 
 class Message(models.Model):

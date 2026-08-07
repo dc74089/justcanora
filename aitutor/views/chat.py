@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 
 from aitutor.models import Conversation, Agent, AgentMessage, Assessment, AssessmentConversation, Strike
-from aitutor.utils import openai
+from aitutor.utils import claude
 
 
 @login_required
@@ -107,7 +107,7 @@ def chat_send_message(request):
     if conv.student != request.user.student:
         return HttpResponseForbidden()
 
-    resp: AgentMessage = openai.send_message(conv.id, data["message"], student=request.user.student)
+    resp: AgentMessage = claude.send_message(conv.id, data["message"], student=request.user.student)
 
     if resp.conversation.has_strike():
         return HttpResponseForbidden()

@@ -30,9 +30,12 @@ ENFORCE_SEMESTER_FOR_AUTH = True
 
 PERSONAL_SPOTIFY_PLAYLIST = "spotify:playlist:07kBXGSHyNVWmOtLV3j8B6"
 
-OPENAI_MODEL_FOR_CHAT = "o4-mini"
-OPENAI_MODEL_FOR_ASSESSMENT = "o4-mini"
-OPENAI_MODEL_FOR_SUMMARY = "o4-mini"
+# Anthropic Claude models for the aitutor app. Sonnet balances tutoring +
+# assessment-scoring quality against cost/latency at classroom volume; the
+# throwaway summary uses Haiku. The SDK reads ANTHROPIC_API_KEY from the env.
+CLAUDE_MODEL_FOR_CHAT = "claude-sonnet-4-6"
+CLAUDE_MODEL_FOR_ASSESSMENT = "claude-sonnet-4-6"
+CLAUDE_MODEL_FOR_SUMMARY = "claude-haiku-4-5"
 
 # HestiaCP student hosting (lhpscs.com). See hestia.md for the full story.
 # The panel API lives on the student webserver, a separate machine from this app.
