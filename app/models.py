@@ -141,7 +141,10 @@ class Course(models.Model):
         )
 
     def __str__(self):
-        return self.name
+        if self.semester:
+            return f"{self.get_year_display()} P{self.period} - {self.get_type_display()} (S{self.semester})"
+
+        return f"{self.get_year_display()} P{self.period} - {self.get_type_display()}"
 
     class Meta:
         ordering = ['year', 'semester', 'period']
