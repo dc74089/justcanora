@@ -17,6 +17,17 @@
   <title>{% block title %}Tr. Canora's Class{% endblock %}</title>
 
   <script>
+      // Attach Django's CSRF token to every state-changing same-origin AJAX call,
+      // so views don't need @csrf_exempt to work with $.post/$.ajax. Skipped for
+      // safe methods and cross-domain requests (never leak the token off-site).
+      $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+              if (!/^(GET|HEAD|OPTIONS|TRACE)$/.test(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+              }
+          }
+      });
+
       function refresh_nowplaying() {
           $("#nowplaying").html("Loading...")
 

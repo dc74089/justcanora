@@ -1,11 +1,25 @@
 import json
+import logging
 import uuid
 
+from anthropic import APIError
 from django.conf import settings
 from pydantic import BaseModel, ValidationError
 
 from aitutor.models import Conversation, UserMessage, AgentMessage, AssessmentConversation, Strike
 from aitutor.utils.grades import post_assessment_grade
+
+logger = logging.getLogger(__name__)
+
+
+class TransientAgentError(Exception):
+    """The model call failed in a way that is nobody's fault and is safe to retry
+    (API outage, rate limit, timeout, or a response that didn't match the schema).
+
+    The student's message is rolled back before this is raised, so resending is a
+    clean retry. Callers should surface a "try again" to the user — never a strike
+    and never a lock, since neither the student nor the conversation did anything
+    wrong."""
 
 
 class AgentResponse(BaseModel):
@@ -54,6 +68,27 @@ def helper_lock_with_strike(conversation, reason):
     return agent_msg
 
 
+def helper_lock_no_strike(conversation, reason):
+    """Lock a chat conversation without penalising the student.
+
+    Used when Claude's safety classifier declines the request: worth ending the
+    conversation and leaving it for staff to review, but a refusal is not proof
+    of abuse — only ``end_convo_for_abuse`` is — so no strike is recorded."""
+    agent_msg = AgentMessage.objects.create(
+        conversation=conversation,
+        message="I'm sorry, I can't help with that.",
+        agent=conversation.agent,
+        role="agent",
+        message_id=f"safety-{uuid.uuid4()}"
+    )
+
+    conversation.locked = True
+    conversation.lock_reason = reason
+    conversation.save()
+
+    return agent_msg
+
+
 def helper_lock_assessment(conversation, reason):
     """Lock an assessment conversation without awarding credit or posting to
     Canvas. Used when a response can't be trusted (safety / refusal), so nothing
@@ -78,7 +113,7 @@ def send_message(conversation_id, message, student=None):
     client = get_client()
     conversation = Conversation.objects.get(id=conversation_id)
 
-    UserMessage.objects.create(
+    user_msg = UserMessage.objects.create(
         conversation=conversation,
         message=message,
         student=conversation.student,
@@ -99,35 +134,51 @@ def send_message(conversation_id, message, student=None):
         )
 
         # Safety classifiers may decline the request (HTTP 200, no parsed output).
-        if response.stop_reason == "refusal":
-            return helper_lock_with_strike(conversation, "Claude Safety")
+        refused = response.stop_reason == "refusal"
+        parsed = None if refused else response.parsed_output
+    except (APIError, ValidationError):
+        # An outage, a rate limit, or a response that didn't fit the schema. None
+        # of these are the student's doing, so roll their message back and let
+        # them resend rather than locking the conversation or issuing a strike.
+        logger.exception("Chat turn failed for conversation %s", conversation.id)
+        user_msg.delete()
+        raise TransientAgentError
 
-        parsed = response.parsed_output
+    if refused:
+        return helper_lock_no_strike(conversation, "Claude Safety")
 
-        agent_msg = AgentMessage.objects.create(
-            conversation=conversation,
-            message=parsed.output_text,
-            agent=conversation.agent,
-            role="agent",
-            message_id=response.id
-        )
+    if parsed is None:
+        logger.error("No parsed output for conversation %s (stop_reason=%s)", conversation.id, response.stop_reason)
+        user_msg.delete()
+        raise TransientAgentError
 
-        if not conversation.summary or conversation.messages().count() in (4, 5):
+    agent_msg = AgentMessage.objects.create(
+        conversation=conversation,
+        message=parsed.output_text,
+        agent=conversation.agent,
+        role="agent",
+        message_id=response.id
+    )
+
+    if not conversation.summary or conversation.messages().count() in (4, 5):
+        # Cosmetic sidebar label — a failure here must not cost the student a turn
+        # they've already paid for.
+        try:
             generate_summary(conversation_id)
+        except Exception:
+            logger.exception("Summary generation failed for conversation %s", conversation.id)
 
-        if parsed.end_convo_for_abuse:
-            return helper_lock_with_strike(conversation, parsed.abuse_description)
+    if parsed.end_convo_for_abuse:
+        return helper_lock_with_strike(conversation, parsed.abuse_description)
 
-        return agent_msg
-    except ValidationError:
-        return helper_lock_with_strike(conversation, "Claude Safety")
+    return agent_msg
 
 
 def send_message_for_assessment(conversation_id, message):
     client = get_client()
     conversation = AssessmentConversation.objects.get(id=conversation_id)
 
-    UserMessage.objects.create(
+    user_msg = UserMessage.objects.create(
         conversation=conversation,
         message=message,
         student=conversation.student,
@@ -147,53 +198,51 @@ def send_message_for_assessment(conversation_id, message):
             metadata={"user_id": str(conversation.student.id)},
         )
 
-        if response.stop_reason == "refusal":
-            # Safety refusal — lock without posting to Canvas.
-            return helper_lock_assessment(conversation, "Claude Safety")
+        refused = response.stop_reason == "refusal"
+        parsed = None if refused else response.parsed_output
+    except (APIError, ValidationError):
+        # Transient failure mid-assessment. Roll the answer back and let the
+        # student resend: locking here would strand them on a graded activity
+        # they'd need a teacher to reopen. Nothing is posted to Canvas.
+        logger.exception("Assessment turn failed for conversation %s", conversation.id)
+        user_msg.delete()
+        raise TransientAgentError
 
-        parsed = response.parsed_output
+    if refused:
+        # Safety refusal — lock without posting to Canvas.
+        return helper_lock_assessment(conversation, "Claude Safety")
 
-        agent_msg = AgentMessage.objects.create(
-            conversation=conversation,
-            message=parsed.output_text,
-            agent=conversation.agent,
-            role="agent",
-            message_id=response.id
-        )
+    if parsed is None:
+        logger.error("No parsed output for assessment %s (stop_reason=%s)", conversation.id, response.stop_reason)
+        user_msg.delete()
+        raise TransientAgentError
 
-        if parsed.end_convo_for_abuse:
-            conversation.locked = True
-            conversation.credit_awarded = False
-            conversation.lock_reason = parsed.abuse_description
-            conversation.save()
-            # Abuse-locked assessments are intentionally never posted to Canvas.
-        elif parsed.convo_finished:
-            conversation.locked = True
-            conversation.lock_reason = "Assessment Finished"
-            conversation.credit_awarded = parsed.credit_awarded
-            # Clamp to the 1-5 range the prompt promises so score_as_percent stays sane.
-            conversation.understanding_score = max(1, min(5, parsed.understanding_score))
-            conversation.feedback = parsed.feedback
-            conversation.save()
+    agent_msg = AgentMessage.objects.create(
+        conversation=conversation,
+        message=parsed.output_text,
+        agent=conversation.agent,
+        role="agent",
+        message_id=response.id
+    )
 
-            post_assessment_grade(conversation)
-
-        return agent_msg
-    except ValidationError:
-        agent_msg = AgentMessage.objects.create(
-            conversation=conversation,
-            message="There was en error. Please contact Tr. Canora.",
-            agent=conversation.agent,
-            role="agent",
-            message_id=f"safety-{uuid.uuid4()}"
-        )
-
+    if parsed.end_convo_for_abuse:
         conversation.locked = True
         conversation.credit_awarded = False
-        conversation.lock_reason = "Claude Safety"
+        conversation.lock_reason = parsed.abuse_description
+        conversation.save()
+        # Abuse-locked assessments are intentionally never posted to Canvas.
+    elif parsed.convo_finished:
+        conversation.locked = True
+        conversation.lock_reason = "Assessment Finished"
+        conversation.credit_awarded = parsed.credit_awarded
+        # Clamp to the 1-5 range the prompt promises so score_as_percent stays sane.
+        conversation.understanding_score = max(1, min(5, parsed.understanding_score))
+        conversation.feedback = parsed.feedback
         conversation.save()
 
-        return agent_msg
+        post_assessment_grade(conversation)
+
+    return agent_msg
 
 
 def generate_summary(conversation_id):

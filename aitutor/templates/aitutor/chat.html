@@ -176,14 +176,20 @@
           })
       }
 
+      function show_send_error(text) {
+          $("#send-error").html(
+              $("<div class='alert alert-warning py-2 mb-2'></div>").text(text)
+          );
+      }
+
       function send_message() {
-          console.log("Sending message...");
           var message = $("#message").val();
 
           if (message.trim() == "") {
               return
           }
 
+          $("#send-error").empty();
           $("#send_btn").prop("disabled", true).html('<div class="spinner-border" role="status"></div>');
           $("#message").prop("disabled", true);
 
@@ -199,6 +205,18 @@
               },
               error: function (xhr, status, error) {
                   console.error("Error sending message:", error);
+
+                  // 503 means the tutor call failed but nothing was saved, so this
+                  // is a clean retry — keep the student's text instead of wiping it.
+                  if (xhr.status === 503) {
+                      $("#send_btn").prop("disabled", false).html("Send");
+                      $("#message").prop("disabled", false).val(message).focus();
+                      show_send_error(xhr.responseText || "Something went wrong. Please try again.");
+                      return;
+                  }
+
+                  // 403 (conversation locked, or student blocked) and anything else:
+                  // reload so the page re-renders in whatever state the server says.
                   location.reload();
               }
           });

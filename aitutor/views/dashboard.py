@@ -2,7 +2,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from aitutor.models import Agent, Assessment, AssessmentConversation, Conversation, Strike
 
@@ -52,8 +52,8 @@ def strikes_panel(request):
     })
 
 
-@csrf_exempt
 @staff_member_required
+@require_POST
 def clear_strike(request):
     """Delete a single strike — clears it toward the ban thresholds."""
     Strike.objects.filter(id=request.POST['strike_id']).delete()

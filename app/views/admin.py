@@ -4,12 +4,20 @@ from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
+from aitutor.utils import enrollment as tutor_enrollment
 from app.models import Course, FeatureFlag, HelpRequest
 
 
 @staff_member_required
 def admin(request):
-    flags = FeatureFlag.objects.all()
+    # Flags whose raw id isn't self-explanatory get a readable label; everything
+    # else falls back to the id, as before.
+    labels = dict(tutor_enrollment.FLAG_LABELS)
+
+    flags = [
+        {"flag": flag, "label": labels.get(flag.id, flag.id)}
+        for flag in FeatureFlag.objects.all()
+    ]
 
     return render(request, 'app/admin/admin.html', {
         "flags": flags

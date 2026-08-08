@@ -94,14 +94,20 @@
           })
       }
 
+      function show_send_error(text) {
+          $("#send-error").html(
+              $("<div class='alert alert-warning py-2 mb-2'></div>").text(text)
+          );
+      }
+
       function send_message() {
-          console.log("Sending message...");
           var message = $("#message").val();
 
           if (message.trim() == "") {
               return
           }
 
+          $("#send-error").empty();
           $("#send_btn").prop("disabled", true).html('<div class="spinner-border" role="status"></div>');
           $("#message").prop("disabled", true);
 
@@ -117,12 +123,29 @@
               },
               error: function (xhr, status, error) {
                   console.error("Error sending message:", error);
+
+                  // 503: the answer was rolled back and the assessment is still
+                  // open. Hand the text back so the student can just resend —
+                  // previously the button span forever and the answer was lost.
+                  if (xhr.status === 503) {
+                      $("#send_btn").prop("disabled", false).html("Send");
+                      $("#message").prop("disabled", false).val(message).focus();
+                      show_send_error(xhr.responseText || "Something went wrong. Please try again.");
+                      return;
+                  }
+
+                  // Otherwise re-sync with the server (e.g. the assessment was locked).
+                  refresh_conversation();
               }
           });
       }
 
       $(function () {
-          refresh_conversation();
+          // Nothing to load if the opening question never came back — leave the
+          // retry banner in place rather than overwriting it with an empty thread.
+          {% if not start_failed %}
+              refresh_conversation();
+          {% endif %}
       });
   </script>
 {% endblock %}
@@ -130,9 +153,19 @@
 {% block content-full %}
   <div class="main">
     <div class="chat-container">
-      <div class="chat-placeholder text-center mx-auto">
-        <h1>Placeholder</h1>
-      </div>
+      {% if start_failed %}
+        <div class="alert alert-warning mt-5">
+          <h4>The tutor couldn't start your assessment.</h4>
+          <p class="mb-0">
+            Nothing has been recorded and this does not count against you —
+            <a href="" class="alert-link">reload this page</a> to try again.
+          </p>
+        </div>
+      {% else %}
+        <div class="chat-placeholder text-center mx-auto">
+          <h1>Placeholder</h1>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}

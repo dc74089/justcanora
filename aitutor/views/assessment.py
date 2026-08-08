@@ -1,11 +1,11 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, HttpResponse, HttpResponseBadRequest, JsonResponse
-from django.shortcuts import redirect, render
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import redirect, render, get_object_or_404
+from django.views.decorators.http import require_POST
 
 from app.models import Course
-from aitutor.models import Assessment, AssessmentConversation, AgentMessage, Agent
+from aitutor.models import Assessment, AssessmentConversation, Agent
 from aitutor.utils import claude
 from aitutor.utils.grades import post_assessment_grade
 
@@ -32,11 +32,18 @@ def assessment(request, conversation_id):
     if conversation.student != request.user.student:
         return HttpResponseForbidden()
 
+    start_failed = False
     if conversation.messages().count() == 0 and not conversation.locked:
-        claude.send_message_for_assessment(conversation.id, "I am ready to start.")
+        try:
+            claude.send_message_for_assessment(conversation.id, "I am ready to start.")
+        except claude.TransientAgentError:
+            # Couldn't get the opening question. The conversation is untouched, so
+            # reloading retries cleanly rather than leaving a dead blank page.
+            start_failed = True
 
     return render(request, 'aitutor/assessment.html', {
         "conversation": conversation,
+        "start_failed": start_failed,
     })
 
 
@@ -55,11 +62,11 @@ def assessment_get_messages(request, conversation_id):
     })
 
 
-@csrf_exempt
 @login_required
+@require_POST
 def assessment_send_message(request):
     data = request.POST
-    conv = AssessmentConversation.objects.get(id=data['conv_id'])
+    conv = get_object_or_404(AssessmentConversation, id=data.get('conv_id'))
 
     if conv.student != request.user.student:
         return HttpResponseForbidden()
@@ -69,7 +76,15 @@ def assessment_send_message(request):
     if conv.locked:
         return HttpResponse(status=200)
 
-    resp: AgentMessage = claude.send_message_for_assessment(conv.id, data["message"])
+    message = data.get("message", "").strip()
+    if not message:
+        return HttpResponseBadRequest("Message cannot be empty.")
+
+    try:
+        claude.send_message_for_assessment(conv.id, message)
+    except claude.TransientAgentError:
+        # Answer rolled back and the assessment is still open — resend to retry.
+        return HttpResponse("The tutor is temporarily unavailable. Please try again.", status=503)
 
     return HttpResponse(status=200)
 
@@ -170,8 +185,8 @@ def assessment_results_get_convo(request):
     })
 
 
-@csrf_exempt
 @staff_member_required
+@require_POST
 def assessment_repost(request):
     """Re-push a finished assessment's grade to Canvas — useful when the original
     passback failed (post_assessment_grade logs and swallows Canvas errors)."""
@@ -180,8 +195,8 @@ def assessment_repost(request):
     return HttpResponse(status=200)
 
 
-@csrf_exempt
 @staff_member_required
+@require_POST
 def assessment_reopen(request):
     """Unlock a finished/locked assessment so the student can continue or redo it."""
     conv = AssessmentConversation.objects.get(id=request.POST['conv_id'])
@@ -191,8 +206,8 @@ def assessment_reopen(request):
     return HttpResponse(status=200)
 
 
-@csrf_exempt
 @staff_member_required
+@require_POST
 def assessment_override(request):
     """Manually set a student's score/credit/feedback and re-sync to Canvas."""
     conv = AssessmentConversation.objects.get(id=request.POST['conv_id'])
@@ -228,8 +243,8 @@ def assessment_detail(request):
     })
 
 
-@csrf_exempt
 @staff_member_required
+@require_POST
 def assessment_save(request):
     """Create an assessment from the gradebook form (also the target for a
     cloned assessment — the form is pre-filled from the source, saved as new)."""
