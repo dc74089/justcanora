@@ -25,6 +25,11 @@ urlpatterns = [
 
     path('speech/evals/view/', speech.view_evals, name='speech_view_evals'),
     path('speech/evals/all/', speech.all_evals, name='speech_all_evals'),
+    path('speech/evals/approve/', speech.approve_rating, name='speech_approve_rating'),
+    path('speech/evals/approve/all/', speech.approve_all, name='speech_approve_all'),
+    path('speech/rubrics/', speech.rubrics, name='speech_rubrics'),
+    path('speech/rubrics/active/', speech.set_active, name='speech_set_active'),
+    path('speech/rubrics/publish/', speech.set_published, name='speech_set_published'),
 
     path('music/nowplaying/', music.get_now_playing, name='now_playing'),
     path('music/nowplaying/json/', music.get_now_playing_json, name='now_playing_json'),

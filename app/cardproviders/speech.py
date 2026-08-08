@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.template.loader import render_to_string
 
-from app.models import Student, FeatureFlag, SpeechRubric, SpeechRating
+from app.models import Student, SpeechRubric, SpeechRating
 
 
 def allcards(request):
@@ -9,15 +9,11 @@ def allcards(request):
 
 def peer_eval(request):
     s: Student = request.user.student
-    rubric = None
     students = None
 
-    flag, _ = FeatureFlag.objects.get_or_create(id="card_speech")
+    rubric = SpeechRubric.get_active()
 
-    if flag:
-        rubric_name = flag.get_config().get("rubric_name")
-        rubric = SpeechRubric.objects.get(speech=rubric_name)
-
+    if rubric:
         for c in s.courses.filter(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CURRENT_SEMESTER):
             if c.type == "speech":
                 students = c.students.all().order_by('fname')

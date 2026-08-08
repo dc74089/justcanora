@@ -214,6 +214,10 @@ class ApprovedSong(models.Model):
 
 
 class SpeechRubric(models.Model):
+    # The peer-eval card is driven by one flag: enabled == "collecting", and its
+    # config names the rubric students are evaluating right now.
+    ACTIVE_FLAG = "card_speech"
+
     speech = models.TextField(null=False, blank=False)
     rating_fields = models.TextField(default="[]")
     comment_fields = models.TextField(default="[]")
@@ -224,6 +228,34 @@ class SpeechRubric(models.Model):
 
     def get_comment_fields(self):
         return json.loads(self.comment_fields)
+
+    @classmethod
+    def get_active(cls):
+        """The rubric students are being asked to fill out, or None if collection is off."""
+        flag, _ = FeatureFlag.objects.get_or_create(id=cls.ACTIVE_FLAG)
+
+        if not flag: return None
+
+        config = flag.get_config()
+        rubric = cls.objects.filter(id=config.get("rubric_id")).first()
+
+        if not rubric:  # older configs only stored the speech title
+            rubric = cls.objects.filter(speech=config.get("rubric_name")).first()
+
+        return rubric
+
+    @classmethod
+    def set_active(cls, rubric):
+        """Point the peer-eval card at a rubric, or pass None to stop collecting."""
+        flag, _ = FeatureFlag.objects.get_or_create(id=cls.ACTIVE_FLAG)
+
+        config = flag.get_config()
+        config["rubric_id"] = rubric.id if rubric else None
+        config["rubric_name"] = rubric.speech if rubric else None
+
+        flag.write_config(config)
+        flag.enabled = rubric is not None
+        flag.save()
 
     def __str__(self):
         return self.speech

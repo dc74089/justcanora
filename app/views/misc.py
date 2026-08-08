@@ -110,11 +110,6 @@ def misc_action(request):
             )
 
             ms.save()
-        elif data['action'] == 'approvespeechrating':
-            evl = SpeechRating.objects.get(id=data['id'])
-            evl.available_to_view = True
-
-            evl.save()
         elif data['action'] == 'music_search':
             results = search(request, f"{data['song_name']} {data['song_artist']}")
 

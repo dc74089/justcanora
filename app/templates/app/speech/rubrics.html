@@ -1,0 +1,139 @@
+{% extends 'app/base.html' %}
+
+{% block script %}
+  <script>
+      function collect(rubric_id, active) {
+          $.post("{% url 'speech_set_active' %}", {
+              "rubric": rubric_id,
+              "active": active
+          }).then(function () {
+              location.reload()
+          })
+      }
+
+      function publish(rubric_id, published) {
+          $.post("{% url 'speech_set_published' %}", {
+              "rubric": rubric_id,
+              "published": published
+          }).then(function () {
+              location.reload()
+          })
+      }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="row g-3">
+    <div class="col-12">
+      <h1 class="mb-0">Speech Rubrics</h1>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <h2 class="card-title">{% if active %}{{ active.speech }}{% else %}Nothing{% endif %}</h2>
+          <p class="text-muted">Collecting peer evals</p>
+          {% if active %}
+            <a class="btn btn-grad-negative w-100" href="#"
+               onclick="collect({{ active.id }}, 'false'); return false;">Stop Collecting</a>
+          {% else %}
+            <p class="text-muted mb-0"><small>Pick a rubric below to put the eval card on students' home pages.</small>
+            </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <h2 class="card-title">{{ pending }}</h2>
+          <p class="text-muted">Evals awaiting your approval</p>
+          <a class="btn {% if pending %}btn-grad-negative{% else %}btn-grad{% endif %} w-100"
+             href="{% url 'speech_all_evals' %}">Moderate Evals</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <h2 class="card-title">{{ published }}</h2>
+          <p class="text-muted">Rubrics published to students</p>
+          <a class="btn btn-grad w-100" href="{% url 'speech_view_evals' %}">Preview Student View</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">All Rubrics</h2>
+          <p class="text-muted">
+            <b>Collecting</b> puts the eval card on students' home pages — only one rubric at a time.
+            <b>Published</b> lets speakers read their results back, but a speaker only ever sees the
+            evals you've approved.
+          </p>
+          <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+              <th>Rubric</th>
+              <th class="text-center">Collecting</th>
+              <th class="text-center">Approved</th>
+              <th class="text-center">Pending</th>
+              <th class="text-center">Speakers</th>
+              <th class="text-center">Published</th>
+              <th colspan="3"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in rows %}
+              <tr>
+                <td>{{ row.rubric.speech }}</td>
+                <td class="text-center">{% if row.active %}✔️{% else %}❌{% endif %}</td>
+                <td class="text-center">{{ row.approved }}</td>
+                <td class="text-center">
+                  {% if row.pending %}
+                    <a href="{% url 'speech_all_evals' %}#rubric-{{ row.rubric.id }}">{{ row.pending }}</a>
+                  {% else %}
+                    0
+                  {% endif %}
+                </td>
+                <td class="text-center">{{ row.speakers }}</td>
+                <td class="text-center">{% if row.rubric.available_to_view %}✔️{% else %}❌{% endif %}</td>
+                <td>
+                  {% if row.active %}
+                    <a class="btn btn-grad-negative w-100" href="#"
+                       onclick="collect({{ row.rubric.id }}, 'false'); return false;">Stop Collecting</a>
+                  {% else %}
+                    <a class="btn btn-grad w-100" href="#"
+                       onclick="collect({{ row.rubric.id }}, 'true'); return false;">Collect Evals</a>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if row.rubric.available_to_view %}
+                    <a class="btn btn-grad-negative w-100" href="#"
+                       onclick="publish({{ row.rubric.id }}, 'false'); return false;">Unpublish</a>
+                  {% else %}
+                    <a class="btn btn-grad-positive w-100" href="#"
+                       onclick="publish({{ row.rubric.id }}, 'true'); return false;">Publish</a>
+                  {% endif %}
+                </td>
+                <td>
+                  <a class="btn btn-grad w-100"
+                     href="{% url 'admin:app_speechrubric_change' row.rubric.id %}">Edit</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="9" class="text-center text-muted">No rubrics yet.</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          <a class="btn btn-grad" href="{% url 'admin:app_speechrubric_add' %}">New Rubric</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
