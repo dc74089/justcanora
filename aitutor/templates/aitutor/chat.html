@@ -110,25 +110,17 @@
           min-height: calc(100vh - 128px);
       }
 
-      pre {
-          overflow-x: scroll;
-          max-width: calc(100vw - 125px);
+      /* Code block styling lives in common/code.css. These two rules only place
+         the box within the bubble: agent code sits left, student code hugs the
+         right edge but reads left-to-right inside. */
+      .gpt .codehilite {
+          margin-left: 12px;
+          max-width: 100%;
       }
 
-      .gpt pre {
-          margin: 0 !important;
-          margin-left: 12px !important;
-          background-color: #e3e4e6;
-          padding: 12px;
-          border-radius: 12px;
+      .stu-msg .codehilite {
           width: fit-content;
-      }
-
-      .stu-msg pre {
-          background-color: #e3e4e6;
-          padding: 12px;
-          border-radius: 12px;
-          width: fit-content;
+          max-width: 100%;
           margin-left: auto;
           text-align: start;
       }

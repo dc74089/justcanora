@@ -1,5 +1,37 @@
 {% load djmark2 thumbnail %}
 
+{% comment %}
+  This partial is always injected with jQuery .html(), which executes inline
+  scripts — so the copy buttons get wired up on every load (chat, assessment,
+  moderation, strikes, gradebook, results) without each page needing its own
+  hook. Guarded by a data attribute so re-running is harmless.
+{% endcomment %}
+<script>
+  (function () {
+    document.querySelectorAll('.codehilite:not([data-copy])').forEach(function (block) {
+      block.dataset.copy = '1';
+
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'code-copy';
+      button.textContent = 'Copy';
+
+      button.addEventListener('click', function () {
+        var code = block.querySelector('pre');
+        navigator.clipboard.writeText(code ? code.innerText : '').then(function () {
+          button.textContent = 'Copied!';
+          setTimeout(function () { button.textContent = 'Copy'; }, 1500);
+        }, function () {
+          button.textContent = 'Press Ctrl+C';
+          setTimeout(function () { button.textContent = 'Copy'; }, 2000);
+        });
+      });
+
+      block.appendChild(button);
+    });
+  })();
+</script>
+
 <div class="row">
   <div class="col-12 d-flex flex-column-reverse mb-3 messages">
     {% for msg in messages %}
@@ -8,7 +40,7 @@
           <div class="card bg-light flex-shrink-1 ms-auto stu-card">
             <div class="card-body text-end">
               <h5>{{ msg.author }}</h5>
-              <div class="stu-msg">{{ msg.message | auto_code_highlight }}</div>
+              <div class="stu-msg">{{ msg.message|auto_code_highlight:conversation.agent.language }}</div>
             </div>
           </div>
           {% if conversation.student.picture %}
@@ -26,9 +58,7 @@
           <div class="card bg-light flex-shrink-1 me-auto gpt-card">
             <div class="card-body">
               <h5>{{ msg.author }}</h5>
-              <div class="gpt">
-                <p>{{ msg.message | markdown }}</p>
-              </div>
+              <div class="gpt">{{ msg.message|markdown }}</div>
             </div>
           </div>
         </div>

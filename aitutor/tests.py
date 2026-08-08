@@ -6,6 +6,7 @@ a model call fails (which must never cost a student a strike or their work).
 """
 
 import base64
+import html
 import io
 import re
 import shutil
@@ -27,6 +28,7 @@ from django.urls import reverse
 from app.models import Course, FeatureFlag, Student
 from aitutor.models import (Agent, AgentMessage, Assessment, AssessmentConversation, Conversation,
                             Message, Strike, UserMessage)
+from aitutor.templatetags.djmark2 import auto_code_highlight, lexer_for, markdown_format
 from aitutor.utils import claude
 from aitutor.utils.claude import AgentResponse, AssessmentAgentResponse, TransientAgentError
 from aitutor.utils.context import context_processor
@@ -362,6 +364,99 @@ class AssessmentFailureHandlingTests(TestCase):
         self.assertTrue(self.conv.credit_awarded)
         self.assertEqual(self.conv.understanding_score, 4)
         post_grade.assert_called_once()
+
+
+class MessageRenderingTests(TestCase):
+    """Student messages are never interpreted and never discarded; agent
+    messages are Markdown with raw HTML escaped."""
+
+    @staticmethod
+    def visible(rendered):
+        """What the student actually sees. Pygments splits text across <span>s,
+        so assert on the rendered text rather than raw substrings."""
+        return html.unescape(re.sub(r"<[^>]+>", "", rendered))
+
+    def test_pasted_html_is_shown_not_deleted(self):
+        """The old filter ran prose through BeautifulSoup.get_text(), so a Web
+        Dev student's markup vanished from their own transcript."""
+        out = auto_code_highlight("<h1>My Page</h1>\n<p>Hello</p>", "html")
+
+        self.assertIn("<h1>My Page</h1>", self.visible(out))
+        self.assertIn("<p>Hello</p>", self.visible(out))
+        self.assertNotIn("<h1>", out)  # escaped, not executed
+
+    def test_blank_line_does_not_split_a_pasted_function(self):
+        out = auto_code_highlight('def greet(name):\n    print(name)\n\ngreet("Ada")', "python")
+
+        self.assertEqual(out.count("codehilite"), 1)  # one block, not two
+        self.assertIn('greet("Ada")', self.visible(out))
+
+    def test_real_markdown_fences_are_honoured(self):
+        out = auto_code_highlight("Here it is:\n\n```python\nprint(1)\n```\n\nwhy broken?", "python")
+
+        self.assertNotIn("```", out)
+        self.assertIn("codehilite", out)
+        self.assertIn("Here it is:", out)
+        self.assertIn("why broken?", out)
+
+    def test_single_line_of_code_is_still_boxed(self):
+        self.assertIn("codehilite", auto_code_highlight('print("hello")', "python"))
+
+    def test_prose_is_not_boxed(self):
+        for prose in ["I don't get why my loop won't stop.",
+                      "Note: this is tricky for me",
+                      "I tried it yesterday and it broke"]:
+            with self.subTest(prose=prose):
+                self.assertNotIn("codehilite", auto_code_highlight(prose, "python"))
+
+    def test_one_code_ish_line_inside_prose_stays_prose(self):
+        out = auto_code_highlight("I tried this yesterday\nx = 5\nbut it did not work", "python")
+        self.assertNotIn("codehilite", out)
+
+    def test_student_html_cannot_execute(self):
+        out = auto_code_highlight('<script>alert(1)</script>', "html")
+        self.assertNotIn("<script>", out)
+        self.assertIn("<script>alert(1)</script>", self.visible(out))
+
+    def test_student_whitespace_is_preserved(self):
+        """Indentation is meaningful in Python; <p> used to collapse it."""
+        self.assertIn("chat-text", auto_code_highlight("hello\nthere", "python"))
+
+    def test_agent_raw_html_is_escaped(self):
+        out = markdown_format("Nice work! <img src=x onerror=alert(1)>")
+        self.assertNotIn("<img", out)
+        self.assertIn("&lt;img", out)
+
+    def test_agent_code_block_is_syntax_highlighted(self):
+        """highlightjs-lang used to suppress Pygments and emit a class for a
+        highlighter this project never loaded."""
+        out = markdown_format("```python\nfor i in range(3):\n    print(i)\n```")
+
+        self.assertIn("codehilite", out)
+        self.assertIn('class="k"', out)          # a real Pygments token
+        self.assertNotIn("language-python", out)  # the dead highlight.js hook
+
+    def test_student_code_is_syntax_highlighted_too(self):
+        out = auto_code_highlight("for i in range(3):\n    print(i)", "python")
+        self.assertIn('class="k"', out)
+
+    def test_agent_single_newlines_become_line_breaks(self):
+        self.assertIn("<br", markdown_format("Line one\nLine two"))
+
+    def test_agent_inline_code_renders(self):
+        self.assertIn("<code>len()</code>", markdown_format("Use the `len()` function."))
+
+    def test_language_hint_picks_the_lexer(self):
+        """An unlabelled paste should use the course's language, not a guess."""
+        self.assertEqual(lexer_for("python", "x = 1").name, "Python")
+        self.assertEqual(lexer_for("java", "int x = 1;").name, "Java")
+        self.assertEqual(lexer_for("html", "<h1>hi</h1>").name, "HTML")
+
+    def test_empty_and_none_messages_are_safe(self):
+        for value in ["", None, "   "]:
+            with self.subTest(value=value):
+                self.assertEqual(auto_code_highlight(value, "python"), "")
+                self.assertEqual(markdown_format(value).strip(), "")
 
 
 @override_settings(MEDIA_ROOT=tempfile.mkdtemp(prefix="aitutor-test-thumbs-"))
