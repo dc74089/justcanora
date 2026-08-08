@@ -1,3 +1,4 @@
+{% load thumbnail %}
 <p class="text-center">
   <button class="btn btn-grad" data-bs-toggle="modal" data-bs-target="#newconv-modal">New Chat</button>
 </p>
@@ -5,7 +6,11 @@
 {% for conv in conversations %}
   <div class="conversation" id="conv-{{ conv.id }}" onclick="select_conversation('{{ conv.id }}')">
     {% if conv.agent.photo %}
-      <img src="{{ conv.agent.photo.url }}" class="rounded-circle flex-shrink-0" alt="" style="width: 75px; height: 75px;">
+      {% thumbnail conv.agent.photo "150x150" crop="center" quality=85 as im %}
+        <img src="{{ im.url }}" class="rounded-circle flex-shrink-0" alt=""
+             style="width: 75px; height: 75px;">
+      {% empty %}{# source file missing — render nothing rather than a broken image #}
+      {% endthumbnail %}
     {% endif %}
     <div class="flex-grow-1">
       <p class="m-0 flex-grow-1 text-end">

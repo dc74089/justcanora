@@ -5,21 +5,37 @@ to live only in a template (so a stale tab bypassed them), and the behaviour whe
 a model call fails (which must never cost a student a strike or their work).
 """
 
+import base64
+import io
+import re
+import shutil
+import tempfile
 from itertools import count
+from pathlib import Path
+from uuid import uuid4
 from unittest.mock import MagicMock, patch
 
 import httpx
+from PIL import Image as PILImage
 from anthropic import APIConnectionError
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.core.files.base import ContentFile
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from app.models import Course, FeatureFlag, Student
-from aitutor.models import Agent, Assessment, AssessmentConversation, Conversation, Message, Strike
+from aitutor.models import (Agent, AgentMessage, Assessment, AssessmentConversation, Conversation,
+                            Message, Strike, UserMessage)
 from aitutor.utils import claude
 from aitutor.utils.claude import AgentResponse, AssessmentAgentResponse, TransientAgentError
 from aitutor.utils.context import context_processor
+from aitutor.utils.agents import (AgentImageError, build_language_bases, find_photo,
+                                  sync_photo, verify_image)
 from aitutor.utils.enrollment import COURSE_TYPE_TO_FLAG, tutor_languages
+from aitutor.utils.prompts import (BASE_MARKER, COMMON_MARKER, DESCRIPTION_START,
+                                   PROMPT_MARKER, PromptTemplateError,
+                                   extract_description, splice)
 
 
 def enable_tutor(*course_types):
@@ -61,6 +77,9 @@ def fake_client(parsed=None, stop_reason="end_turn", side_effect=None):
             response.id = f"msg_{next(counter)}_{id(parsed)}"
             response.stop_reason = stop_reason
             response.parsed_output = parsed
+            # Real ints — a bare MagicMock coerces to 1 and makes the cache log lie.
+            response.usage = MagicMock(input_tokens=120, cache_read_input_tokens=1400,
+                                       cache_creation_input_tokens=0)
             return response
 
         client.messages.parse.side_effect = respond
@@ -343,6 +362,454 @@ class AssessmentFailureHandlingTests(TestCase):
         self.assertTrue(self.conv.credit_awarded)
         self.assertEqual(self.conv.understanding_score, 4)
         post_grade.assert_called_once()
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp(prefix="aitutor-test-thumbs-"))
+class ThumbnailTests(TestCase):
+    """Agent portraits are 300-1400px originals shown at 50-100px. Serving the
+    originals meant ~1.3MB of images per chat page load."""
+
+    def setUp(self):
+        self.student = make_student(course_types=("CS2",))
+        self.client.force_login(self.student.user)
+        self.agent = make_agent(name="Yzma", language="python")
+        buffer = io.BytesIO()
+        PILImage.new("RGB", (800, 800), (120, 20, 140)).save(buffer, format="JPEG")
+        self.agent.photo.save("yzma.jpg", ContentFile(buffer.getvalue()), save=True)
+
+    def rendered_image_srcs(self, html):
+        return re.findall(r'src="(/media/[^"]+)"', html)
+
+    def test_picker_serves_thumbnails_not_originals(self):
+        html = self.client.get(reverse("chat_home")).content.decode()
+        srcs = self.rendered_image_srcs(html)
+
+        self.assertTrue(srcs, "no agent image rendered on the picker")
+        for src in srcs:
+            self.assertIn("/cache/", src)
+            self.assertNotIn("yzma.jpg", src)
+
+    def test_thumbnail_is_far_smaller_than_the_original(self):
+        html = self.client.get(reverse("chat_home")).content.decode()
+        src = self.rendered_image_srcs(html)[0]
+
+        thumb = Path(settings.MEDIA_ROOT) / src.replace("/media/", "")
+        self.assertTrue(thumb.exists())
+        self.assertLess(thumb.stat().st_size, self.agent.photo.size / 4)
+
+        with PILImage.open(thumb) as im:
+            self.assertEqual(im.size, (200, 200))  # 2x the 100px display size
+
+    def test_conversation_view_also_thumbnails(self):
+        conv = Conversation.objects.create(student=self.student, agent=self.agent)
+        UserMessage.objects.create(conversation=conv, message="hi",
+                                   student=self.student, role="user")
+        AgentMessage.objects.create(conversation=conv, message="hello", agent=self.agent,
+                                    role="agent", message_id=f"msg_{uuid4()}")
+
+        html = self.client.get(reverse("chat_conversation"), {"conv_id": str(conv.id)}).content.decode()
+        srcs = re.findall(r'src=\\"(/media/[^\\"]+)\\"', html) or self.rendered_image_srcs(html)
+
+        self.assertTrue(srcs, "no agent image rendered in the conversation")
+        for src in srcs:
+            self.assertIn("/cache/", src)
+
+
+class PromptAssemblyTests(TestCase):
+    """The prompt files splice into each other, so a bad marker silently
+    produces a prompt that's missing a rulebook or has one twice."""
+
+    def setUp(self):
+        self.dir = settings.BASE_DIR / "aitutor/agents"
+
+    def test_every_language_base_carries_the_shared_rules(self):
+        bases = build_language_bases(self.dir)
+        self.assertEqual(set(bases), {"java", "python", "html"})
+        for language, base in bases.items():
+            with self.subTest(language=language):
+                self.assertIn("Abuse Protocol", base)
+                self.assertIn("Holding the Line", base)
+                self.assertIn("abuse_description", base)
+                self.assertNotIn(COMMON_MARKER, base)  # fully spliced
+
+    def test_every_persona_file_assembles(self):
+        bases = build_language_bases(self.dir)
+        personas = [f for f in self.dir.glob("*.txt") if not f.name.startswith("base-")]
+        self.assertTrue(personas)
+
+        for f in personas:
+            with self.subTest(persona=f.name):
+                built = splice(f.read_text(), BASE_MARKER, bases["python"], source=f.name)
+                self.assertNotIn(BASE_MARKER, built)
+                self.assertIn("Abuse Protocol", built)
+
+    def test_markdown_rule_no_longer_corrupts_a_template(self):
+        """The old '-----' marker was also a Markdown horizontal rule."""
+        persona = "You are a tutor.\n\n-----\n\n%%BASE%%\n"
+        built = splice(persona, BASE_MARKER, "RULES", source="persona.txt")
+        self.assertEqual(built, "You are a tutor.\n\n-----\n\nRULES\n")
+
+    def test_missing_or_duplicated_marker_raises(self):
+        with self.assertRaises(PromptTemplateError):
+            splice("nothing here", BASE_MARKER, "x")
+        with self.assertRaises(PromptTemplateError):
+            splice("%%BASE%% twice %%BASE%%", BASE_MARKER, "x")
+
+    def test_assessment_prompt_containing_a_markdown_rule_survives(self):
+        student = make_student(course_types=("CS2",))
+        assessment = Assessment.objects.create(
+            short_name="rules", course=student.courses.first(), canvas_assignment_id=1,
+            prompt="Explain loops.\n\n-----\n\nBe specific.")
+        conv = AssessmentConversation.objects.create(
+            student=student, agent=Agent.get_assessment_agent(), assessment=assessment)
+        UserMessage.objects.create(conversation=conv, message="ready", student=student, role="user")
+
+        system, _ = conv.to_claude_messages()
+        text = system[0]["text"]
+
+        # The teacher's rule survives verbatim, and the base was spliced once.
+        self.assertIn("Explain loops.\n\n-----\n\nBe specific.", text)
+        self.assertEqual(text.count("Abuse Protocol"), 1)
+        self.assertNotIn(PROMPT_MARKER, text)
+        self.assertNotIn("%%COURSE_CONTEXT%%", text)
+
+    def test_no_prompt_treats_persistence_as_abuse(self):
+        """A pushy student must not trip the flag — it costs a strike in chat and
+        withheld credit on an assessment."""
+        bases = build_language_bases(self.dir)
+        prompts = dict(bases, assessment=(self.dir / "assessment" / "base.txt").read_text())
+
+        retired_triggers = [
+            "repeated demands for answers despite refusal",
+            "pushing you too hard for an answer",
+            "very first mention",
+        ]
+        for label, text in prompts.items():
+            with self.subTest(prompt=label):
+                lowered = text.lower()
+                for trigger in retired_triggers:
+                    self.assertNotIn(trigger, lowered)
+                # ...and each prompt still tells the agent to keep refusing.
+                self.assertIn("holding the line", lowered)
+
+    def test_every_prompt_still_refuses_full_solutions(self):
+        """Relaxing the abuse flag must not relax the actual refusal."""
+        bases = build_language_bases(self.dir)
+        for language, base in bases.items():
+            with self.subTest(language=language):
+                lowered = base.lower()
+                self.assertIn("never provide full solutions", lowered)
+                self.assertIn("decline again", lowered)
+                self.assertIn("fill in", lowered)  # no "just the structure" loophole
+
+    def test_html_base_has_no_leftover_python_wording(self):
+        html = build_language_bases(self.dir)["html"]
+        self.assertNotIn("function implementations", html)
+        self.assertNotIn("pseudocode", html.lower())
+        self.assertIn("flexbox", html)  # course content preserved
+
+    def test_toot_is_the_flavourless_agent(self):
+        toot = (self.dir / "Toot.txt").read_text()
+        self.assertIn("no persona voice", toot)
+        self.assertIn(BASE_MARKER, toot)
+
+    def test_every_persona_declares_a_description(self):
+        for f in self.dir.glob("*.txt"):
+            if f.name.startswith("base-"):
+                continue
+            with self.subTest(persona=f.name):
+                description, remaining = extract_description(f.read_text(), source=f.name)
+                self.assertTrue(description)
+                # Card copy is for students, not an instruction to the model.
+                self.assertNotIn(DESCRIPTION_START, remaining)
+                self.assertNotIn(description, remaining)
+                self.assertIn(BASE_MARKER, remaining)
+
+
+class DescriptionBlockTests(TestCase):
+    def test_description_is_extracted_and_collapsed(self):
+        description, remaining = extract_description(
+            "%%DESCRIPTION%%\nA tutor who\nspans two lines.\n%%END_DESCRIPTION%%\n\nYou are X.\n%%BASE%%\n")
+        self.assertEqual(description, "A tutor who spans two lines.")
+        self.assertEqual(remaining, "You are X.\n%%BASE%%\n")
+
+    def test_missing_block_raises(self):
+        with self.assertRaises(PromptTemplateError):
+            extract_description("You are X.\n%%BASE%%\n", source="x.txt")
+
+    def test_empty_block_raises(self):
+        with self.assertRaises(PromptTemplateError):
+            extract_description("%%DESCRIPTION%%\n   \n%%END_DESCRIPTION%%\nYou are X.")
+
+    def test_duplicated_or_reversed_markers_raise(self):
+        with self.assertRaises(PromptTemplateError):
+            extract_description("%%DESCRIPTION%%a%%END_DESCRIPTION%%%%DESCRIPTION%%b%%END_DESCRIPTION%%")
+        with self.assertRaises(PromptTemplateError):
+            extract_description("%%END_DESCRIPTION%%a%%DESCRIPTION%%")
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp(prefix="aitutor-test-media-"))
+class AgentPhotoImportTests(TestCase):
+    """A 1x1 PNG is enough — we only care about the copy/skip/replace logic."""
+
+    PNG_A = base64.b64decode(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==")
+    PNG_B = base64.b64decode(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==")
+
+    def setUp(self):
+        self.agent = make_agent(name="Ms. Frizzle")
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def write(self, filename, data):
+        path = self.tmp / filename
+        path.write_bytes(data)
+        return path
+
+    @staticmethod
+    def encode(fmt, colour=(200, 40, 40)):
+        """A genuine 8x8 image in the given format, not a hand-pasted blob."""
+        buffer = io.BytesIO()
+        PILImage.new("RGB", (8, 8), colour).save(buffer, format=fmt)
+        return buffer.getvalue()
+
+    def test_finds_an_image_beside_the_persona_file(self):
+        self.write("Ms. Frizzle.png", self.PNG_A)
+        self.assertEqual(find_photo(self.tmp, "Ms. Frizzle").name, "Ms. Frizzle.png")
+        self.assertIsNone(find_photo(self.tmp, "Nobody"))
+
+    def test_every_supported_format_imports(self):
+        for extension, fmt in [(".png", "PNG"), (".jpg", "JPEG"), (".jpeg", "JPEG"),
+                               (".webp", "WEBP"), (".gif", "GIF")]:
+            with self.subTest(extension=extension):
+                shutil.rmtree(self.tmp, ignore_errors=True)
+                self.tmp.mkdir(parents=True, exist_ok=True)
+                agent = Agent.objects.create(name=f"Agent{extension}", language="python",
+                                             description="d", dev_message="m")
+
+                data = self.encode(fmt)
+                path = self.write(f"Agent{extension}{extension}", data)
+
+                self.assertEqual(verify_image(path), fmt)
+                found = find_photo(self.tmp, f"Agent{extension}")
+                self.assertIsNotNone(found)
+                self.assertTrue(sync_photo(agent, found))
+
+                agent.refresh_from_db()
+                self.assertTrue(agent.photo.name.endswith(extension))
+                with agent.photo.open("rb") as f:
+                    self.assertEqual(f.read(), data)
+
+    def test_uppercase_extensions_are_found(self):
+        """Phone cameras and downloads routinely produce .JPG / .PNG."""
+        for filename in ["Shouty.JPG", "Shouty.PNG", "Shouty.WebP"]:
+            with self.subTest(filename=filename):
+                shutil.rmtree(self.tmp, ignore_errors=True)
+                self.tmp.mkdir(parents=True, exist_ok=True)
+                fmt = {"jpg": "JPEG", "png": "PNG", "webp": "WEBP"}[filename.split(".")[1].lower()]
+                self.write(filename, self.encode(fmt))
+                self.assertEqual(find_photo(self.tmp, "Shouty").name, filename)
+
+    def test_stored_extension_is_normalised_to_lowercase(self):
+        self.write("Ms. Frizzle.JPG", self.encode("JPEG"))
+        sync_photo(self.agent, find_photo(self.tmp, "Ms. Frizzle"))
+        self.agent.refresh_from_db()
+        self.assertTrue(self.agent.photo.name.endswith(".jpg"))
+
+    def test_a_file_that_is_not_an_image_is_rejected(self):
+        path = self.write("Ms. Frizzle.png", b"I am plainly not a PNG.")
+        with self.assertRaises(AgentImageError):
+            verify_image(path)
+        with self.assertRaises(AgentImageError):
+            sync_photo(self.agent, path)
+        self.agent.refresh_from_db()
+        self.assertFalse(self.agent.photo)  # nothing stored
+
+    def test_truncated_image_is_rejected(self):
+        path = self.write("Ms. Frizzle.png", self.encode("PNG")[:20])
+        with self.assertRaises(AgentImageError):
+            verify_image(path)
+
+    def test_two_images_for_one_agent_is_an_error(self):
+        self.write("Ms. Frizzle.png", self.encode("PNG"))
+        self.write("Ms. Frizzle.jpg", self.encode("JPEG"))
+        with self.assertRaises(AgentImageError) as caught:
+            find_photo(self.tmp, "Ms. Frizzle")
+        self.assertIn("more than one image", str(caught.exception))
+
+    def test_unsupported_format_is_ignored(self):
+        """Pillow reads TIFF; browsers don't render it, so it isn't a candidate."""
+        self.write("Ms. Frizzle.tiff", self.encode("TIFF"))
+        self.assertIsNone(find_photo(self.tmp, "Ms. Frizzle"))
+
+    def test_first_import_stores_the_image(self):
+        path = self.write("Ms. Frizzle.png", self.PNG_A)
+        self.assertTrue(sync_photo(self.agent, path))
+        self.agent.refresh_from_db()
+        self.assertTrue(self.agent.photo)
+        with self.agent.photo.open("rb") as f:
+            self.assertEqual(f.read(), self.PNG_A)
+
+    def test_reimport_is_a_no_op(self):
+        """Import runs repeatedly; unconditional saves would pile up copies."""
+        path = self.write("Ms. Frizzle.png", self.PNG_A)
+        sync_photo(self.agent, path)
+        stored = self.agent.photo.name
+
+        for _ in range(3):
+            self.assertFalse(sync_photo(self.agent, path))
+
+        self.agent.refresh_from_db()
+        self.assertEqual(self.agent.photo.name, stored)
+
+    def test_changed_image_replaces_the_old_file(self):
+        path = self.write("Ms. Frizzle.png", self.PNG_A)
+        sync_photo(self.agent, path)
+        storage, folder = self.agent.photo.storage, "agent_photos"
+
+        path.write_bytes(self.PNG_B)
+        self.assertTrue(sync_photo(self.agent, path))
+
+        self.agent.refresh_from_db()
+        with self.agent.photo.open("rb") as f:
+            self.assertEqual(f.read(), self.PNG_B)
+        # Deleting first frees the deterministic name, so the replacement reuses
+        # it rather than leaving a suffixed orphan behind.
+        self.assertEqual(len(storage.listdir(folder)[1]), 1)
+
+    def test_recovers_when_the_stored_file_has_vanished(self):
+        path = self.write("Ms. Frizzle.png", self.PNG_A)
+        sync_photo(self.agent, path)
+        self.agent.photo.storage.delete(self.agent.photo.name)
+
+        self.assertTrue(sync_photo(self.agent, path))
+        with self.agent.photo.open("rb") as f:
+            self.assertEqual(f.read(), self.PNG_A)
+
+
+class PromptCacheTests(TestCase):
+    """Caching is a prefix match, so these assert the *shape* of the prompt:
+    a stable prefix, volatile content strictly after it, and a rolling
+    breakpoint on the newest turn."""
+
+    def setUp(self):
+        self.student = make_student(fname="Ada")
+        self.agent = make_agent()
+        self.conv = Conversation.objects.create(student=self.student, agent=self.agent)
+
+    def turn(self, user_text, agent_text=None):
+        UserMessage.objects.create(conversation=self.conv, message=user_text,
+                                   student=self.student, role="user")
+        if agent_text:
+            AgentMessage.objects.create(conversation=self.conv, message=agent_text,
+                                        agent=self.agent, role="agent",
+                                        message_id=f"msg_{uuid4()}")
+
+    def test_system_prefix_is_cached_and_identical_across_students(self):
+        other = make_student(student_id=2, fname="Grace")
+        self.turn("hi")
+
+        mine, _ = self.conv.to_claude_messages(student=self.student)
+        theirs, _ = Conversation.objects.create(
+            student=other, agent=self.agent).to_claude_messages(student=other)
+
+        # The cached block is byte-identical for both students...
+        self.assertEqual(mine[0], theirs[0])
+        self.assertEqual(mine[0]["text"], self.agent.dev_message)
+        self.assertEqual(mine[0]["cache_control"], {"type": "ephemeral"})
+
+        # ...and the per-student name sits after it, uncached. Folding the name
+        # into the cached block would make the prefix per-student and destroy
+        # all cross-student sharing.
+        self.assertIn("Ada", mine[1]["text"])
+        self.assertIn("Grace", theirs[1]["text"])
+        self.assertNotIn("cache_control", mine[1])
+        self.assertNotIn("Ada", mine[0]["text"])
+
+    def test_breakpoint_rolls_to_the_newest_message(self):
+        self.turn("first", "reply one")
+        self.turn("second")
+
+        _, messages = self.conv.to_claude_messages(student=self.student)
+
+        self.assertEqual(len(messages), 3)
+        # Only the last message carries a breakpoint; earlier turns stay plain
+        # strings and are served from the entry written on the previous turn.
+        self.assertEqual(messages[-1]["content"],
+                         [{"type": "text", "text": "second", "cache_control": {"type": "ephemeral"}}])
+        for earlier in messages[:-1]:
+            self.assertIsInstance(earlier["content"], str)
+
+    def test_breakpoint_count_stays_within_the_four_allowed(self):
+        for i in range(12):
+            self.turn(f"q{i}", f"a{i}")
+
+        system, messages = self.conv.to_claude_messages(student=self.student)
+        breakpoints = sum(1 for b in system if "cache_control" in b)
+        breakpoints += sum(
+            1 for m in messages if isinstance(m["content"], list)
+            for b in m["content"] if "cache_control" in b
+        )
+        self.assertLessEqual(breakpoints, 4)
+        self.assertEqual(breakpoints, 2)  # system prefix + rolling turn
+
+    def test_assessment_prefix_is_shared_across_students(self):
+        course = self.student.courses.first()
+        assessment = Assessment.objects.create(short_name="loops", course=course,
+                                               canvas_assignment_id=1, prompt="Explain loops.")
+        other = make_student(student_id=3, fname="Alan")
+        course.students.add(other)
+        agent = Agent.get_assessment_agent()
+
+        convs = [AssessmentConversation.objects.create(student=s, agent=agent, assessment=assessment)
+                 for s in (self.student, other)]
+        for c in convs:
+            UserMessage.objects.create(conversation=c, message="ready", student=c.student, role="user")
+
+        first, _ = convs[0].to_claude_messages()
+        second, _ = convs[1].to_claude_messages()
+
+        self.assertEqual(first, second)
+        self.assertEqual(first[0]["cache_control"], {"type": "ephemeral"})
+        self.assertIn("Explain loops.", first[0]["text"])
+
+    def test_prompt_is_stable_across_identical_rebuilds(self):
+        """No timestamps, UUIDs, or unordered iteration inside the prefix."""
+        self.turn("hello", "hi there")
+        first = self.conv.to_claude_messages(student=self.student)
+        second = self.conv.to_claude_messages(student=self.student)
+        self.assertEqual(first, second)
+
+    def test_cache_usage_log_reports_the_full_prompt_size(self):
+        """input_tokens alone is only the uncached remainder — the log has to sum
+        all three or it understates the prompt by the cached portion."""
+        usage = MagicMock(input_tokens=120, cache_read_input_tokens=1400,
+                          cache_creation_input_tokens=480)
+        with self.assertLogs("aitutor.utils.claude", level="INFO") as logs:
+            claude.log_cache_usage("chat", self.conv, usage)
+
+        line = logs.output[0]
+        self.assertIn("prompt 2000 tokens", line)
+        self.assertIn("70% served from cache", line)
+
+    def test_cache_usage_log_survives_a_zero_token_response(self):
+        usage = MagicMock(input_tokens=0, cache_read_input_tokens=0,
+                          cache_creation_input_tokens=0)
+        with self.assertLogs("aitutor.utils.claude", level="INFO") as logs:
+            claude.log_cache_usage("chat", self.conv, usage)  # must not divide by zero
+        self.assertIn("0% served from cache", logs.output[0])
+
+    @patch("aitutor.utils.claude.get_client")
+    def test_cached_prompt_is_what_reaches_the_api(self, get_client):
+        client = fake_client(parsed=chat_reply())
+        get_client.return_value = client
+
+        claude.send_message(self.conv.id, "explain loops", student=self.student)
+
+        kwargs = client.messages.parse.call_args.kwargs
+        self.assertEqual(kwargs["system"][0]["cache_control"], {"type": "ephemeral"})
+        self.assertEqual(kwargs["messages"][-1]["content"][0]["cache_control"], {"type": "ephemeral"})
 
 
 class PerCourseFlagTests(TestCase):

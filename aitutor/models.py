@@ -6,6 +6,30 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+from aitutor.utils.prompts import PROMPT_MARKER, splice
+
+# Marks a prompt-cache breakpoint. Caching is a prefix match: everything up to a
+# breakpoint is cached, and any byte change before it invalidates the rest. The
+# default 5-minute TTL suits a class period, where traffic keeps entries warm.
+CACHE_BREAKPOINT = {"type": "ephemeral"}
+
+
+def cached_text(text):
+    """A text block that ends a cacheable prefix."""
+    return {"type": "text", "text": text, "cache_control": CACHE_BREAKPOINT}
+
+
+def with_trailing_breakpoint(messages):
+    """Put a rolling cache breakpoint on the final message.
+
+    Each turn caches the whole conversation so far; the next turn reads that
+    entry and only pays full price for the two messages added since. Without
+    this the transcript is re-billed in full on every single turn.
+    """
+    if messages:
+        messages[-1] = dict(messages[-1], content=[cached_text(messages[-1]["content"])])
+    return messages
+
 
 class Agent(models.Model):
     name = models.CharField(max_length=100)
@@ -37,19 +61,25 @@ class Conversation(models.Model):
         return self.message_set.filter(role="agent").last().message_id
 
     def to_claude_messages(self, student=None):
-        system = self.agent.dev_message
+        # The agent's dev message is identical for every student talking to this
+        # agent, so it gets its own breakpoint and is shared across the whole
+        # class. The student's name goes in a separate block *after* it —
+        # interpolating it into the dev message would make the cached prefix
+        # per-student and throw away that sharing.
+        system = [cached_text(self.agent.dev_message)]
 
         if student:
-            system += f"\n\nYou are speaking with a student named {student.fname}."
-
-        messages = []
-        for message in self.message_set.all().order_by('time'):
-            messages.append({
-                "role": "user" if message.is_user() else "assistant",
-                "content": message.message
+            system.append({
+                "type": "text",
+                "text": f"You are speaking with a student named {student.fname}.",
             })
 
-        return system, messages
+        messages = [{
+            "role": "user" if message.is_user() else "assistant",
+            "content": message.message,
+        } for message in self.message_set.all().order_by('time')]
+
+        return system, with_trailing_breakpoint(messages)
 
 
     def info_for_summary(self):
@@ -178,17 +208,23 @@ class AssessmentConversation(Conversation):
         with open(dir / 'base.txt', 'r') as f:
             dev_msg = f.read()
 
-        dev_msg = dev_msg.replace("%%COURSE_CONTEXT%%", self.assessment.course_context())
-        dev_msg = dev_msg.replace("-----", self.assessment.prompt)
+        dev_msg = splice(dev_msg, "%%COURSE_CONTEXT%%", self.assessment.course_context(),
+                         source="assessment/base.txt")
+        # A teacher-written prompt can legitimately contain a Markdown rule, so
+        # the marker has to be something they'd never type by accident.
+        dev_msg = splice(dev_msg, PROMPT_MARKER, self.assessment.prompt,
+                         source="assessment/base.txt")
 
-        messages = []
-        for message in self.message_set.all().order_by('time'):
-            messages.append({
-                "role": "user" if message.is_user() else "assistant",
-                "content": message.message
-            })
+        # Identical for every student taking this assessment, so the whole class
+        # shares one cached prefix.
+        system = [cached_text(dev_msg)]
 
-        return dev_msg, messages
+        messages = [{
+            "role": "user" if message.is_user() else "assistant",
+            "content": message.message,
+        } for message in self.message_set.all().order_by('time')]
+
+        return system, with_trailing_breakpoint(messages)
 
 
 class Message(models.Model):

@@ -6,3 +6,4 @@ env/
 media/
 yearbook/*.jpg
 **/.DS_Store
+anthropic-key.txt

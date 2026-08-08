@@ -44,6 +44,29 @@ def get_client():
     return Anthropic()
 
 
+def log_cache_usage(label, conversation, usage):
+    """Record what the prompt cache actually did on this turn.
+
+    ``cache_read`` staying at 0 across a conversation's turns is the signal that
+    caching has silently broken — something is varying inside the cached prefix.
+    Total prompt size is the three figures summed; ``input`` alone is only the
+    uncached remainder.
+    """
+    if usage is None:
+        return
+
+    read = getattr(usage, "cache_read_input_tokens", 0) or 0
+    written = getattr(usage, "cache_creation_input_tokens", 0) or 0
+    uncached = getattr(usage, "input_tokens", 0) or 0
+    total = read + written + uncached
+
+    logger.info(
+        "%s %s: prompt %d tokens (cache read %d, cache write %d, uncached %d) — %d%% served from cache",
+        label, conversation.id, total, read, written, uncached,
+        round(read * 100 / total) if total else 0,
+    )
+
+
 def helper_lock_with_strike(conversation, reason):
     agent_msg = AgentMessage.objects.create(
         conversation=conversation,
@@ -136,6 +159,7 @@ def send_message(conversation_id, message, student=None):
         # Safety classifiers may decline the request (HTTP 200, no parsed output).
         refused = response.stop_reason == "refusal"
         parsed = None if refused else response.parsed_output
+        log_cache_usage("chat", conversation, response.usage)
     except (APIError, ValidationError):
         # An outage, a rate limit, or a response that didn't fit the schema. None
         # of these are the student's doing, so roll their message back and let
@@ -200,6 +224,7 @@ def send_message_for_assessment(conversation_id, message):
 
         refused = response.stop_reason == "refusal"
         parsed = None if refused else response.parsed_output
+        log_cache_usage("assessment", conversation, response.usage)
     except (APIError, ValidationError):
         # Transient failure mid-assessment. Roll the answer back and let the
         # student resend: locking here would strand them on a graded activity
@@ -246,6 +271,9 @@ def send_message_for_assessment(conversation_id, message):
 
 
 def generate_summary(conversation_id):
+    """Deliberately uncached: this runs on Haiku, whose minimum cacheable prefix
+    is 4096 tokens — far above this ~60-token system prompt — and it fires at
+    most twice per conversation, so there's no prefix to reuse anyway."""
     client = get_client()
     conversation = Conversation.objects.get(id=conversation_id)
 

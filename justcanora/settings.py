@@ -304,6 +304,12 @@ if DOCKER:
 else:
     MEDIA_ROOT = "media"
 
+# sorl-thumbnail converts everything to JPEG by default, which flattens alpha —
+# the cut-out agent portraits (Yzma) would gain a dark box behind them instead of
+# showing the card through. Keeping the source format preserves transparency and
+# lets the WebP portraits stay WebP.
+THUMBNAIL_PRESERVE_FORMAT = True
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
