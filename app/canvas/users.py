@@ -8,7 +8,7 @@ from app.models import Course, Student
 
 
 def get_dev_courses():
-    for id in [17942, 18006, 18016, 18078, 18089]:
+    for id in [17942, 18006, 18016, 18078, 18089, 17920, 17892, 17906]:
         try:
             get_all_sections_from_course(id)
         except:
