@@ -70,9 +70,11 @@ def help_api(request):
     reqs = HelpRequest.objects.filter(satisfied=False).order_by('timestamp')
 
     return JsonResponse(
-        [{
-            "id": req.id,
-            "student": req.student.name(),
-            "reason": req.reason,
-        } for req in reqs]
+        {
+            "requests": [{
+                "id": req.id,
+                "student": req.student.name(),
+                "reason": req.reason,
+            } for req in reqs]
+        }
     )
