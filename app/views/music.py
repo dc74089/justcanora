@@ -207,7 +207,9 @@ def add_song(request):
     add_song_helper(request, int(data['id']))
 
     sug = MusicSuggestion.objects.get(id=data['id'])
-    ApprovedSong.objects.get_or_create(spotify_uri=sug.spotify_uri)
+
+    if sug.for_playlist:
+        ApprovedSong.objects.get_or_create(spotify_uri=sug.spotify_uri)
 
     return HttpResponse(status=200)
 
