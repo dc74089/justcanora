@@ -84,12 +84,19 @@ def provision_personal(cred: WebserverCredential, client=None, install_ssl=True)
     if not client.web_domain_exists(cred.username, domain):
         client.add_web_domain(cred.username, domain)
 
-    # Shared basic-auth prompt on every personal site. Benign if already set,
-    # so don't let it fail an otherwise-good provision.
-    try:
-        client.add_httpauth(cred.username, domain)
-    except HestiaError as e:
-        log.warning("basic auth for %s may already be set: %s", domain, e)
+    # Shared basic-auth prompt on student sites; exempt accounts (e.g. the
+    # teacher's public site) get it removed instead. Enforce the desired state
+    # either way, tolerating "already set" / "not set" so a re-run converges.
+    if cred.username in settings.HESTIA_BASIC_AUTH_EXEMPT:
+        try:
+            client.delete_httpauth(cred.username, domain)
+        except HestiaError as e:
+            log.info("basic auth for %s already absent: %s", domain, e)
+    else:
+        try:
+            client.add_httpauth(cred.username, domain)
+        except HestiaError as e:
+            log.warning("basic auth for %s may already be set: %s", domain, e)
 
     if install_ssl:
         client.install_ssl_wildcard(cred.username, domain)

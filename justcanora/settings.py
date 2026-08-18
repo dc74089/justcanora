@@ -63,6 +63,8 @@ HESTIA_CERT_DIR = os.getenv("HESTIA_CERT_DIR", "/root/.acme.sh/lhpscs.com_ecc/")
 # Shared basic-auth prompt on personal student sites (not used for shark tank).
 HESTIA_BASIC_AUTH_USER = os.getenv("HESTIA_BASIC_AUTH_USER", "mscs")
 HESTIA_BASIC_AUTH_PASSWORD = os.getenv("HESTIA_BASIC_AUTH_PASSWORD", "mscs")
+# Personal sites exempt from basic auth (public), e.g. the teacher's own site.
+HESTIA_BASIC_AUTH_EXEMPT = [u for u in os.getenv("HESTIA_BASIC_AUTH_EXEMPT", "dcanora").split(",") if u]
 # Guard rail: refuse to send real commands unless explicitly enabled.
 HESTIA_DRY_RUN = os.getenv("HESTIA_DRY_RUN", "1") in ("1", "true", "True")
 # Shared bearer token the webserver's acme.sh reloadcmd uses to fetch the
