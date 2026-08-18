@@ -114,7 +114,7 @@ Set these in the app's environment (Docker env / secrets).
    ```bash
    cat > /usr/local/hestia/data/api/csclass <<'EOF'
    ROLE='admin'
-   COMMANDS='v-make-tmp-file,v-list-users,v-list-web-domains,v-add-user,v-add-web-domain,v-add-web-domain-ssl-wildcard,v-add-letsencrypt-domain,v-add-web-domain-httpauth,v-delete-web-domain-httpauth,v-change-user-password,v-suspend-user,v-unsuspend-user,v-delete-user'
+   COMMANDS='v-make-tmp-file,v-list-users,v-list-web-domains,v-add-user,v-change-user-shell,v-add-web-domain,v-add-web-domain-ssl-wildcard,v-add-letsencrypt-domain,v-add-web-domain-httpauth,v-delete-web-domain-httpauth,v-change-user-password,v-suspend-user,v-unsuspend-user,v-delete-user'
    EOF
    chown root:root /usr/local/hestia/data/api/csclass
    chmod 640 /usr/local/hestia/data/api/csclass

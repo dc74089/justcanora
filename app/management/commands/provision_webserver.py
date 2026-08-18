@@ -35,16 +35,20 @@ class Command(BaseCommand):
                             help="Provision shark-tank accounts + domains (no SSL).")
         parser.add_argument("--shark-ssl", action="store_true",
                             help="Issue shark-tank Let's Encrypt certs (requires live DNS).")
+        parser.add_argument("--shells", action="store_true",
+                            help="Retroactively enforce the SFTP shell (jailbash) on ALL "
+                                 "existing accounts, regardless of provisioned status.")
 
     def handle(self, *args, **opts):
         year, semester, force = opts["year"], opts["semester"], opts["force"]
 
         # If no target flag is given, do personal + shark account provisioning
-        # (but not the DNS-dependent shark SSL step).
-        selected = opts["personal"] or opts["shark"] or opts["shark_ssl"]
+        # (but not the DNS-dependent shark SSL step or the retroactive shell sweep).
+        selected = opts["personal"] or opts["shark"] or opts["shark_ssl"] or opts["shells"]
         do_personal = opts["personal"] or not selected
         do_shark = opts["shark"] or not selected
         do_shark_ssl = opts["shark_ssl"]
+        do_shells = opts["shells"]
 
         client = HestiaClient(dry_run=True if opts["dry_run"] else None)
         self.stdout.write(
@@ -71,6 +75,11 @@ class Command(BaseCommand):
             if not force:
                 projects = projects.filter(ssl_installed=False)
             self._run("shark-ssl", projects, lambda p: ws.provision_shark_ssl(p, client=client))
+
+        if do_shells:
+            # Retroactive sweep across ALL accounts (any year), not roster-scoped.
+            accounts = ws.accounts_with_username()
+            self._run("shells", accounts, lambda a: ws.enforce_shell(a, client=client))
 
     def _run(self, label, items, action):
         items = list(items)

@@ -51,10 +51,13 @@ HESTIA_ADMIN_PASSWORD = os.getenv("HESTIA_ADMIN_PASSWORD", "")
 # by default; set HESTIA_VERIFY_SSL=1 once a trusted cert is in place.
 HESTIA_VERIFY_SSL = os.getenv("HESTIA_VERIFY_SSL", "0") in ("1", "true", "True")
 HESTIA_BASE_DOMAIN = os.getenv("HESTIA_BASE_DOMAIN", "lhpscs.com")
-# Connection details students paste into sftp.json. Hestia chroots each SFTP
-# login to their home, so the site lives under /web/<domain>/public_html.
+# Connection details students paste into sftp.json. The site lives at the
+# absolute path /home/<user>/web/<domain>/public_html on the box.
 HESTIA_SFTP_HOST = os.getenv("HESTIA_SFTP_HOST", HESTIA_HOST)
 HESTIA_SFTP_PORT = os.getenv("HESTIA_SFTP_PORT", "22")
+# Login shell for student accounts. New Hestia users default to nologin (no
+# SFTP); jailbash gives chrooted SFTP with no real terminal.
+HESTIA_SFTP_SHELL = os.getenv("HESTIA_SFTP_SHELL", "jailbash")
 HESTIA_STUDENT_PACKAGE = os.getenv("HESTIA_STUDENT_PACKAGE", "student_package")
 HESTIA_CERT_DIR = os.getenv("HESTIA_CERT_DIR", "/root/.acme.sh/lhpscs.com_ecc/")
 # Shared basic-auth prompt on personal student sites (not used for shark tank).

@@ -44,6 +44,22 @@ def personal_creds_for(year=settings.CURRENT_ACADEMIC_YEAR, semester=settings.CU
     return WebserverCredential.objects.filter(student__id__in=student_ids)
 
 
+def accounts_with_username():
+    """Every existing account that has a Hestia login (personal + shark),
+    regardless of provisioned status — used to retroactively enforce the SFTP
+    shell on accounts already created on the box."""
+    personal = WebserverCredential.objects.exclude(username__isnull=True).exclude(username="")
+    shark = SharkProject.objects.exclude(username__isnull=True).exclude(username="")
+    return list(personal) + list(shark)
+
+
+def enforce_shell(account, client=None):
+    """Set the SFTP login shell (jailbash) on one existing account."""
+    client = client or HestiaClient()
+    client.set_shell(account.username)
+    return account
+
+
 # -- provisioning (pushes to the webserver via the Hestia API) -------------
 
 def provision_personal(cred: WebserverCredential, client=None, install_ssl=True):
@@ -64,6 +80,7 @@ def provision_personal(cred: WebserverCredential, client=None, install_ssl=True)
 
     if not client.user_exists(cred.username):
         client.add_user(cred.username, cred.password, student.email, student.fname, student.lname)
+    client.set_shell(cred.username)  # jailbash: enable chrooted SFTP (idempotent)
     if not client.web_domain_exists(cred.username, domain):
         client.add_web_domain(cred.username, domain)
 
@@ -112,6 +129,7 @@ def provision_shark(project: SharkProject, client=None):
     email = f"{project.username}@{settings.HESTIA_BASE_DOMAIN}"
     if not client.user_exists(project.username):
         client.add_user(project.username, project.password, email, "Shark", project.label())
+    client.set_shell(project.username)  # jailbash: enable chrooted SFTP (idempotent)
     if not client.web_domain_exists(project.username, project.domain):
         client.add_web_domain(project.username, project.domain)
 

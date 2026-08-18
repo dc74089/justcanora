@@ -137,6 +137,13 @@ class HestiaClient:
     def add_web_domain(self, username, domain):
         return self._call("v-add-web-domain", username, domain)
 
+    def set_shell(self, username, shell=None):
+        """Set a user's login shell (default jailbash) so chrooted SFTP works.
+        New Hestia users get `nologin`, which blocks SFTP. Idempotent — safe to
+        re-run on already-correct accounts."""
+        shell = shell or settings.HESTIA_SFTP_SHELL
+        return self._call("v-change-user-shell", username, shell)
+
     # -- SSL ---------------------------------------------------------------
 
     def install_ssl_wildcard(self, username, domain):
