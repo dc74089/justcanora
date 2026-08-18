@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from pydantic.json_schema import JsonRef
 
 from aitutor.utils import enrollment as tutor_enrollment
 from app.models import Course, FeatureFlag, HelpRequest
@@ -64,3 +65,16 @@ def help_admin(request):
         "helprequests": HelpRequest.objects.filter(satisfied=False).order_by('timestamp'),
     })
 
+
+def help_api(request):
+    reqs = HelpRequest.objects.filter(satisfied=False).order_by('timestamp')
+
+    return JsonResponse(
+        {
+            "requests": [{
+                "id": req.id,
+                "student": req.student.name(),
+                "reason": req.reason,
+            } for req in reqs]
+        }
+    )
