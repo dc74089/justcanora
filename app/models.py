@@ -308,7 +308,7 @@ class WebserverCredential(models.Model):
 
     @property
     def remote_path(self):
-        return f"/web/{self.subdomain}/public_html" if self.username else None
+        return f"/home/{self.username}/web/{self.subdomain}/public_html" if self.username else None
 
     @classmethod
     def gen_password(cls):
@@ -346,7 +346,7 @@ class SharkProject(models.Model):
 
     @property
     def remote_path(self):
-        return f"/web/{self.domain}/public_html" if self.domain else None
+        return f"/home/{self.username}/web/{self.domain}/public_html" if self.username and self.domain else None
 
     @classmethod
     def gen_password(cls):
