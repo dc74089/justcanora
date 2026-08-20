@@ -35,9 +35,11 @@
 <div class="row">
   <div class="col-12 d-flex flex-column-reverse mb-3 messages">
     {% if is_assessment and conversation.locked and conversation.feedback %}
-      {# The student's result, shown as soon as the assessment wraps up so they
+      {% comment %}
+         The student's result, shown as soon as the assessment wraps up so they
          don't have to go find it on the results page. First child of a
-         flex-column-reverse column, so it lands below the closing message. #}
+         flex-column-reverse column, so it lands below the closing message.
+      {% endcomment %}
       <div class="card bg-light mt-3">
         <div class="card-body">
           <h5 class="card-title">Your Feedback</h5>
