@@ -1,5 +1,17 @@
 {% extends 'app/base.html' %}
 
+{% block style %}
+  <style>
+      /* Feedback is shown in full, so the cell has to be allowed to wrap —
+         bootstrap-table otherwise stretches the column to the longest line. */
+      .feedback-cell {
+          white-space: normal;
+          min-width: 260px;
+          max-width: 460px;
+      }
+  </style>
+{% endblock %}
+
 {% block script %}
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/bootstrap-table.min.css">
@@ -50,6 +62,22 @@
           })
       }
 
+      function copy_begin_link(button, url) {
+          var label = button.textContent;
+          var flash = function (text) {
+              button.textContent = text;
+              setTimeout(function () { button.textContent = label; }, 1500);
+          };
+
+          navigator.clipboard.writeText(url).then(function () {
+              flash("Copied!");
+          }, function () {
+              // The Clipboard API needs a secure context (and permission), so
+              // fall back to showing the link to copy by hand.
+              prompt("Copy this link:", url);
+          });
+      }
+
       function open_assessment_form() {
           $("#af_title").text("New Assessment");
           $("#af_short_name").val("");
@@ -98,7 +126,12 @@
           <h2 class="card-title">{{ book.assessment.short_name }}
             <small class="text-muted">— {{ book.assessment.course.name }}</small>
           </h2>
-          <a class="btn btn-sm btn-grad" onclick="clone_assessment('{{ book.assessment.id }}')">Clone</a>
+          <div class="d-flex flex-wrap gap-1">
+            <a class="btn btn-sm btn-grad"
+               onclick="copy_begin_link(this, '{{ request.scheme }}://{{ request.get_host }}{% url 'chat_start_assessment' book.assessment.id %}')">Copy
+              Begin Link</a>
+            <a class="btn btn-sm btn-grad" onclick="clone_assessment('{{ book.assessment.id }}')">Clone</a>
+          </div>
         </div>
 
         <div class="mb-3 d-flex flex-wrap gap-2">
@@ -153,7 +186,9 @@
                   {% if r.credit %}✔️{% else %}❌{% endif %}
                 {% else %}—{% endif %}
               </td>
-              <td>{{ r.feedback|truncatewords:20 }}</td>
+              <td>
+                <div class="feedback-cell">{{ r.feedback }}</div>
+              </td>
               <td>
                 {% if r.conv %}
                   <div class="d-flex flex-wrap gap-1">

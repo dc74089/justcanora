@@ -34,6 +34,29 @@
 
 <div class="row">
   <div class="col-12 d-flex flex-column-reverse mb-3 messages">
+    {% if is_assessment and conversation.locked and conversation.feedback %}
+      {# The student's result, shown as soon as the assessment wraps up so they
+         don't have to go find it on the results page. First child of a
+         flex-column-reverse column, so it lands below the closing message. #}
+      <div class="card bg-light mt-3">
+        <div class="card-body">
+          <h5 class="card-title">Your Feedback</h5>
+          {% if conversation.understanding_score %}
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <div class="progress flex-grow-1">
+                <div class="progress-bar btn-grad" role="progressbar"
+                     style="width: {{ conversation.score_as_percent }}%"
+                     aria-valuenow="{{ conversation.score_as_percent }}"
+                     aria-valuemin="0"
+                     aria-valuemax="100"></div>
+              </div>
+              <span>{{ conversation.understanding_score }}/5</span>
+            </div>
+          {% endif %}
+          <div class="gpt">{{ conversation.feedback|markdown }}</div>
+        </div>
+      </div>
+    {% endif %}
     {% for msg in messages %}
       {% if msg.is_user %}
         <div class="d-flex">
