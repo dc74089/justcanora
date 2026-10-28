@@ -23,6 +23,14 @@
                   $("#tr-" + sug_id).remove()
               })
       }
+
+      $(function () {
+          $("#rationaleModal").on("show.bs.modal", function (e) {
+              const trigger = $(e.relatedTarget)
+              $("#rationaleModalLabel").text(trigger.attr("data-song"))
+              $("#rationaleModalBody").text(trigger.attr("data-rationale"))
+          })
+      })
   </script>
 {% endblock %}
 
@@ -41,6 +49,29 @@
           <td class="">For You</td>
         {% endif %}
 
+          <td>
+            <span style="font-size: 28px"
+                {% if sug.ai_rationale %}
+                  role="button" data-bs-toggle="modal" data-bs-target="#rationaleModal"
+                  data-song="{{ sug.data.name }} — {{ sug.data.artists.0.name }}"
+                  data-rationale="{{ sug.ai_rationale }}"
+                {% endif %}>
+              {% if sug.ai_rationale %}
+                  {% if not sug.ai_claims_confident %}
+                      🤷
+                  {% else %}
+                      {% if sug.ai_claims_appropriate %}
+                          ✅
+                      {% else %}
+                          ❌
+                      {% endif %}
+                  {% endif %}
+              {% else %}
+                  ❓
+              {% endif %}
+            </span>
+          </td>
+
         <td>
           <a href="#" class="btn btn-grad" onclick="select('{{ sug.id }}'); return false;">
             {% if sug.for_playlist %}
@@ -56,4 +87,21 @@
       </tr>
     {% endfor %}
   </table>
+{% endblock %}
+
+{% block modals %}
+  <div class="modal fade" id="rationaleModal" tabindex="-1" aria-labelledby="rationaleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="rationaleModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="rationaleModalBody" style="white-space: pre-wrap"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

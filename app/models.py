@@ -162,6 +162,9 @@ class MusicSuggestion(models.Model):
     is_null = models.BooleanField(default=False, null=False, blank=False)
     is_rejected = models.BooleanField(default=False, null=False, blank=False)
     data = models.TextField(null=True, blank=True)
+    ai_claims_appropriate = models.BooleanField(null=True, blank=True)
+    ai_claims_confident = models.BooleanField(null=True, blank=True)
+    ai_rationale = models.TextField(null=True, blank=True)
 
     def get_spotify_data(self, request):
         if self.data:
