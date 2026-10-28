@@ -1,7 +1,9 @@
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 
 from anthropic import BaseModel
+from django.db import close_old_connections, transaction
 from django.utils import timezone
 
 from app.models import MusicSuggestion
@@ -63,11 +65,43 @@ def get_ai_song_judgement(req: MusicSuggestion):
 
     parsed: AgentResponse = message.parsed_output
 
+    # pause_turn / max_tokens / refusal leave nothing to parse; judge_songs will retry it later.
+    if parsed is None:
+        logger.warning(f"No judgement for suggestion {req.id} (stop_reason={message.stop_reason})")
+        return
+
     req.ai_claims_appropriate = parsed.is_appropriate
     req.ai_claims_confident = parsed.confident
     req.ai_rationale = parsed.rationale
 
-    req.save()
+    # update_fields so a slow judgement can't clobber e.g. an approval made while it ran.
+    req.save(update_fields=["ai_claims_appropriate", "ai_claims_confident", "ai_rationale"])
+
+
+# Background judging of new suggestions, so the web request doesn't wait on Claude (a judgement
+# with web search can take a minute+). Per gunicorn worker; anything lost to a restart still has
+# no rationale, so `manage.py judge_songs` picks it up.
+_judgement_executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="song-judgement")
+
+
+def _judge_in_background(sug_id: int):
+    close_old_connections()
+
+    try:
+        req = MusicSuggestion.objects.filter(id=sug_id, ai_rationale__isnull=True).first()
+
+        if req is not None:
+            get_ai_song_judgement(req)
+    except Exception:
+        logger.exception(f"Background judgement failed for suggestion {sug_id}")
+    finally:
+        # This thread's DB connection would otherwise sit open until MySQL drops it.
+        close_old_connections()
+
+
+def queue_ai_song_judgement(req: MusicSuggestion):
+    """Judges a suggestion on a background thread once the current transaction commits."""
+    transaction.on_commit(lambda: _judgement_executor.submit(_judge_in_background, req.id))
 
 
 # Batches have no name/metadata field, so ours are recognised by this prefix on their custom_ids.

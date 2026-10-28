@@ -2,6 +2,7 @@ from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 
 from app.models import MusicSuggestion, Course, Student, SpeechRating, SpeechRubric, ApprovedSong, HelpRequest
+from app.spotify.claude import queue_ai_song_judgement
 from app.spotify.search import search
 from app.views.music import add_song_helper
 
@@ -37,6 +38,8 @@ def misc_action(request):
 
             if approved_song.exists():
                 add_song_helper(request, ms.id)
+            else:
+                queue_ai_song_judgement(ms)
 
         elif data['action'] == 'music_rescue':
             old = MusicSuggestion.objects.get(id=data['req_id'])
